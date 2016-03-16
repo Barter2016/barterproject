@@ -39,10 +39,32 @@
         IdentityPoolId: 'us-east-1:0eb351fe-a9b6-4f00-ab1f-393802d750a5',
     });
   </script>
-
+  
+  <script>
+    window.fbAsyncInit = function() {
+      FB.init({
+        appId      : '966897726721626',
+        xfbml      : true,
+        version    : 'v2.5'
+      });
+    };
+  
+    (function(d, s, id){
+       var js, fjs = d.getElementsByTagName(s)[0];
+       if (d.getElementById(id)) { return; }
+       js = d.createElement(s); js.id = id;
+       js.src = "//connect.facebook.net/en_US/sdk.js";
+       fjs.parentNode.insertBefore(js, fjs);
+     }(document, 'script', 'facebook-jssdk'));
+  </script>
+  
 </head>
 
 <body ng-app="BarterApp">
+  
+  <h1>Barter project</h1>
+  
+  <a href="#/SignIn">sign in</a>
   
   <div ng-view></div>
   

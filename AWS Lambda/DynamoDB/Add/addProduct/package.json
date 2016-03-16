@@ -1,0 +1,15 @@
+{
+  "name": "addproduct",
+  "version": "1.0.0",
+  "description": "Adds a product into the table products",
+  "main": "addProduct.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Pierre-Karl Iler",
+  "license": "ISC",
+  "dependencies": {
+    "aws-sdk": "^2.2.44",
+    "md5": "^2.1.0"
+  }
+}

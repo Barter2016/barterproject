@@ -2,7 +2,7 @@
 
 angular.module('BarterApp').controller('HomeCtrl', ['$scope', function($scope) {
     
-
+    /*
     function lambdaTest() {
     
         AWS.config.credentials.get(function(err) {
@@ -38,6 +38,8 @@ angular.module('BarterApp').controller('HomeCtrl', ['$scope', function($scope) {
         });
         
     }
+    */
+
     
 }]);
 

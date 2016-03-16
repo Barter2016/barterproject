@@ -14,6 +14,6 @@ angular.module('BarterApp').config(function($routeProvider) {
         controller: 'HomeCtrl'
     })
     
-    .otherwise('/SignIn');
+    .otherwise('/Home');
    
 });
