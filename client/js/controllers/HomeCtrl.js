@@ -2,8 +2,7 @@
 
 angular.module('BarterApp').controller('HomeCtrl', ['$scope', function($scope) {
     
-    lambdaTest();
-    
+
     function lambdaTest() {
     
         AWS.config.credentials.get(function(err) {
