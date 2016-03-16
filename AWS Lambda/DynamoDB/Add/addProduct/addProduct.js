@@ -12,17 +12,23 @@ var dynamoDB = new AWS.DynamoDB({ region : 'us-west-2' });
 */
 exports.addProduct = function (event, context) {
     
+    var message = {
+            succeed : "succeed",
+            failed : "failed"
+    };
+        
     if (!event.name || !event.email || !event.tags || !event.category || !event.description) {
-        context.fail("The description of the product can't be null");
+        context.fail(message.failed);
     } else {
         var date = new Date();
         var productId = event.email + date.getTime();
         var hashedProductId = md5(productId);
         
+        
         var params = {
             "TableName": "products",
             "Item" : {
-                "products_id" : { "S" : hashedProductId },
+                "product_id" : { "S" : hashedProductId },
                 "email" : { "S" : event.email },
                 "name" : { "S" : event.name },
                 "tags" : { "S" : event.tags },
@@ -33,9 +39,9 @@ exports.addProduct = function (event, context) {
         
         dynamoDB.putItem(params, function (err, data) {
             if (err) {
-                context.fail("Unable to add item. Error: " + err);
+                context.fail(message.failed);
             } else {
-                context.succeed("Added item " + JSON.stringify(data));
+                context.succeed(message.succeed);
             }
         });
     }
