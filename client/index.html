@@ -28,8 +28,20 @@
   <script src="js/app.module.js"></script>
   <script src="js/app.routes.js"></script>
   <script src="js/app.themes.js"></script>
+  
+  <!-- Controllers -->
+  <script src="js/controllers/HomeCtrl.js"></script>
+  
+  
+  <script type="text/javascript">
+    AWS.config.region = 'us-east-1';
+    AWS.config.credentials = new AWS.CognitoIdentityCredentials({
+        IdentityPoolId: 'us-east-1:0eb351fe-a9b6-4f00-ab1f-393802d750a5',
+    });
+  </script>
 
 </head>
+
 <body ng-app="BarterApp">
   
   <div ng-view></div>
