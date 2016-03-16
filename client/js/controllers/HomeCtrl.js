@@ -3,6 +3,7 @@
 angular.module('BarterApp').controller('HomeCtrl', ['$scope', function($scope) {
     
     $scope.project_name = "Barter Project";
+    $scope.is_auth = false;
     
     /*
     function lambdaTest() {
