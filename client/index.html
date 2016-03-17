@@ -31,9 +31,23 @@
   <script src="js/app.themes.js"></script>
   
   <!-- Controllers -->
-  <script src="js/controllers/SignInCtrl.js"></script>
   <script src="js/controllers/HomeCtrl.js"></script>
+  <script src="js/controllers/SignInCtrl.js"></script>
+  <script src="js/controllers/SignUpCtrl.js"></script>
   
+  <!-- Services -->
+  <script src="js/services/AddService.js"></script>
+  <script src="js/services/DeleteService.js"></script>
+  <script src="js/services/GetService.js"></script>
+  <script src="js/services/LocalStorageService.js"></script>
+  <script src="js/services/SessionService.js"></script>
+  <script src="js/services/UpdateService.js"></script>
+  <script src="js/services/UtilService.js"></script>
+  
+  <!-- Factories -->
+  <script src="js/factories/FacebookFactory.js"></script>
+  
+  <!-- Hardcoded cognito credentials for tests -->
   <script type="text/javascript">
     AWS.config.region = 'us-east-1';
     AWS.config.credentials = new AWS.CognitoIdentityCredentials({
@@ -41,10 +55,13 @@
     });
   </script>
   
+  <!-- Facebook init -->
   <script>
     window.fbAsyncInit = function() {
       FB.init({
         appId      : '966897726721626',
+        status     : true,
+        cookie     : true,
         xfbml      : true,
         version    : 'v2.5'
       });
@@ -52,11 +69,12 @@
   
     (function(d, s, id){
        var js, fjs = d.getElementsByTagName(s)[0];
-       if (d.getElementById(id)) { return; }
+       if (d.getElementById(id)) {return;}
        js = d.createElement(s); js.id = id;
-       js.src = "//connect.facebook.net/en_US/sdk.js";
+       js.src = "https://connect.facebook.net/en_US/sdk.js";
        fjs.parentNode.insertBefore(js, fjs);
      }(document, 'script', 'facebook-jssdk'));
+     
   </script>
   
 </head>

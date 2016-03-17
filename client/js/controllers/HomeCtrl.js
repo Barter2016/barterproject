@@ -1,9 +1,10 @@
 'use strict';
 
-angular.module('BarterApp').controller('HomeCtrl', ['$scope', function($scope) {
+angular.module('BarterApp').controller('HomeCtrl', ['$scope', 'UtilService', function($scope, UtilService) {
     
     $scope.project_name = "Barter Project";
     $scope.is_auth = false;
+    $scope.go = UtilService.go;
     
     /*
     function lambdaTest() {

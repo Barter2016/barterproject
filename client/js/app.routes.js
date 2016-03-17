@@ -9,6 +9,11 @@ angular.module('BarterApp').config(function($routeProvider) {
         controller: 'SignInCtrl'
     })
     
+    .when('/SignUp', {
+        templateUrl: 'templates/SignUp.html',
+        controller: 'SignUpCtrl'
+    })
+    
     .when('/Home', {
         templateUrl: 'templates/Home.html',
         controller: 'HomeCtrl'

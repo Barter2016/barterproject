@@ -10,26 +10,26 @@ exports.updateProduct = function (event, context) {
             failed : "failed"
     };
     
-    if (!event.productId || !event.name || !event.tags || event.category || event.description) {
+    if (!event.product_id || !event.name || !event.tags || !event.category || !event.description) {
         context.fail(message.failed);
     } else {
         
         var params = {
             "TableName" : "products",
             "Key" : {
-                "product_id" : event.productId
+                "product_id" : { "S" : event.product_id }
             },
             "AttributeUpdates" : {
-                "name" : { "S" : event.name },
-                "tags" : { "S" : event.tags },
-                "category_id" : { "S" : event.category },
-                "description" : { "S" : event.description }
+                "name" : { "Value" : { "S" : event.name }},
+                "tags" : { "Value" : { "S" : event.tags }},
+                "category_id" : { "Value" : { "S" : event.category }},
+                "description" : { "Value" : { "S" : event.description }}
             }
         };
         
         dynamoDB.updateItem(params, function (err, data) {
             if (err) {
-                context.fail(message.failed);
+                context.fail(err);
             } else {
                 context.succeed(message.succeed);
             }

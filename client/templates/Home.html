@@ -3,16 +3,38 @@
     <!-- Main Toolbar -->
     <md-toolbar>
         <div class="md-toolbar-tools">
+            
+            <!-- Title -->
             <h2>
                 <span>Welcome on {{ project_name }}</span>
             </h2>
+            
             <span flex></span>
-            <md-button class="md-icon-button" ng-if="!is_auth">
-                <i class="material-icons">input</i>
+            
+            <!-- Unauthentified buttons -->
+            <md-button ng-if="!is_auth" ng-click="go('/SignIn')">
+                <md-icon class="material-icons">input</md-icon>
+                Sign in
             </md-button>
-            <md-button class="md-icon-button" ng-if="!is_auth">
-                <i class="material-icons">input</i>
+            <md-button ng-if="!is_auth" ng-click="go('/SignUp')">
+                <md-icon class="material-icons">person_add</md-icon>
+                Create my account
             </md-button>
+            
+            <!-- Authentified buttons -->
+            <md-button ng-if="is_auth">
+                <md-icon class="material-icons">account_circle</md-icon>
+                My account
+            </md-button>
+            <md-button ng-if="is_auth">
+                <md-icon class="material-icons">settings</md-icon>
+                My settings
+            </md-button>
+            <md-button ng-if="is_auth">
+                <md-icon class="material-icons">power_settings_new</md-icon>
+                Sign out
+            </md-button>
+            
         </div>
     </md-toolbar>
     
