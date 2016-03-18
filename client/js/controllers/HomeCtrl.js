@@ -36,9 +36,9 @@ angular.module('BarterApp').controller('HomeCtrl', ['$scope', 'UtilService', 'Ge
     }
     
     $scope.searchProduct = () => {
-        if ($scope.productToFind) {
+        if ($scope.productNameToFind) {
             
-            console.log('productToFind: ' + $scope.productToFind)
+            console.log('productNameToFind: ' + $scope.productNameToFind)
             
             // If there is no products we try to scan them.
             if (productsInCache.length == 0) {
@@ -47,7 +47,7 @@ angular.module('BarterApp').controller('HomeCtrl', ['$scope', 'UtilService', 'Ge
             
             const searchResult = productsInCache.filter((product) => {
                 console.log(product.product_name)
-                if(product.product_name.S == $scope.productToFind){
+                if(product.product_name.S == $scope.productNameToFind){
                     console.log('same name')
                     return true
                 }

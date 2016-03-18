@@ -3,20 +3,12 @@ angular.module('BarterApp').controller('NotificationsCtrl', ['$scope','GetServic
     $scope.project_name = "Barter Project"
     $scope.is_auth = false
     $scope.receiverEmail = ""
+    $scope.items = ""
     
     $scope.scanNotificationsByReceiver = function () {
         console.log($scope.receiverEmail)
         if($scope.receiverEmail) {
-            GetService.scanNotificationsByReceiver($scope.receiverEmail, (err, notifications) => {
-                if(err) {
-                    console.log(err)
-                }
-                else {
-                    $scope.items = notifications
-                    console.log($scope.items)
-                    $scope.$apply()
-                }
-            })
+            getAllNotificationOfUser($scope.receiverEmail)
         }
     }
 
@@ -29,10 +21,24 @@ angular.module('BarterApp').controller('NotificationsCtrl', ['$scope','GetServic
                 }
                 else {
                     console.log(data)
+                    getAllNotificationOfUser($scope.receiverEmail)
                     $scope.$apply()
                 }
             })
         }
+    }
+    
+    function getAllNotificationOfUser (receiver_email) {
+        GetService.scanNotificationsByReceiver(receiver_email, (err, notifications) => {
+            if(err) {
+                console.log(err)
+            }
+            else {
+                $scope.items = notifications
+                console.log($scope.items)
+                $scope.$apply()
+            }
+        })
     }
     
 
