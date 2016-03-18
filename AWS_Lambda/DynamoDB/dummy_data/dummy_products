@@ -1,0 +1,41 @@
+{
+    "category_id" : "Vehicules",
+    "product_description": "test1",
+    "product_name" : "product_1",
+    "product_tags" : "toyota;car",
+    "user_email": "sam.pierre.louis.remi@gmail.com"
+}
+
+
+{
+    "category_id" : "Vehicules",
+    "product_description": "test2",
+    "product_name" : "product_2",
+    "product_tags" : "toyota;car",
+    "user_email": "sam.pierre.louis.remi@gmail.com"
+}
+
+
+{
+    "category_id" : "Vehicules",
+    "product_description": "test3",
+    "product_name" : "product_3",
+    "product_tags" : "toyota;car",
+    "user_email": "sam.pierre.louis.remi@gmail.com"
+}
+
+{
+    "category_id" : "Vehicules",
+    "product_description": "test4",
+    "product_name" : "product_4",
+    "product_tags" : "toyota;car",
+    "user_email": "sam.pierre.louis.remi@gmail.com"
+}
+
+{
+    "category_id" : "Vehicules",
+    "product_description": "test5",
+    "product_name" : "product_5",
+    "product_tags" : "toyota;car",
+    "user_email": "sam.pierre.louis.remi@gmail.com"
+}

@@ -1,53 +1,65 @@
-'use strict';
+angular.module('BarterApp').controller('HomeCtrl', ['$scope', 'UtilService', 'GetService', function($scope, UtilService, GetService) {
 
-angular.module('BarterApp').controller('HomeCtrl', ['$scope', 'UtilService', function($scope, UtilService) {
+    $scope.project_name = "Barter Project"
+    $scope.is_auth = false
+    $scope.categories = [] // Save the last scanned categories in an array.
+    var productsInCache =  [] // Save the last scanned products in an array.
+    $scope.productsToDisplay = []
+    $scope.productNameToFind;
+    $scope.selectedCategory
+    $scope.go = UtilService.go
+
     
-    $scope.project_name = "Barter Project";
-    $scope.is_auth = false;
-    $scope.go = UtilService.go;
-    
-    /*
-    function lambdaTest() {
-    
-        AWS.config.credentials.get(function(err) {
+    function refreshCategories() {
+        GetService.scanAllCategories((err, categories) => {
             if (err) {
-                console.log(err);
-            } 
-            else {
-                var lambda = new AWS.Lambda({region: 'us-west-2'});
-                
-                var lambda_params = {
-                    FunctionName: 'lambdaTestHandlerSam',
-                    Payload: JSON.stringify({
-                        val1: 'val1',
-                        val2: 'val2'
-                    })
-                };
-                
-                lambda.invoke(lambda_params, function(error, response) {
-                    if (error) {
-                        console.log(error);
-                    }   
-                    else {
-                        var payload = JSON.parse(response.Payload);
-                        if (payload.errorMessage) {
-                            console.log(payload.errorMessage);
-                        }
-                        else {
-                            console.log(payload);
-                        }
-                    }
-                });
+                console.log(err)
             }
-        });
-        
+            else {
+                $scope.categories = categories
+                $scope.$apply()
+            }
+        })
     }
-    */
-
+    
+    function refreshProducts() {
+        GetService.scanAllProducts((err, products) => {
+            if (err) {
+                console.log(err)
+            }
+            else {
+                productsInCache = products
+                $scope.productsToDisplay = products
+                $scope.$apply()
+            }
+        })
+    }
+    
+    $scope.searchProduct = () => {
+        if ($scope.productToFind) {
+            
+            console.log('productToFind: ' + $scope.productToFind)
+            
+            // If there is no products we try to scan them.
+            if (productsInCache.length == 0) {
+                refreshProducts()
+            }
+            
+            const searchResult = productsInCache.filter((product) => {
+                console.log(product.product_name)
+                if(product.product_name.S == $scope.productToFind){
+                    console.log('same name')
+                    return true
+                }
+            })
+            
+            console.log('number of results: ' + searchResult.length)
+            
+            $scope.productsToDisplay = searchResult;
+        }
+    }
+    
+    refreshCategories()
+    refreshProducts()
     
 }]);
-
-
-
-
-

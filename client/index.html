@@ -30,11 +30,6 @@
   <script src="js/app.routes.js"></script>
   <script src="js/app.themes.js"></script>
   
-  <!-- Controllers -->
-  <script src="js/controllers/HomeCtrl.js"></script>
-  <script src="js/controllers/SignInCtrl.js"></script>
-  <script src="js/controllers/SignUpCtrl.js"></script>
-  
   <!-- Services -->
   <script src="js/services/AddService.js"></script>
   <script src="js/services/DeleteService.js"></script>
@@ -47,6 +42,12 @@
   <!-- Factories -->
   <script src="js/factories/FacebookFactory.js"></script>
   
+  <!-- Controllers -->
+  <script src="js/controllers/HomeCtrl.js"></script>
+  <script src="js/controllers/AddProductCtrl.js"></script>
+  <script src="js/controllers/NotificationsCtrl.js"></script>
+  <script src="js/controllers/MenuCtrl.js"></script>
+
   <!-- Hardcoded cognito credentials for tests -->
   <script type="text/javascript">
     AWS.config.region = 'us-east-1';
@@ -55,12 +56,15 @@
     });
   </script>
   
+</head>
+
+<body ng-app="BarterApp">
+  
   <!-- Facebook init -->
   <script>
-    window.fbAsyncInit = function() {
+    window.fbAsyncInit = () => {
       FB.init({
         appId      : '966897726721626',
-        status     : true,
         cookie     : true,
         xfbml      : true,
         version    : 'v2.5'
@@ -74,14 +78,66 @@
        js.src = "https://connect.facebook.net/en_US/sdk.js";
        fjs.parentNode.insertBefore(js, fjs);
      }(document, 'script', 'facebook-jssdk'));
-     
   </script>
   
-</head>
+  <div layout="row" style="height: 100vh;">
+    
+    <!-- Sidenav -->
+    <div ng-controller="MenuCtrl" class="grey-background">
+      <md-sidenav class="left-sidenav" md-is-locked-open="$mdMedia('gt-sm')">
+      
+        <!-- Menu header -->
+        <md-toolbar class="md-tall left-sidenav-header">
+          <div layout="column" layout-align="center center" class="md-toolbar-tools-bottom inset">
+            <div class="user-avatar">
+              <md-icon class="material-icons" style="font-size: 64px; width: 64px; height: 64px;">person</md-icon>
+            </div>
+            <span flex></span>
+            <div>{{ user.name }}</div>
+            <div>{{ user.email }}</div>
+          </div>
+        </md-toolbar>
+        
+        <!-- Menu content -->
+        <md-content class="left-sidenav-content">
+          <md-list>
+            <md-button ng-click="go(item.link)" ng-class="{ first:$first }" ng-repeat="item in menu_items">
+                <div layout="row">
+                  {{ item.title }}
+                  <span flex></span>
+                  <md-icon class="material-icons">{{ item.icon }}</md-icon>
+                </div>
+              </md-button>
+          </md-list>
+        </md-content>
+        
+      </md-sidenav>
+    </div>
+    
+    <div layout="column" flex>
+      
+      <!-- Toolbar -->
+      <md-toolbar class="main-toolbar">
+        <div class="md-toolbar-tools">
 
-<body ng-app="BarterApp">
-  
-  <div ng-view></div>
+            <!-- Title -->
+            <h2>
+                <span>BarterFarter.sexy</span>
+            </h2>
+
+        </div>
+      </md-toolbar>
+      
+      <!-- Content -->
+      <md-content>
+        
+        <div ng-view></div>
+        
+      </md-content>
+      
+    </div>
+
+  </div>
   
 </body>
 </html>

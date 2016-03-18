@@ -1,0 +1,74 @@
+md-toolbar {
+    box-shadow: 0 2px 5px 0 rgba(0,0,0,.26);
+}
+
+.user-avatar {
+    background-color: white;
+    border-radius: 100%;
+    margin-bottom: 10px;
+}
+
+.user-avatar md-icon {
+    color: rgba(0,0,0,0.54) !important;
+}
+
+.grey-background {
+    background-color: #F6F6F6;
+}
+
+.main-toolbar {
+    background-color: #F6F6F6 !important;
+    color: #202020 !important;
+    z-index: 3;
+}
+
+.md-toolbar-tools-bottom {
+    font-size: small;
+}
+
+.left-sidenav {
+    width: 272px;
+    max-width: 272px;
+    min-width: 272px;
+    background-color: #F6F6F6;
+}
+
+.left-sidenav-header {
+    background-color: #3F51B5;
+}
+
+.left-sidenav-content {
+    background-color: #F6F6F6;
+}
+
+.left-sidenav-content md-list {
+    padding: 0px;
+}
+
+.left-sidenav-content .first {
+    border-top: 1px solid white;
+}
+
+.left-sidenav-content button {
+    border-radius: 0;
+    border-bottom: 1px solid white;
+    color: rgba(0,0,0,0.54);
+}
+
+.left-sidenav-content .layout-row {
+    padding: 5px;
+}
+
+.left-sidenav-content .md-button {
+    text-align: left;
+    width: 100%;
+    height: 100%;
+    margin: 0px;
+    padding-top: 5px;
+    padding-bottom: 5px;
+}
+
+.div-button {
+   padding-left: 25px;
+   padding-top: 10px;
+}

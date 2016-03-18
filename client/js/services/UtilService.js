@@ -1,8 +1,6 @@
-'use strict';
-
 angular.module('BarterApp').service('UtilService', ['$location', function($location) {
     
-    var self = this;
+    const self = this;
     
     //*************************
     // Changes the apps' route.

@@ -1,8 +1,6 @@
-'use strict';
-
 angular.module('BarterApp').service('SessionService', function() {
 
-   var self = this;
+   const self = this;
 
    //*************************************************************************
    // Creates a session that contains the user credentials and the users' key.

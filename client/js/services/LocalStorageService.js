@@ -1,8 +1,6 @@
-'use strict';
-
 angular.module('BarterApp').service('LocalStorageService', ['$window', function($window) {
     
-    var self = this;
+    const self = this;
     
     //*************************************
     // Sets a value in the local storage.
@@ -35,7 +33,7 @@ angular.module('BarterApp').service('LocalStorageService', ['$window', function(
     // Output : The value
     //***************************************
     self.getObject = function(key) {
-        var object = $window.localStorage[key];
+        const object = $window.localStorage[key];
         return (object) ? JSON.parse(object) : null;  
     };
     

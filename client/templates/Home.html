@@ -1,41 +1,46 @@
-<div style="height: 100vh" ng-cloak>
+<div ng-cloak>
     
-    <!-- Main Toolbar -->
-    <md-toolbar>
-        <div class="md-toolbar-tools">
-            
-            <!-- Title -->
-            <h2>
-                <span>Welcome on {{ project_name }}</span>
-            </h2>
-            
-            <span flex></span>
-            
-            <!-- Unauthentified buttons -->
-            <md-button ng-if="!is_auth" ng-click="go('/SignIn')">
-                <md-icon class="material-icons">input</md-icon>
-                Sign in
-            </md-button>
-            <md-button ng-if="!is_auth" ng-click="go('/SignUp')">
-                <md-icon class="material-icons">person_add</md-icon>
-                Create my account
-            </md-button>
-            
-            <!-- Authentified buttons -->
-            <md-button ng-if="is_auth">
-                <md-icon class="material-icons">account_circle</md-icon>
-                My account
-            </md-button>
-            <md-button ng-if="is_auth">
-                <md-icon class="material-icons">settings</md-icon>
-                My settings
-            </md-button>
-            <md-button ng-if="is_auth">
-                <md-icon class="material-icons">power_settings_new</md-icon>
-                Sign out
-            </md-button>
-            
-        </div>
-    </md-toolbar>
+    <div layout="row">
+        <div flex="20"></div>
+        <md-card flex="60">
+            <md-card-title style="background-color:#3F51B5;">
+                <md-card-title-text>
+                    <span style="color:white;" class="md-headline">Annonces</span>
+                </md-card-title-text>
+            </md-card-title>
+            <md-card-content>
+                <div layout-gt-sm="row">
+                    <md-input-container>
+                        <label>Nom du produit</label>
+                        <input ng-model="productToFind">
+                    </md-input-container>
     
+                    <md-input-container style="margin-right: 10px;">
+                        <label>Categories</label>
+                        <md-select ng-model="selectedCategory">
+                            <md-option ng-repeat="category in categories" ng-value="{{category}}">{{category.category_name.S}}</md-option>
+                        </md-select>
+                    </md-input-container>
+                
+                    <md-input-container>
+                        <md-button class="md-raised md-primary" ng-click="searchProduct()">Rechercher</md-button>
+                    </md-input-container>
+                </div>
+                <div ng-cloak layout-gt-sm="row" layout="column">
+                <div flex-gt-sm="50" flex>
+                    <md-divider></md-divider>
+                    <md-list-item class="md-3-line" ng-repeat="product in productsToDisplay">
+                        <md-divider></md-divider>
+                        <div class="md-list-item-text" layout="column">
+                            <h3>Nom: {{ product.product_name.S }}</h3>
+                            <h4>Tags: {{ product.product_tags.S }}</h4>
+                            <p>Description: {{ product.product_description.S }}</p>
+                        </div>
+                    </md-list-item>
+                </div>
+            </div>
+                
+            </md-card-content>
+        </md-card>
+    </div>
 </div>
