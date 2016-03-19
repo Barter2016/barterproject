@@ -12,6 +12,10 @@ md-toolbar {
     color: rgba(0,0,0,0.54) !important;
 }
 
+.full-height {
+    height: 100%;
+}
+
 .grey-background {
     background-color: #F6F6F6;
 }
@@ -68,7 +72,11 @@ md-toolbar {
     padding-bottom: 5px;
 }
 
+.mdi {
+    margin-top: 5px;
+    font-size: 24px !important;
+}
+
 .div-button {
-   padding-left: 25px;
    padding-top: 10px;
 }

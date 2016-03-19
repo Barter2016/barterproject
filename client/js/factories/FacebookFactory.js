@@ -33,9 +33,10 @@ angular.module('BarterApp').factory('FacebookService', ['SessionService', 'Local
         /**
          * Get the the current public info of the user (if logged)
          * 
+         * param-name="callback(userInfo)"
          * return the user informations.
          */
-        getCurrentUserInfo : (callback) => FB.api('/me', (userInfo) => callback(userInfo))
+        getCurrentUserInfo : (callback) => FB.api('me', (userInfo) => callback(userInfo))
     }
     
 }]);

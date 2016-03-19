@@ -1,4 +1,4 @@
-angular.module('BarterApp').controller('HomeCtrl', ['$scope', 'UtilService', 'GetService', function($scope, UtilService, GetService) {
+angular.module('BarterApp').controller('HomeCtrl', ['$scope', 'UtilService', 'ProductService', 'CategoryService', function($scope, UtilService, ProductService, CategoryService) {
 
     $scope.project_name = "Barter Project"
     $scope.is_auth = false
@@ -11,7 +11,7 @@ angular.module('BarterApp').controller('HomeCtrl', ['$scope', 'UtilService', 'Ge
 
     
     function refreshCategories() {
-        GetService.scanAllCategories((err, categories) => {
+        CategoryService.scanAllCategories((err, categories) => {
             if (err) {
                 console.log(err)
             }
@@ -23,43 +23,55 @@ angular.module('BarterApp').controller('HomeCtrl', ['$scope', 'UtilService', 'Ge
     }
     
     function refreshProducts() {
-        GetService.scanAllProducts((err, products) => {
+        ProductService.scanAllProducts((err, products) => {
             if (err) {
                 console.log(err)
             }
             else {
                 productsInCache = products
-                $scope.productsToDisplay = products
+                $scope.productsToDisplay = ProductService.addCategoryToProducts(products)
                 $scope.$apply()
             }
         })
     }
     
     $scope.searchProduct = () => {
-        if ($scope.productNameToFind) {
+        
+        // If there is no products we try to scan them.
+        if (productsInCache.length == 0) {
+            refreshProducts()
+        }
+        
+        if ($scope.productNameToFind
+            && $scope.productNameToFind.length > 0) {
             
             console.log('productNameToFind: ' + $scope.productNameToFind)
             
-            // If there is no products we try to scan them.
-            if (productsInCache.length == 0) {
-                refreshProducts()
-            }
-            
-            const searchResult = productsInCache.filter((product) => {
-                console.log(product.product_name)
-                if(product.product_name.S == $scope.productNameToFind){
-                    console.log('same name')
-                    return true
-                }
+            var searchResult = productsInCache.filter((product) => {
+                return product.product_name.S.toLowerCase() == $scope.productNameToFind.toLowerCase()
             })
             
-            console.log('number of results: ' + searchResult.length)
+            // If the user has selected a category.
+            if($scope.selectedCategory) {
+                // Filter by the selected category
+                searchResult = searchResult.filter((product) => { 
+                    return product.category.category_name.S == $scope.selectedCategory.category_name.S 
+                })
+            }
             
-            $scope.productsToDisplay = searchResult;
+            console.log('search result length: ' + searchResult.length)
+            $scope.productsToDisplay = searchResult
+        }
+        else {
+            $scope.productsToDisplay = ProductService.addCategoryToProducts(productsInCache)
         }
     }
     
-    refreshCategories()
-    refreshProducts()
+    if(productsInCache.length == 0){
+        refreshProducts()
+    }
+    if($scope.categories.length == 0) {
+        refreshCategories()
+    }
     
 }]);

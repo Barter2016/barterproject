@@ -4,17 +4,20 @@ angular.module('BarterApp').config(function($routeProvider) {
     
     .when('/Home', {
         templateUrl: 'templates/Home.html',
-        controller: 'HomeCtrl'
+        controller: 'HomeCtrl',
+        cache: true
     })
     
-    .when('/AddProduct', {
-        templateUrl: 'templates/AddProduct.html',
-        controller: 'AddProductCtrl'
+    .when('/Catalogue', {
+        templateUrl: 'templates/Catalogue.html',
+        controller: 'CatalogueCtrl',
+        cache: true
     })
     
     .when('/Notifications', {
         templateUrl: 'templates/ViewNotifications.html',
-        controller: 'NotificationsCtrl'
+        controller: 'NotificationsCtrl',
+        cache: true
     })
     
     .otherwise('/Home');

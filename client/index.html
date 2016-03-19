@@ -15,9 +15,10 @@
   <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.0/angular-messages.min.js"></script>
   
   <!-- Angular Material -->
-  <script src="https://ajax.googleapis.com/ajax/libs/angular_material/1.0.0/angular-material.min.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/angular_material/1.0.5/angular-material.min.js"></script>
   <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/angular_material/1.0.0/angular-material.min.css">
   <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+  <link rel="stylesheet" href="//cdn.materialdesignicons.com/1.5.54/css/materialdesignicons.min.css">
   
   <!-- AWS SDK -->
   <script src="https://sdk.amazonaws.com/js/aws-sdk-2.2.42.min.js"></script>
@@ -38,13 +39,15 @@
   <script src="js/services/SessionService.js"></script>
   <script src="js/services/UpdateService.js"></script>
   <script src="js/services/UtilService.js"></script>
+  <script src="js/services/CategoryService.js"></script>
+  <script src="js/services/ProductService.js"></script>
   
   <!-- Factories -->
   <script src="js/factories/FacebookFactory.js"></script>
   
   <!-- Controllers -->
   <script src="js/controllers/HomeCtrl.js"></script>
-  <script src="js/controllers/AddProductCtrl.js"></script>
+  <script src="js/controllers/CatalogueCtrl.js"></script>
   <script src="js/controllers/NotificationsCtrl.js"></script>
   <script src="js/controllers/MenuCtrl.js"></script>
 
@@ -88,26 +91,32 @@
       
         <!-- Menu header -->
         <md-toolbar class="md-tall left-sidenav-header">
-          <div layout="column" layout-align="center center" class="md-toolbar-tools-bottom inset">
+          <div layout="column" layout-align="center center" class="md-toolbar-tools-bottom inset" ng-class="{'full-height': !auth}">
             <div class="user-avatar">
               <md-icon class="material-icons" style="font-size: 64px; width: 64px; height: 64px;">person</md-icon>
             </div>
-            <span flex></span>
-            <div>{{ user.name }}</div>
-            <div>{{ user.email }}</div>
+            <div ng-if="auth" style="font-weight: bold;">{{ user.name }}</div>
+            <div ng-if="auth" style="font-style: oblique;">{{ user.email }}</div>
           </div>
         </md-toolbar>
         
         <!-- Menu content -->
         <md-content class="left-sidenav-content">
           <md-list>
-            <md-button ng-click="go(item.link)" ng-class="{ first:$first }" ng-repeat="item in menu_items">
-                <div layout="row">
-                  {{ item.title }}
-                  <span flex></span>
-                  <md-icon class="material-icons">{{ item.icon }}</md-icon>
-                </div>
-              </md-button>
+            <md-button ng-if="auth" ng-click="go(item.link)" ng-class="{ first:$first }" ng-repeat="item in menu_items.auth">
+              <div layout="row">
+                {{ item.title }}
+                <span flex></span>
+                <md-icon class="material-icons">{{ item.icon }}</md-icon>
+              </div>
+            </md-button>
+            <md-button ng-if="!auth" ng-repeat="item in menu_items.not_auth" ng-click="">
+              <div layout="row">
+                {{ item.title }}
+                <span flex></span>
+                <i class="{{ item.icon }}"></i>
+              </div>
+            </md-button>
           </md-list>
         </md-content>
         

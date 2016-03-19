@@ -1,4 +1,4 @@
-<div ng-controller="AddProductCtrl" ng-cloak="" layout-gt-sm="row" layout="column" ng-app="BarterApp">
+<div ng-controller="CatalogueCtrl" ng-cloak="" layout-gt-sm="row" layout="column" ng-app="BarterApp">
     <md-card flex="60">
         <md-card-title style="background-color:#3F51B5;">
                 <md-card-title-text>
@@ -29,10 +29,14 @@
             <div layout-gt-sm="row">
                 <md-input-container class="md-block" flex-gt-sm>
                     <label>Categories</label>
-                    <md-select ng-model="new_product.category_id" required >
+                    <md-select ng-model="new_product.category_id" name"productCategory" required >
                         <md-option ng-repeat="category in categories" value={{category.category_id.S}}>{{category.category_name.S}}</md-option>
                     </md-select>
+                     <div ng-messages="addProductForm.productCategory.$error">
+                        <div ng-message="required">Veuillez sélectionner une catégorie pour le produit.</div>
+                    </div>
                 </md-input-container>
+                
                 <md-button class="md-raised md-primary" ng-disabled="addProductForm.$invalid" ng-click="addProduct(new_product)">Créer produit</md-button>
             </div>
             

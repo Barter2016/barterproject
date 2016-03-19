@@ -1,0 +1,20 @@
+<div ng-app="BarterApp" ng-cloak="" layout-gt-sm="row" layout="column">
+    <md-card>
+        <md-card-title style="background-color:#3F51B5;">
+            <md-card-title-text>
+                <span style="color:white;" class="md-headline">Replying to {{ sender_email }}</span>
+            </md-card-title-text>
+        </md-card-title>
+        <md-card-content>
+            <form name="messageForm">
+                <md-input-container class="md-block">
+                    <label>Your message</label>
+                    <input required="" name="messageText" ng-model="messageText">
+                    <div ng-messages="messageForm.messageText.$error">
+                        <div ng-message="required">This is required.</div>
+                    </div>
+                </md-input-container>
+            </form>
+        </md-card-content>
+    </md-card>
+</div>

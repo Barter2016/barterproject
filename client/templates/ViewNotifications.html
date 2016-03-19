@@ -14,20 +14,19 @@
             <div>
                 <md-list flex="">
                     <md-subheader class="md-no-sticky">Unread notifications</md-subheader>
-                    <md-list-item class="md-2-line" ng-repeat="item in items" ng-if="!item.notification_read.BOOL">
+                    <md-list-item class="md-2-line" ng-repeat="item in items" ng-if="!item.notification_read.BOOL" style="padding-left: 15px;">
                         <img ng-src="{{item.face}}?{{$index}}" class="md-avatar" alt="{{item.sender_email.S}}">
                         <div class="md-list-item-text" layout="column">
                             <h3>{{ item.sender_email.S }}</h3>
                             <h4>{{ item.notification_message.S }}</h4>
                         </div>
                         <div class="div-button">
-                            <md-button class="md-raised md-warn" ng-click="updateNotificationAsRead(item.notification_id.S)">Ignore</md-button>
-                            <md-button class="md-raised md-primary" style="background-color:#3F51B5;">Responde</md-button>
+                            <md-button class="md-raised md-warn" style="background-color:#C62828;" ng-click="updateNotificationAsRead(item.notification_id.S)">Ignore</md-button>
+                            <md-button class="md-primary md-raised" style="background-color:#3F51B5;" ng-click="showAdvanced($event, item.sender_email.S)">Reply</md-button>
                         </div>
                         <md-divider></md-divider>
                     </md-list-item>
                 </md-list>
-                <md-divider></md-divider>
                 <md-list flex="">
                     <md-subheader class="md-no-sticky">Read notifications</md-subheader>
                     <md-list-item class="md-2-line" ng-repeat="item in items" ng-if="item.notification_read.BOOL">

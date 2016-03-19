@@ -1,4 +1,4 @@
-angular.module('BarterApp').controller('AddProductCtrl', ['$scope','GetService','AddService','FacebookFactory', function($scope, GetService, AddService,FacebookFactory) {
+angular.module('BarterApp').controller('CatalogueCtrl', ['$scope','GetService','AddService','FacebookService', function($scope, GetService, AddService,FacebookService) {
 
    GetService.scanAllProducts((err, products) => {
         if(err) {
@@ -27,12 +27,8 @@ angular.module('BarterApp').controller('AddProductCtrl', ['$scope','GetService',
         new_product.product_tags = "product";
         new_product.user_email = "gaylord@gmail.com";
         //getCurrentUserInfo : (callback) => FB.api('/me', (userInfo) => callback(userInfo))
-        var test = FacebookFactory.getCurrentUserInfo(err, data => {
-            
-            console.log("pouet");
-        }
-        //console.log(test);
-        //new_product.user_email = 
+        const test = FacebookService.getCurrentUserInfo(userInfo => console.log(userInfo))
+       // new_product.user_email = 
         //console.log(new_product);
         AddService.addProduct(new_product,(err, data) => {
             if(err) {
