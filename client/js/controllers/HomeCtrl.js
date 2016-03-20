@@ -29,7 +29,7 @@ angular.module('BarterApp').controller('HomeCtrl', ['$scope', 'UtilService', 'Pr
             }
             else {
                 productsInCache = products
-                $scope.productsToDisplay = ProductService.addCategoryToProducts(products)
+                $scope.productsToDisplay = products
                 $scope.$apply()
             }
         })
@@ -47,8 +47,10 @@ angular.module('BarterApp').controller('HomeCtrl', ['$scope', 'UtilService', 'Pr
             
             console.log('productNameToFind: ' + $scope.productNameToFind)
             
-            var searchResult = productsInCache.filter((product) => {
-                return product.product_name.S.toLowerCase() == $scope.productNameToFind.toLowerCase()
+            const searchResult = productsInCache.filter((product) => {
+                // If the product_name contains the searching name, then return true
+                return product.product_name.S.toLowerCase()
+                .indexOf($scope.productNameToFind.toLowerCase()) > -1
             })
             
             // If the user has selected a category.
@@ -63,7 +65,7 @@ angular.module('BarterApp').controller('HomeCtrl', ['$scope', 'UtilService', 'Pr
             $scope.productsToDisplay = searchResult
         }
         else {
-            $scope.productsToDisplay = ProductService.addCategoryToProducts(productsInCache)
+            $scope.productsToDisplay = ProductService.productsInnerJoinCategory(productsInCache)
         }
     }
     
