@@ -33,7 +33,7 @@ angular.module('BarterApp').controller('CatalogueCtrl', ['$scope','GetService','
         new_product.user_email = user.email;
 
         var s3 = new AWS.S3({computeChecksums: true}); // this is the default setting
-        var params = {Bucket: 'barter2016', Key: new_product.key, Body: 'EXPECTED CONTENTS'};
+        var params = {Bucket: 'barter2016', Key: 'user_image/bob.txt', Body: 'EXPECTED CONTENTS'};
         var url = s3.getSignedUrl('putObject', params);
         console.log("The URL is", url);
         

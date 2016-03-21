@@ -1,4 +1,9 @@
-angular.module('BarterApp').controller('HomeCtrl', ['$scope', 'UtilService', 'ProductService', 'CategoryService', 'LocalStorageService', function($scope, UtilService, ProductService, CategoryService, LocalStorageService) {
+angular.module('BarterApp').controller('HomeCtrl', ['$scope', 
+'UtilService', 
+'ProductService', 
+'CategoryService', 
+'LocalStorageService',
+'HistoryService', function($scope, UtilService, ProductService, CategoryService, LocalStorageService, HistoryService) {
     $scope.project_name = "Barter Project"
     $scope.is_auth = false
     $scope.categories = [] // Save the last scanned categories in an array.
@@ -15,6 +20,7 @@ angular.module('BarterApp').controller('HomeCtrl', ['$scope', 'UtilService', 'Pr
            console.log(err) 
         }
     }
+    
     
     function refreshCategories() {
         CategoryService.scanAllCategories((err, categories) => {
@@ -38,50 +44,65 @@ angular.module('BarterApp').controller('HomeCtrl', ['$scope', 'UtilService', 'Pr
             else {
                 productsInCache = products
                 $scope.productsToDisplay = products
-                productsInCache.forEach((product) => console.log(product.category))
                 $scope.$apply()
             }
         })
     }
     
-    $scope.searchProduct = () => {
-        
-        // If there is no products we try to scan them.
-        if (productsInCache.length == 0) {
-            refreshProducts()
+    
+    $scope.goBackInHistory = () => {
+        if($scope.productsToDisplay) {
+            $scope.productsToDisplay = HistoryService.goBack($scope.productsToDisplay)
         }
-        
+    }
+    
+    $scope.goFowardInHistory = () => {
+        if($scope.productsToDisplay) {
+            $scope.productsToDisplay = HistoryService.goFoward($scope.productsToDisplay)
+        }
+    }
+    
+    
+    /**
+     * Search a product by the product name (if provided) and by a category if the category exists.
+     */
+    $scope.searchProduct = () => {
+
         if ($scope.productNameToFind
             && $scope.productNameToFind.length > 0) {
             
-            console.log('productNameToFind: ' + $scope.productNameToFind)
-            
-            const searchResult = productsInCache.filter((product) => {
+            var searchResult = productsInCache.filter((product) => {
                 // If the product_name contains the searching name, then return true
                 return product.product_name.S.toLowerCase()
                 .indexOf($scope.productNameToFind.toLowerCase()) > -1
             })
             
             // If the user has selected a category.
-            if($scope.selectedCategory) {
+            if($scope.selectedCategory
+                && $scope.selectedCategory.category_id !== undefined) {
+                
                 // Filter by the selected category
                 searchResult = searchResult.filter((product) => { 
-                    return product.category.category_name.S == $scope.selectedCategory.category_name.S 
+                    return product.category_name.S == $scope.selectedCategory.category_name.S 
                 })
             }
             
-            console.log('search result length: ' + searchResult.length)
+            HistoryService.saveInHistory($scope.productsToDisplay, HistoryService.backwardStack)
             $scope.productsToDisplay = searchResult
         }
         else {
-            $scope.productsToDisplay = ProductService.productsInnerJoinCategory(productsInCache)
+            HistoryService.saveInHistory($scope.productsToDisplay, HistoryService.backwardStack)
+            $scope.productsToDisplay = productsInCache
         }
+        
     }
 
-    if(productsInCache.length == 0 && checkIfAuth()){
+    if(productsInCache.length == 0 
+    && checkIfAuth()){
         refreshProducts()
     }
-    if($scope.categories.length == 0 && checkIfAuth()) {
+    if($scope.categories.length == 0 
+    && checkIfAuth()) {
         refreshCategories()
     }
     

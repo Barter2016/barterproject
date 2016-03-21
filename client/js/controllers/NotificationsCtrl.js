@@ -1,4 +1,4 @@
-angular.module('BarterApp').controller('NotificationsCtrl', ['$scope', '$mdDialog', '$mdMedia', 'GetService', 'UpdateService', 'LocalStorageService', 'AddService', function($scope, $mdDialog, $mdMedia, GetService, UpdateService, LocalStorageService, AddService) {
+angular.module('BarterApp').controller('NotificationsCtrl', ['$scope', '$mdDialog', '$mdToast', '$mdMedia', 'GetService', 'UpdateService', 'LocalStorageService', 'AddService', function($scope, $mdDialog, $mdToast, $mdMedia, GetService, UpdateService, LocalStorageService, AddService) {
 
     $scope.project_name = "Barter Project"
     $scope.is_auth = false
@@ -9,7 +9,7 @@ angular.module('BarterApp').controller('NotificationsCtrl', ['$scope', '$mdDialo
     /*
      * This function is called the notifications page init.
      */
-    $scope.init = function () {
+    $scope.init = function() {
         if (currentUser) {
             getAllNotificationOfUser(currentUserEmail)
         }
@@ -47,7 +47,7 @@ angular.module('BarterApp').controller('NotificationsCtrl', ['$scope', '$mdDialo
             }
             else {
                 $scope.items = notifications
-                LocalStorageService.set('userNotificaitons', notifications);
+                LocalStorageService.set('userNotificatonNumber', notifications.length + 1);
                 console.log($scope.items)
                 $scope.$apply()
             }
@@ -56,10 +56,10 @@ angular.module('BarterApp').controller('NotificationsCtrl', ['$scope', '$mdDialo
 
     $scope.showAdvanced = function(ev, _sender_email, _notification_id) {
         var useFullScreen = ($mdMedia('sm') || $mdMedia('xs')) && $scope.customFullscreen
-        
+
         LocalStorageService.set('sender_email', _sender_email)
         LocalStorageService.set('notification_id', _notification_id)
-        
+
         $mdDialog.show({
                 controller: SendMessageCtrl,
                 templateUrl: 'templates/SendMessage.html',
@@ -80,31 +80,33 @@ angular.module('BarterApp').controller('NotificationsCtrl', ['$scope', '$mdDialo
             $scope.customFullscreen = (wantsFullScreen === true)
         })
     }
-    
+
     function SendMessageCtrl($scope, $mdDialog, LocalStorageService) {
         const currentUser = JSON.parse(LocalStorageService.get('user'))
+        console.log(currentUser)
         const currentUserEmail = currentUser.email
         const currentReceiverEmail = LocalStorageService.get('sender_email')
         const currentNotificationId = LocalStorageService.get('notification_id')
         $scope.sender_email = currentReceiverEmail
-        
+
         $scope.hide = function() {
             $mdDialog.hide()
         }
-    
+
         $scope.cancel = function() {
             $mdDialog.cancel()
         }
-    
+
         $scope.answer = function(answer) {
             $mdDialog.hide(answer)
         }
-        
+
         $scope.sendNotification = function() {
             const newNotification = {
                 notification_message: $scope.notificationMessage,
                 current_user_email: currentUserEmail,
-                user_email_send: currentReceiverEmail
+                user_email_send: currentReceiverEmail,
+                sender_image_url: ""
             }
             AddService.addNotification(newNotification, (err, newNotification) => {
                 if (err) {
@@ -116,7 +118,7 @@ angular.module('BarterApp').controller('NotificationsCtrl', ['$scope', '$mdDialo
                 }
             })
         }
-        
+
         function updateNotificationAsRead(_notification_id) {
             UpdateService.updateNotificationAsRead(_notification_id, (err, data) => {
                 if (err) {

@@ -23,8 +23,8 @@ exports.addProduct = function (event, context) {
         || !event.product_description) {
         context.fail(message.failed);
     } else {
-        
-        const queryCategoryParams = {
+										
+        const queryCategoryParams = {			
             TableName: 'categories',
             KeyConditionExpression: "category_id = :category_id",
             ExpressionAttributeValues: {
@@ -32,12 +32,15 @@ exports.addProduct = function (event, context) {
             }
         }
         
-        dynamoDB.query(queryCategoryParams, function(err, category) {
+        dynamoDB.query(queryCategoryParams, function(err, category) {	
             if(err) {
                 context.fail(err)
             }  
             else {
-                const date = new Date()
+				console.log(category.Items[0].category_id)
+				console.log(category.Items[0].category_name)
+				
+                const date = new Date()	
                 const productId = event.user_email + date.getTime()
                 const hashedProductId = md5(productId)
                 
@@ -48,10 +51,8 @@ exports.addProduct = function (event, context) {
                         "user_email" : { "S" : event.user_email },
                         "product_name" : { "S" : event.product_name },
                         "product_tags" : { "S" : event.product_tags },
-                        "category" : { 
-                            "category_id" : { "S" : category.category_id },
-                            "category_name" : { "S" : category.category_name }
-                        },
+                        "category_id" : { "S" : category.Items[0].category_id.S },
+						"category_name" : { "S" : category.Items[0].category_name.S },
                         "product_description" : { "S" : event.product_description }
                     }
                 }

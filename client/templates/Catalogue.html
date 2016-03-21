@@ -77,14 +77,7 @@
                                 <div ng-message="required">Veuillez sélectionner une catégorie pour le produit.</div>
                             </div>
                         </md-input-container>
-                        <!--<form action="https://s3-bucket.s3.amazonaws.com/" method="post" enctype="multipart/form-data">-->
-                            <input type="hidden" ng-model="new_product.key" name="key" value="user_image/${filename}">
-                            <input type="hidden" ng-model="new_product.AWSAccessKeyId" name="AWSAccessKeyId" value="YOUR_AWS_ACCESS_KEY"> 
-                            <input type="hidden" ng-model="new_product.acl" name="acl" value="private"> 
-                            <input type="hidden" ng-model="new_product.success_action_redirect" name="success_action_redirect" value="http://localhost/">
-                            <input type="hidden" ng-model="new_product.policy" name="policy" value="YOUR_POLICY_DOCUMENT_BASE64_ENCODED">
-                            <input type="hidden" ng-model="new_product.signature" name="signature" value="YOUR_CALCULATED_SIGNATURE">
-                            <input type="hidden" ng-model="new_product.Content-Type" name="Content-Type" value="image/jpeg">
+
                             <!-- Include any additional input fields here -->
                     
                             <input name="file" type="file" required>

@@ -6,9 +6,9 @@ angular.module('BarterApp').factory('AuthFactory', ['SessionService', 'LocalStor
             
             FB.login((response) => {
                 if (response.status == "connected") {
-                    FacebookService.getCurrentUserInfo(function(data) {
+                    FacebookService.getCurrentUserInfo((data) => {
                         
-                        GetService.queryUser(data.email, function(err, data) {
+                        GetService.queryUser(data.email, (err, data) => {
                             if (err) {
                                 console.log(err);
                             }
