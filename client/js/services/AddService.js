@@ -14,6 +14,14 @@ angular.module('BarterApp').service('AddService', function() {
             else {
                 const lambda = new AWS.Lambda({region: 'us-west-2'});
                 
+                const Payload = {
+                    email: new_user.email,
+                    first_name: new_user.first_name,
+                    last_name: new_user.last_name,
+                    address: new_user.address,
+                    auth_type: new_user.auth_type
+                };
+                
                 const lambda_params = {
                     FunctionName: 'addUser',
                     Payload: JSON.stringify({
@@ -57,8 +65,7 @@ angular.module('BarterApp').service('AddService', function() {
                         "product_description": _new_product.product_description,
                         "product_tags": _new_product.product_tags,
                         "category_id": _new_product.category_id
-                    }
-                console.log(JSON.stringify(payload));
+                }
                 
                 const lambda_params = {
                     FunctionName: 'addProduct',
@@ -133,7 +140,7 @@ angular.module('BarterApp').service('AddService', function() {
                 const lambda = new AWS.Lambda({region: 'us-west-2'});
                 
                 const lambda_params = {
-                    FunctionName: 'addProduct',
+                    FunctionName: 'addProduct_Image',
                     Payload: JSON.stringify({
                         new_product_image: new_product_image
                     })
@@ -170,9 +177,11 @@ angular.module('BarterApp').service('AddService', function() {
                 const lambda = new AWS.Lambda({region: 'us-west-2'});
                 
                 const lambda_params = {
-                    FunctionName: 'addProduct',
+                    FunctionName: 'addNotification',
                     Payload: JSON.stringify({
-                        new_notification: new_notification
+                        "sender_email": new_notification.current_user_email,
+                        "receiver_email": new_notification.user_email_send,
+                        "notification_message": new_notification.notification_message
                     })
                 };
                 

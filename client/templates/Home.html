@@ -2,7 +2,7 @@
     
     <div layout="row">
         
-        <md-card flex="80">
+        <md-card flex>
             <md-card-title style="background-color:#3F51B5;">
                 <md-card-title-text>
                     <span style="color:white;" class="md-headline">Annonces</span>
@@ -17,7 +17,7 @@
     
                     <md-input-container style="margin-right: 10px;">
                         <label>Categories</label>
-                        <md-select ng-model="selectedCategory">
+                        <md-select ng-model="selectedCategory" ng-change="categoryChanged()">
                             <md-option ng-repeat="category in categories" ng-value="{{category}}">{{category.category_name.S}}</md-option>
                         </md-select>
                     </md-input-container>
@@ -29,11 +29,11 @@
                 <div ng-cloak layout-gt-sm="row" layout="column">
                 <div flex-gt-sm="50" flex>
                     <md-divider></md-divider>
-                    <md-list-item class="md-3-line" ng-repeat="product in productsToDisplay">
+                    <md-list-item class="md-3-line" ng-repeat="product in productsToDisplay | filter: productNameToFind">
                         <md-divider></md-divider>
                         <div class="md-list-item-text" layout="column">
                             <h3>Nom: {{ product.product_name.S }}</h3>
-                            <h4>Catégorie: {{ product.category.category_name.S }}</h4>
+                            <h4>Catégorie: {{ product.category_name.S}}</h4>
                             <p>Description: {{ product.product_description.S }}</p>
                         </div>
                     </md-list-item>

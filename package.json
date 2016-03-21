@@ -19,6 +19,7 @@
   "homepage": "https://github.com/Barter2016/barterproject#readme",
   "dependencies": {
     "aws-sdk": "^2.2.43",
-    "express": "^4.13.4"
+    "express": "^4.13.4",
+    "multer": "^1.1.0"
   }
 }

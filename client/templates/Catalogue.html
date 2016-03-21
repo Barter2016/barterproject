@@ -1,47 +1,100 @@
 <div ng-controller="CatalogueCtrl" ng-cloak="" layout-gt-sm="row" layout="column" ng-app="BarterApp">
-    <md-card flex="60">
-        <md-card-title style="background-color:#3F51B5;">
+    <div layout="column" flex>
+        <md-card flex>
+            <md-card-title style="background-color:#3F51B5;">
+                <md-card-title-text>
+                    <span style="color:white;" class="md-headline">Mon catalogue</span>
+                </md-card-title-text>
+            </md-card-title>
+            <md-card-content>
+                <div layout-gt-sm="row">
+                    <md-input-container>
+                        <label>Nom du produit</label>
+                        <input ng-model="productNameToFind">
+                    </md-input-container>
+    
+                    <md-input-container style="margin-right: 10px;">
+                        <label>Categories</label>
+                        <md-select ng-model="selectedCategory">
+                            <md-option ng-repeat="category in categories" ng-value="{{category}}">{{category.category_name.S}}</md-option>
+                        </md-select>
+                    </md-input-container>
+                
+                    <md-input-container>
+                        <md-button class="md-raised md-primary" ng-click="searchProduct()">Rechercher</md-button>
+                    </md-input-container>
+                </div>
+                <div ng-cloak layout-gt-sm="row" layout="column">
+                    <div flex-gt-sm="50" flex>
+                        <md-divider></md-divider>
+                        <md-list-item class="md-3-line" ng-repeat="product in products">
+                            <md-divider></md-divider>
+                            <div class="md-list-item-text" layout="column">
+                                <h3>Nom: {{ product.product_name.S }}</h3>
+                                <h4>Catégorie: {{ product.category_id.S}}</h4>
+                                <p>Description: {{ product.product_description.S }}</p>
+                            </div>
+                        </md-list-item>
+                    </div>
+                </div>
+            </md-card-content>
+        </md-card>
+        <md-card flex>
+            <md-card-title style="background-color:#3F51B5;">
                 <md-card-title-text>
                     <span style="color:white;" class="md-headline">Ajout de produit</span>
                 </md-card-title-text>
             </md-card-title>
-        <form ng-submit="submit()" class="md-inline-form" name="addProductForm" ng-cloak>
-           
-            <div layout-gt-sm="row">
-                <md-input-container class="md-block" flex-gt-sm>
-                    <label>Nom du produit</label>
-                    <input ng-model="new_product.product_name" name="productName" required >
-                    <div ng-messages="addProductForm.productName.$error">
-                        <div ng-message="required">Veuillez entrer un nom pour le produit.</div>
+            <md-card-content>
+                <form ng-submit="submit()" class="md-inline-form" name="addProductForm" ng-cloak>
+                   
+                    <div layout-gt-sm="row">
+                        <md-input-container class="md-block" flex-gt-sm>
+                            <label>Nom du produit</label>
+                            <input ng-model="new_product.product_name" name="productName" required >
+                            <div ng-messages="addProductForm.productName.$error">
+                                <div ng-message="required">Veuillez entrer un nom pour le produit.</div>
+                            </div>
+                        </md-input-container>
                     </div>
-                </md-input-container>
-            </div>
-            <div layout-gt-sm="row">
-                <md-input-container class="md-block" flex-gt-sm>
-                    <label>Description du produit</label>
-                    <input name="productDescription" type="textarea" ng-model="new_product.product_description" md-maxlength="200" rows="5" md-select-on-focus required >
-                     <div ng-messages="addProductForm.productDescription.$error">
-                        <div ng-message="required">Veuillez entrer une description pour le produit.</div>
+                    <div layout-gt-sm="row">
+                        <md-input-container class="md-block" flex-gt-sm>
+                            <label>Description du produit</label>
+                            <input name="productDescription" type="textarea" ng-model="new_product.product_description" md-maxlength="200" rows="5" md-select-on-focus required >
+                             <div ng-messages="addProductForm.productDescription.$error">
+                                <div ng-message="required">Veuillez entrer une description pour le produit.</div>
+                            </div>
+                        </md-input-container>
                     </div>
-                </md-input-container>
-            </div>
-    
-            <div layout-gt-sm="row">
-                <md-input-container class="md-block" flex-gt-sm>
-                    <label>Categories</label>
-                    <md-select ng-model="new_product.category_id" name"productCategory" required >
-                        <md-option ng-repeat="category in categories" value={{category.category_id.S}}>{{category.category_name.S}}</md-option>
-                    </md-select>
-                     <div ng-messages="addProductForm.productCategory.$error">
-                        <div ng-message="required">Veuillez sélectionner une catégorie pour le produit.</div>
-                    </div>
-                </md-input-container>
-                
-                <md-button class="md-raised md-primary" ng-disabled="addProductForm.$invalid" ng-click="addProduct(new_product)">Créer produit</md-button>
-            </div>
             
-        </form>
-    </md-card>
+                    <div layout-gt-sm="row">
+                        <md-input-container class="md-block" flex-gt-sm>
+                            <label>Categories</label>
+                            <md-select ng-model="new_product.category_id" name"productCategory" required >
+                                <md-option ng-repeat="category in categories" value={{category.category_id.S}}>{{category.category_name.S}}</md-option>
+                            </md-select>
+                             <div ng-messages="addProductForm.productCategory.$error">
+                                <div ng-message="required">Veuillez sélectionner une catégorie pour le produit.</div>
+                            </div>
+                        </md-input-container>
+                        <!--<form action="https://s3-bucket.s3.amazonaws.com/" method="post" enctype="multipart/form-data">-->
+                            <input type="hidden" ng-model="new_product.key" name="key" value="user_image/${filename}">
+                            <input type="hidden" ng-model="new_product.AWSAccessKeyId" name="AWSAccessKeyId" value="YOUR_AWS_ACCESS_KEY"> 
+                            <input type="hidden" ng-model="new_product.acl" name="acl" value="private"> 
+                            <input type="hidden" ng-model="new_product.success_action_redirect" name="success_action_redirect" value="http://localhost/">
+                            <input type="hidden" ng-model="new_product.policy" name="policy" value="YOUR_POLICY_DOCUMENT_BASE64_ENCODED">
+                            <input type="hidden" ng-model="new_product.signature" name="signature" value="YOUR_CALCULATED_SIGNATURE">
+                            <input type="hidden" ng-model="new_product.Content-Type" name="Content-Type" value="image/jpeg">
+                            <!-- Include any additional input fields here -->
+                    
+                            <input name="file" type="file" required>
+                        </form>
+                        <md-button class="md-raised md-primary" ng-disabled="addProductForm.$invalid" ng-click="addProduct(new_product)">Créer produit</md-button>
+                    </div>
+                </form>
+            </md-card-content>
+        </md-card>
+    </div>
 </div>
 
 <!--

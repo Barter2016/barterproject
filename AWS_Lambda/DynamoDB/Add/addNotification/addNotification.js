@@ -26,6 +26,7 @@ exports.addNotification = function (event, context) {
                 "notification_id" : { "S" : hashedNotificationId },
                 "sender_email" : { "S" : event.sender_email },
                 "receiver_email" : { "S" : event.receiver_email },
+                "sender_image_url" : { "S" : event.sender_image_url },
                 "notification_message" : { "S" : event.notification_message },
                 "notification_read" : { "BOOL" : false }
             }

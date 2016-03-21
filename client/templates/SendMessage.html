@@ -8,12 +8,13 @@
         <md-card-content>
             <form name="messageForm">
                 <md-input-container class="md-block">
-                    <label>Your message</label>
-                    <input required="" name="messageText" ng-model="messageText">
+                    <input required="" type="textarea" placeholder="Your message content" name="messageText" ng-model="notificationMessage">
                     <div ng-messages="messageForm.messageText.$error">
                         <div ng-message="required">This is required.</div>
                     </div>
                 </md-input-container>
+                <md-button class="md-raised" ng-click="cancel()">Cancel</md-button>
+                <md-button class="md-raised" ng-disabled="messageForm.$invalid" ng-click="sendNotification()">Send</md-button>
             </form>
         </md-card-content>
     </md-card>

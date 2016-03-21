@@ -152,5 +152,120 @@ angular.module('BarterApp').service('GetService', function() {
             }
         })
     }
+    
+    //*********************************************************
+    // This function gets all the products belonging to a specific user from the database.
+    // Input : A user_id, a callback
+    // Output : The products belonging to a specific user
+    //*********************************************************
+    self.scanProductsByUser = function(user_id, callback) {
+        AWS.config.credentials.get(function(err) {
+            if (err) {
+                callback(err, null);
+            }
+            else {
+                const lambda = new AWS.Lambda({
+                    region: 'us-west-2'
+                });
+
+                const lambda_params = {
+                    FunctionName: 'scanProductsByUser',
+                    Payload: JSON.stringify({
+                        user_id: user_id
+                    })
+                };
+
+                lambda.invoke(lambda_params, function(error, response) {
+                    if (error) {
+                        callback(error, null);
+                    }
+                    else {
+                        const payload = JSON.parse(response.Payload);
+                        if (payload.errorMessage) {
+                            callback(payload.errorMessage, null);
+                        }
+                        else {
+                            callback(null, payload.Items);
+                        }
+                    }
+                });
+            }
+        });
+    };
+    
+    self.queryUser = function(user_id, callback) {
+        AWS.config.credentials.get(function(err) {
+            if (err) {
+                callback(err, null);
+            } 
+            else {
+                const lambda = new AWS.Lambda({
+                    region: 'us-west-2'
+                });
+                
+                const lambda_params = {
+                    FunctionName: 'queryUser',
+                    Payload: JSON.stringify({
+                        user_id: user_id
+                    })
+                };
+                
+                lambda.invoke(lambda_params, function(error, response) {
+                    if (error) {
+                        callback(error, null);
+                    }
+                    else {
+                        const payload = JSON.parse(response.Payload);
+                        if (payload.errorMessage) {
+                            callback(payload.errorMessage, null);
+                        }
+                        else {
+                            callback(null, payload.Items);
+                        }
+                    }
+                });
+            }
+        });
+    }
+    
+    //*********************************************************
+    // This function gets all the product_images belonging to a specific product from the database.
+    // Input : A product_id, a callback
+    // Output : The products belonging to a specific user
+    //*********************************************************
+    self.scanProduct_ImageByProduct = function(product_id, callback) {
+        AWS.config.credentials.get(function(err) {
+            if (err) {
+                callback(err, null);
+            }
+            else {
+                const lambda = new AWS.Lambda({
+                    region: 'us-west-2'
+                });
+
+                const lambda_params = {
+                    FunctionName: 'queryProduct_Image',
+                    Payload: JSON.stringify({
+                        product_id: product_id
+                    })
+                };
+
+                lambda.invoke(lambda_params, function(error, response) {
+                    if (error) {
+                        callback(error, null);
+                    }
+                    else {
+                        const payload = JSON.parse(response.Payload);
+                        if (payload.errorMessage) {
+                            callback(payload.errorMessage, null);
+                        }
+                        else {
+                            callback(null, payload.Items);
+                        }
+                    }
+                });
+            }
+        });
+    };
 
 });

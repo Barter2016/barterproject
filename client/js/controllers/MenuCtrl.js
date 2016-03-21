@@ -1,23 +1,37 @@
-angular.module('BarterApp').controller('MenuCtrl', ['$scope', 'UtilService', function($scope, UtilService) {
+angular.module('BarterApp').controller('MenuCtrl', ['$scope', 'UtilService', 'FacebookService', 'LocalStorageService', 'SessionService', '$window', 'AuthFactory', function($scope, UtilService, FacebookService, LocalStorageService, SessionService, $window, AuthFactory) {
     
+    $scope.auth = checkIfAuth()
+
     $scope.menu_items = {
         auth: [
-            {"title": "Home", "icon": "home", "link": "/Home"}, 
-            {"title": "My catalog", "icon": "assignment", "link": ""},
-            {"title": "My notifications", "icon": "notifications", "link": "/Notifications"},
-            {"title": "Settings", "icon": "settings", "link": ""},
-            {"title": "Log out", "icon": "power_settings_new", "link": ""},
-        ],
-        not_auth: [
-            {"title": "Sign in with Facebook", "icon": "mdi mdi-facebook-box"},
-            {"title": "Sign in with Google", "icon": "mdi mdi-google-plus-box"}
+            {"title": "Accueil", "icon": "home", "link": "/Home"}, 
+            {"title": "Mon catalogue", "icon": "assignment", "link": "/Catalogue"},
+            {"title": "Mes notifications", "icon": "notifications", "link": "/Notifications"},
+            {"title": "Paramètres", "icon": "settings", "link": ""},
         ]
-    };
-    $scope.user = {
-        name: "Sam-Pierre-Louis-Remi",
-        email: "sam.pierre.louis.remi@gmail.com"
-    };
+    }
     
-    $scope.go = UtilService.go;
+    $scope.signInWithFacebook = FacebookService.login
+    $scope.signInWithGoogle = AuthFactory.signInWithFacebook
+    $scope.go = UtilService.go
+    $scope.signOut = signOut
+    
+    function checkIfAuth() {
+        var local_session = LocalStorageService.getObject('local_session')
+        var user = LocalStorageService.getObject('user')
+        if (local_session && user) {
+            $scope.user = user
+            AWS.config.region = 'us-east-1'
+            AWS.config.credentials = new AWS.CognitoIdentityCredentials(local_session)
+        }
+        return local_session
+    }
+
+    function signOut() {
+        LocalStorageService.setObject('local_session', null)
+        SessionService.destroy()
+        $scope.go('/Home')
+        $window.location.reload()
+    }
     
 }]);

@@ -44,6 +44,7 @@
   <script src="js/factories/CategoryFactory.js"></script>
   <script src="js/factories/ProductFactory.js"></script>
   <script src="js/factories/FacebookFactory.js"></script>
+  <script src="js/factories/AuthFactory.js"></script>
   
   
   <!-- Controllers -->
@@ -51,12 +52,12 @@
   <script src="js/controllers/CatalogueCtrl.js"></script>
   <script src="js/controllers/NotificationsCtrl.js"></script>
   <script src="js/controllers/MenuCtrl.js"></script>
-
-  <!-- Hardcoded cognito credentials for tests -->
-  <script type="text/javascript">
-    AWS.config.region = 'us-east-1';
+  
+  <!-- AWS Cognito Credentials Hardcoded -->
+  <script>
+    AWS.config.region = 'us-east-1'; // Region
     AWS.config.credentials = new AWS.CognitoIdentityCredentials({
-        IdentityPoolId: 'us-east-1:0eb351fe-a9b6-4f00-ab1f-393802d750a5',
+      IdentityPoolId: 'us-east-1:0eb351fe-a9b6-4f00-ab1f-393802d750a5'
     });
   </script>
   
@@ -66,10 +67,9 @@
   
   <!-- Facebook init -->
   <script>
-    window.fbAsyncInit = () => {
+    window.fbAsyncInit = function() {
       FB.init({
-        appId      : '966897726721626',
-        cookie     : true,
+        appId      : '183410368715086',
         xfbml      : true,
         version    : 'v2.5'
       });
@@ -79,7 +79,7 @@
        var js, fjs = d.getElementsByTagName(s)[0];
        if (d.getElementById(id)) {return;}
        js = d.createElement(s); js.id = id;
-       js.src = "https://connect.facebook.net/en_US/sdk.js";
+       js.src = "//connect.facebook.net/en_US/sdk.js";
        fjs.parentNode.insertBefore(js, fjs);
      }(document, 'script', 'facebook-jssdk'));
   </script>
@@ -111,11 +111,25 @@
                 <md-icon class="material-icons">{{ item.icon }}</md-icon>
               </div>
             </md-button>
-            <md-button ng-if="!auth" ng-repeat="item in menu_items.not_auth" ng-click="">
+            <md-button ng-if="auth" ng-click="signOut()">
               <div layout="row">
-                {{ item.title }}
+                Se déconnecter
                 <span flex></span>
-                <i class="{{ item.icon }}"></i>
+                <md-icon class="material-icons">power_settings_new</md-icon>
+              </div>
+            </md-button>
+            <md-button ng-if="!auth" ng-click="signInWithFacebook()">
+              <div layout="row">
+                Se connecter - Facebook
+                <span flex></span>
+                <i class="mdi mdi-facebook-box"></i>
+              </div>
+            </md-button>
+            <md-button ng-if="!auth" ng-click="signInWithGoogle()">
+              <div layout="row">
+                Se connecter - Google
+                <span flex></span>
+                <i class="mdi mdi-google-plus-box"></i>
               </div>
             </md-button>
           </md-list>
@@ -129,10 +143,12 @@
       <!-- Toolbar -->
       <md-toolbar class="main-toolbar">
         <div class="md-toolbar-tools">
-
+            
+            <span flex></span>
+  
             <!-- Title -->
             <h2>
-                <span>BarterFarter.sexy</span>
+                <span>Test</span>
             </h2>
 
         </div>

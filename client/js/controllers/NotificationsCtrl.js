@@ -1,17 +1,17 @@
-angular.module('BarterApp').controller('NotificationsCtrl', ['$scope', '$mdDialog', '$mdMedia', 'GetService', 'UpdateService', 'LocalStorageService', function($scope, $mdDialog, $mdMedia, GetService, UpdateService, LocalStorageService) {
+angular.module('BarterApp').controller('NotificationsCtrl', ['$scope', '$mdDialog', '$mdMedia', 'GetService', 'UpdateService', 'LocalStorageService', 'AddService', function($scope, $mdDialog, $mdMedia, GetService, UpdateService, LocalStorageService, AddService) {
 
     $scope.project_name = "Barter Project"
     $scope.is_auth = false
-    $scope.receiverEmail
     $scope.items
-
+    const currentUser = JSON.parse(LocalStorageService.get('user'))
+    const currentUserEmail = currentUser.email
+    
     /*
-     * This function is called when a user email is entered and on click of the get notification button. 
+     * This function is called the notifications page init.
      */
-    $scope.scanNotificationsByReceiver = function() {
-        console.log($scope.receiverEmail)
-        if ($scope.receiverEmail) {
-            getAllNotificationOfUser($scope.receiverEmail)
+    $scope.init = function () {
+        if (currentUser) {
+            getAllNotificationOfUser(currentUserEmail)
         }
     }
 
@@ -21,15 +21,14 @@ angular.module('BarterApp').controller('NotificationsCtrl', ['$scope', '$mdDialo
      * param="_notification_id" The id of the notification to update.
      */
     $scope.updateNotificationAsRead = function(_notification_id) {
-        console.log($scope.receiverEmail)
-        if ($scope.receiverEmail) {
+        if (currentUserEmail) {
             UpdateService.updateNotificationAsRead(_notification_id, (err, data) => {
                 if (err) {
                     console.log(err)
                 }
                 else {
                     console.log(data)
-                    getAllNotificationOfUser($scope.receiverEmail)
+                    getAllNotificationOfUser(currentUserEmail)
                     $scope.$apply()
                 }
             })
@@ -48,16 +47,18 @@ angular.module('BarterApp').controller('NotificationsCtrl', ['$scope', '$mdDialo
             }
             else {
                 $scope.items = notifications
+                LocalStorageService.set('userNotificaitons', notifications);
                 console.log($scope.items)
                 $scope.$apply()
             }
         })
     }
 
-    $scope.showAdvanced = function(ev, _sender_email) {
+    $scope.showAdvanced = function(ev, _sender_email, _notification_id) {
         var useFullScreen = ($mdMedia('sm') || $mdMedia('xs')) && $scope.customFullscreen
         
         LocalStorageService.set('sender_email', _sender_email)
+        LocalStorageService.set('notification_id', _notification_id)
         
         $mdDialog.show({
                 controller: SendMessageCtrl,
@@ -81,8 +82,11 @@ angular.module('BarterApp').controller('NotificationsCtrl', ['$scope', '$mdDialo
     }
     
     function SendMessageCtrl($scope, $mdDialog, LocalStorageService) {
-        
-        $scope.sender_email = LocalStorageService.get('sender_email')
+        const currentUser = JSON.parse(LocalStorageService.get('user'))
+        const currentUserEmail = currentUser.email
+        const currentReceiverEmail = LocalStorageService.get('sender_email')
+        const currentNotificationId = LocalStorageService.get('notification_id')
+        $scope.sender_email = currentReceiverEmail
         
         $scope.hide = function() {
             $mdDialog.hide()
@@ -94,6 +98,37 @@ angular.module('BarterApp').controller('NotificationsCtrl', ['$scope', '$mdDialo
     
         $scope.answer = function(answer) {
             $mdDialog.hide(answer)
+        }
+        
+        $scope.sendNotification = function() {
+            const newNotification = {
+                notification_message: $scope.notificationMessage,
+                current_user_email: currentUserEmail,
+                user_email_send: currentReceiverEmail
+            }
+            AddService.addNotification(newNotification, (err, newNotification) => {
+                if (err) {
+                    console.log(err)
+                }
+                else {
+                    console.log(newNotification)
+                    updateNotificationAsRead(currentNotificationId)
+                }
+            })
+        }
+        
+        function updateNotificationAsRead(_notification_id) {
+            UpdateService.updateNotificationAsRead(_notification_id, (err, data) => {
+                if (err) {
+                    console.log(err)
+                }
+                else {
+                    console.log(data)
+                    getAllNotificationOfUser(currentUserEmail)
+                    $mdDialog.hide()
+                    $scope.$apply()
+                }
+            })
         }
     }
 }])

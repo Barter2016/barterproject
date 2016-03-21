@@ -1,4 +1,4 @@
-angular.module('BarterApp').factory('ProductService', ['CategoryService', function(CategoryService) {
+angular.module('BarterApp').factory('ProductService', ['CategoryService', '$http', function(CategoryService, $http) {
     
     const productService = {
     
@@ -8,6 +8,7 @@ angular.module('BarterApp').factory('ProductService', ['CategoryService', functi
         // Output : All the products
         //*******************************************************
         scanAllProducts : (callback) => {
+            
             AWS.config.credentials.get(function(err) {
                 if (err) {
                     callback(err, null)
@@ -26,6 +27,7 @@ angular.module('BarterApp').factory('ProductService', ['CategoryService', functi
                             callback(error, null)
                         }
                         else {
+                            // Parse from stringify to object
                             const payload = JSON.parse(response.Payload)
                             if (payload.errorMessage) {
                                 callback(payload.errorMessage, null)
@@ -44,11 +46,8 @@ angular.module('BarterApp').factory('ProductService', ['CategoryService', functi
          * 
          * param-name="...products" arbitrary numbers of products
          */ 
-        productsInnerJoinCategory : (...products) => {
-            
-            products.forEach((product) => console.log(product.product_name))
-            
-            const productJoinedToCategory = products.map((product) => {
+        productsInnerJoinCategory : (productsCollection, callback) => {
+            const productJoinedToCategory = productsCollection.map((product) => {
                 productService.addCategoryToProduct(product, (err, productWithCategory) => {
                     if(err) {
                         console.log(err)
@@ -58,7 +57,6 @@ angular.module('BarterApp').factory('ProductService', ['CategoryService', functi
                     }
                 })
             })
-            
             return productJoinedToCategory
         },
         
@@ -76,7 +74,7 @@ angular.module('BarterApp').factory('ProductService', ['CategoryService', functi
                     }
                     else {
                         product.category = category
-                        callback(null, category)
+                        callback(null, product)
                     }
                 })
             }

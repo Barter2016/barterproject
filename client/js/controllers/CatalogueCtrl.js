@@ -1,6 +1,9 @@
-angular.module('BarterApp').controller('CatalogueCtrl', ['$scope','GetService','AddService','FacebookService', function($scope, GetService, AddService,FacebookService) {
+angular.module('BarterApp').controller('CatalogueCtrl', ['$scope','GetService','AddService','ProductService','CategoryService','LocalStorageService', function($scope, GetService, AddService,ProductService,CategoryService,LocalStorageService) {
+    //const multer  =   require('multer');
+    const user = LocalStorageService.getObject('user');
 
-   GetService.scanAllProducts((err, products) => {
+
+    GetService.scanProductsByUser(user.email,(err, products) => {
         if(err) {
             console.log(err)
         }
@@ -10,6 +13,7 @@ angular.module('BarterApp').controller('CatalogueCtrl', ['$scope','GetService','
             $scope.$apply()
         }
     })
+    
     GetService.scanAllCategories((err, categories) => {
         if(err) {
             console.log(err)
@@ -20,22 +24,25 @@ angular.module('BarterApp').controller('CatalogueCtrl', ['$scope','GetService','
             $scope.$apply()
         }
     })
-
+    
     $scope.addProduct = function(new_product){
+        
         //hardcoder les tags pour l'instants
-
         new_product.product_tags = "product";
-        new_product.user_email = "gaylord@gmail.com";
-        //getCurrentUserInfo : (callback) => FB.api('/me', (userInfo) => callback(userInfo))
-        const test = FacebookService.getCurrentUserInfo(userInfo => console.log(userInfo))
-       // new_product.user_email = 
-        //console.log(new_product);
-        AddService.addProduct(new_product,(err, data) => {
+        
+        new_product.user_email = user.email;
+
+        var s3 = new AWS.S3({computeChecksums: true}); // this is the default setting
+        var params = {Bucket: 'barter2016', Key: new_product.key, Body: 'EXPECTED CONTENTS'};
+        var url = s3.getSignedUrl('putObject', params);
+        console.log("The URL is", url);
+        
+        AddService.addProduct(new_product, (err, data) => {
             if(err) {
                 console.log(err)
             }
             else {
-                console.log(data)
+                alert("Le produit " + new_product.product_name + "a été créé avec succès");
             }
         })
     }
