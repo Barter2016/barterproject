@@ -47,7 +47,7 @@ angular.module('BarterApp').controller('NotificationsCtrl', ['$scope', '$mdDialo
             }
             else {
                 $scope.items = notifications
-                LocalStorageService.set('userNotificatonNumber', notifications.length + 1);
+                LocalStorageService.set('userNotificatonNumber', notifications.length + 1); // Because a list starts by 0.
                 console.log($scope.items)
                 $scope.$apply()
             }

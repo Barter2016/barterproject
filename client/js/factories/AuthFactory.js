@@ -27,7 +27,7 @@ angular.module('BarterApp').factory('AuthFactory', ['SessionService', 'LocalStor
                                     AWS.config.credentials = new AWS.CognitoIdentityCredentials(credentials)
                                     SessionService.create(credentials, null)
                                     LocalStorageService.setObject('local_session', SessionService.get().user_credentials)
-                                    LocalStorageService.setObject('user', {email: data.email, name: data.name});
+                                    LocalStorageService.setObject('user', {email: data.email, name: data.name})
                                     $window.location.reload()
                                 }
                             }
