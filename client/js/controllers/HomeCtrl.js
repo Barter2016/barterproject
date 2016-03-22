@@ -52,19 +52,16 @@ angular.module('BarterApp').controller('HomeCtrl', ['$scope',
     
     
     $scope.goBackInHistory = () => {
-        if($scope.productsToDisplay) {
-            const test = ProductHistoryService.goBack($scope.productsToDisplay)
-            console.log('goback: ' + test.length)
-            $scope.productsToDisplay = test
+        if($scope.productsToDisplay
+            && ProductHistoryService.backwardStack.length > 0) {
+            $scope.productsToDisplay = ProductHistoryService.goBack($scope.productsToDisplay)
         }
     }
     
     $scope.goFowardInHistory = () => {
-        const currentProductDisplayed = $scope.productsToDisplay
-        if(currentProductDisplayed) {
-            const test = ProductHistoryService.goFoward(currentProductDisplayed)
-            console.log("gofoward: " + test.length)
-            $scope.productsToDisplay = test
+        if($scope.productsToDisplay
+            && ProductHistoryService.forwardStack.length > 0) {
+            $scope.productsToDisplay =  ProductHistoryService.goFoward($scope.productsToDisplay)
         }
     }
     
@@ -77,8 +74,11 @@ angular.module('BarterApp').controller('HomeCtrl', ['$scope',
             else {
                 
                 // Before swaping the product displayed with the search results we save our current state.
-                ProductHistoryService.saveInHistory(ProductService.productsInCache,
+                ProductHistoryService.saveInHistory($scope.productsToDisplay,
                     ProductHistoryService.backwardStack)
+                
+                // Clear the forward history since we are deviating from our browsing history.
+                ProductHistoryService.clearForwardHistory()
                 $scope.productsToDisplay = products
             }
         })

@@ -34,9 +34,13 @@ angular.module('BarterApp').factory('ProductHistoryService', function() {
             else {
                 stack.push(obj)
             }
-            
         },
-
+        
+        /**
+         * Clear the foward stack when the user change the history.
+         */
+        clearForwardHistory : () => historyService.forwardStack = [],
+    
         /**
          * Get the last item in the backwardStack.
          * 
@@ -46,8 +50,8 @@ angular.module('BarterApp').factory('ProductHistoryService', function() {
             if (obj) {
                 historyService.saveInHistory(obj, historyService.forwardStack)
             }
-            if(historyService.backwardStack.length == 1){
-                return historyService.backwardStack[0]  // Get the only element left in the array.
+            if(historyService.backwardStack.length == 0){
+                return []   // If there's no more element in our stack, just return an empty array.
             }
             return historyService.backwardStack.pop()
 
@@ -60,8 +64,8 @@ angular.module('BarterApp').factory('ProductHistoryService', function() {
             if (obj) {
                 historyService.saveInHistory(obj, historyService.backwardStack)
             }
-            if(historyService.forwardStack.length == 1) {
-                return historyService.forwardStack[0]   // Get the only element left in the array.
+            if(historyService.forwardStack.length == 0) {
+                return [] // If there's no more element in our stack, just return an empty array.
             }
             return historyService.forwardStack.pop()
         }
