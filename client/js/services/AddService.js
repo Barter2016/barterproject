@@ -163,44 +163,4 @@ angular.module('BarterApp').service('AddService', function() {
             }
         }); 
     };
-    
-    //*******************************************************
-    // This function adds a new notification in the database. 
-    // Input : The new notification and a callback
-    //*******************************************************
-    self.addNotification = function(new_notification, callback) {
-        AWS.config.credentials.get(function(err) {
-            if (err) {
-                callback(err, null);
-            } 
-            else {
-                const lambda = new AWS.Lambda({region: 'us-west-2'});
-                
-                const lambda_params = {
-                    FunctionName: 'addNotification',
-                    Payload: JSON.stringify({
-                        "sender_email": new_notification.current_user_email,
-                        "receiver_email": new_notification.user_email_send,
-                        "notification_message": new_notification.notification_message
-                    })
-                };
-                
-                lambda.invoke(lambda_params, function(error, response) {
-                    if (error) {
-                        callback(error, null);
-                    }   
-                    else {
-                        const payload = JSON.parse(response.Payload);
-                        if (payload.errorMessage) {
-                            callback(payload.errorMessage, null);
-                        }
-                        else {
-                            callback(null, payload);
-                        }
-                    }
-                });
-            }
-        }); 
-    };
-    
 });

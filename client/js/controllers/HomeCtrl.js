@@ -3,7 +3,8 @@ angular.module('BarterApp').controller('HomeCtrl', ['$scope',
 'ProductService', 
 'CategoryService', 
 'LocalStorageService',
-'ProductHistoryService', function($scope, UtilService, ProductService, CategoryService, LocalStorageService, ProductHistoryService) {
+'ProductHistoryService', 
+'AuthFactory', function($scope, UtilService, ProductService, CategoryService, LocalStorageService, ProductHistoryService, AuthFactory) {
     
     $scope.project_name = "Barter Project"
     $scope.is_auth = false
@@ -21,7 +22,6 @@ angular.module('BarterApp').controller('HomeCtrl', ['$scope',
            console.log(err) 
         }
     }
-    
     
     function refreshCategories() {
         CategoryService.scanAllCategories((err, categories) => {
@@ -49,7 +49,6 @@ angular.module('BarterApp').controller('HomeCtrl', ['$scope',
             }
         })
     }
-    
     
     $scope.goBackInHistory = () => {
         if($scope.productsToDisplay
@@ -85,22 +84,15 @@ angular.module('BarterApp').controller('HomeCtrl', ['$scope',
     }
 
     if(productsInCache.length == 0 
-        && checkIfAuth()) {
+        && AuthFactory.checkIfAuth()) {
         refreshProducts()
     }
     
     if($scope.categories.length == 0 
-        && checkIfAuth()) {
+        && AuthFactory.checkIfAuth()) {
         refreshCategories()
     }
     
-    function checkIfAuth() {
-        var local_session = LocalStorageService.getObject('local_session')
-        if (local_session) {
-            AWS.config.region = 'us-east-1'
-            AWS.config.credentials = new AWS.CognitoIdentityCredentials(local_session)
-        } 
-        return local_session
-    }
+    
     
 }]);

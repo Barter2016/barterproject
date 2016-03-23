@@ -1,6 +1,6 @@
-angular.module('BarterApp').factory('AuthFactory', ['SessionService', 'LocalStorageService', 'GetService', '$window', 'FacebookService', function(SessionService, LocalStorageService, GetService, $window, FacebookService) {
+angular.module('BarterApp').factory('AuthFactory', ['SessionService', 'LocalStorageService', 'GetService', '$window', 'FacebookService', 'UtilService', function(SessionService, LocalStorageService, GetService, $window, FacebookService, UtilService) {
     
-    var AuthFactory = {
+    const AuthFactory = {
         
         signInWithFacebook: () => {
             
@@ -53,9 +53,35 @@ angular.module('BarterApp').factory('AuthFactory', ['SessionService', 'LocalStor
         },
         
         signOut: () => {
-            
-        }
+            AWS.config.credentials = new AWS.CognitoIdentityCredentials({IdentityPoolId: 'us-east-1:0eb351fe-a9b6-4f00-ab1f-393802d750a5'});
+            AWS.config.credentials.clearCachedId();
+            LocalStorageService.setObject('local_session', null)
+            SessionService.destroy()
+            UtilService.go('/Home')
+            $window.location.reload()  
+        },
         
+        checkIfAuth: () => {
+            const local_session = LocalStorageService.getObject('local_session')
+            const user = LocalStorageService.getObject('user')
+            
+            if (local_session) {
+                AWS.config.region = 'us-east-1'
+                AWS.config.credentials = new AWS.CognitoIdentityCredentials(local_session)
+            } 
+            
+            const auth = {
+                auth: local_session && user
+            }
+            
+            if (auth.auth) {
+                auth.user = user
+                auth.local_session = local_session
+            }
+            
+            return auth
+        }
+    
     };
     
     return AuthFactory;

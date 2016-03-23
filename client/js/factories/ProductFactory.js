@@ -1,4 +1,4 @@
-angular.module('BarterApp').factory('ProductService', ['CategoryService', '$http', function(CategoryService, $http) {
+angular.module('BarterApp').factory('ProductService', [function() {
     
     const productService = {
     

@@ -1,4 +1,4 @@
-angular.module('BarterApp').controller('NotificationsCtrl', ['$scope', '$mdDialog', '$mdToast', '$mdMedia', 'GetService', 'UpdateService', 'LocalStorageService', 'AddService', function($scope, $mdDialog, $mdToast, $mdMedia, GetService, UpdateService, LocalStorageService, AddService) {
+angular.module('BarterApp').controller('NotificationsCtrl', ['$scope', '$mdDialog', '$mdToast', '$mdMedia', 'NotificationService', 'LocalStorageService', function($scope, $mdDialog, $mdToast, $mdMedia, NotificationService, LocalStorageService) {
 
     $scope.project_name = "Barter Project"
     $scope.is_auth = false
@@ -22,7 +22,7 @@ angular.module('BarterApp').controller('NotificationsCtrl', ['$scope', '$mdDialo
      */
     $scope.updateNotificationAsRead = function(_notification_id) {
         if (currentUserEmail) {
-            UpdateService.updateNotificationAsRead(_notification_id, (err, data) => {
+            NotificationService.updateNotificationAsRead(_notification_id, (err, data) => {
                 if (err) {
                     console.log(err)
                 }
@@ -40,14 +40,13 @@ angular.module('BarterApp').controller('NotificationsCtrl', ['$scope', '$mdDialo
      *
      * param="receiver_email" The email of the current user to get the notification from.
      */
-    function getAllNotificationOfUser(receiver_email) {
-        GetService.scanNotificationsByReceiver(receiver_email, (err, notifications) => {
+    function getAllNotificationOfUser(user_email) {
+        NotificationService.scanAllNotificationsOfUser(user_email, (err, notifications) => {
             if (err) {
                 console.log(err)
             }
             else {
                 $scope.items = notifications
-                LocalStorageService.set('userNotificatonNumber', notifications.length + 1); // Because a list starts by 0.
                 console.log($scope.items)
                 $scope.$apply()
             }
@@ -104,11 +103,11 @@ angular.module('BarterApp').controller('NotificationsCtrl', ['$scope', '$mdDialo
         $scope.sendNotification = function() {
             const newNotification = {
                 notification_message: $scope.notificationMessage,
-                current_user_email: currentUserEmail,
-                user_email_send: currentReceiverEmail,
+                user_email: currentUserEmail,
+                email_to_send: currentReceiverEmail,
                 sender_image_url: ""
             }
-            AddService.addNotification(newNotification, (err, newNotification) => {
+            NotificationService.notifyUser(newNotification, (err, newNotification) => {
                 if (err) {
                     console.log(err)
                 }
@@ -120,7 +119,7 @@ angular.module('BarterApp').controller('NotificationsCtrl', ['$scope', '$mdDialo
         }
 
         function updateNotificationAsRead(_notification_id) {
-            UpdateService.updateNotificationAsRead(_notification_id, (err, data) => {
+            NotificationService.updateNotificationAsRead(_notification_id, (err, data) => {
                 if (err) {
                     console.log(err)
                 }

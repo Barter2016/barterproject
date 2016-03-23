@@ -20,12 +20,6 @@ md-toolbar {
     background-color: #F6F6F6;
 }
 
-.main-toolbar {
-    background-color: #F6F6F6 !important;
-    color: #202020 !important;
-    z-index: 3;
-}
-
 .md-toolbar-tools-bottom {
     font-size: small;
 }

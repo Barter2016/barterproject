@@ -1,7 +1,5 @@
 angular.module('BarterApp').controller('MenuCtrl', ['$scope', 'UtilService', 'FacebookService', 'LocalStorageService', 'SessionService', '$window', 'AuthFactory', function($scope, UtilService, FacebookService, LocalStorageService, SessionService, $window, AuthFactory) {
     
-    $scope.auth = checkIfAuth()
-
     $scope.menu_items = {
         auth: [
             {"title": "Accueil", "icon": "home", "link": "/Home"}, 
@@ -14,24 +12,12 @@ angular.module('BarterApp').controller('MenuCtrl', ['$scope', 'UtilService', 'Fa
     $scope.signInWithFacebook = FacebookService.login
     $scope.signInWithGoogle = AuthFactory.signInWithFacebook
     $scope.go = UtilService.go
-    $scope.signOut = signOut
+    $scope.signOut = AuthFactory.signOut
     
-    function checkIfAuth() {
-        var local_session = LocalStorageService.getObject('local_session')
-        var user = LocalStorageService.getObject('user')
-        if (local_session && user) {
-            $scope.user = user
-            AWS.config.region = 'us-east-1'
-            AWS.config.credentials = new AWS.CognitoIdentityCredentials(local_session)
-        }
-        return local_session
+    const auth = AuthFactory.checkIfAuth()
+    if(auth) {
+        $scope.auth = auth.auth
+        $scope.user = auth.user
     }
 
-    function signOut() {
-        LocalStorageService.setObject('local_session', null)
-        SessionService.destroy()
-        $scope.go('/Home')
-        $window.location.reload()
-    }
-    
 }]);

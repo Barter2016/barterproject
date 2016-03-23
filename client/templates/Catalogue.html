@@ -80,7 +80,7 @@
 
                             <!-- Include any additional input fields here -->
                     
-                            <input name="file" type="file" required>
+                            <input name="file" type="file" onchange="test(this)" required>
                         </form>
                         <md-button class="md-raised md-primary" ng-disabled="addProductForm.$invalid" ng-click="addProduct(new_product)">Créer produit</md-button>
                     </div>
