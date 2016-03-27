@@ -1,21 +1,27 @@
 <div ng-app="BarterApp" ng-cloak="" layout-gt-sm="row" layout="column">
     <md-card>
-        <md-card-title style="background-color:#3F51B5;">
-            <md-card-title-text>
-                <span style="color:white;" class="md-headline">Replying to {{ sender_email }}</span>
-            </md-card-title-text>
-        </md-card-title>
-        <md-card-content>
-            <form name="messageForm">
-                <md-input-container class="md-block">
-                    <input required="" type="textarea" placeholder="Your message content" name="messageText" ng-model="notificationMessage">
-                    <div ng-messages="messageForm.messageText.$error">
-                        <div ng-message="required">This is required.</div>
-                    </div>
-                </md-input-container>
-                <md-button class="md-raised" ng-click="cancel()">Cancel</md-button>
-                <md-button class="md-raised" ng-disabled="messageForm.$invalid" ng-click="sendNotification()">Send</md-button>
-            </form>
-        </md-card-content>
+        <md-content>
+            <md-card-title style="background-color:#3F51B5;">
+                <md-card-title-text>
+                    <span style="color:white;" class="md-headline">Répondre au message</span>
+                </md-card-title-text>
+            </md-card-title>
+            <md-card-content>
+                <form name="messageForm">
+                    <h4>Voici le message que vous avez reçu de {{ sender_email }} :</h4>
+                    <p>{{ message }}</p>
+                    <md-divider></md-divider>
+                    <h4>Votre réponse :</h4>
+                    <md-input-container class="md-block">
+                        <input required="" md-maxlength="300" type="textarea" placeholder="Le contenu de votre message" name="messageText" ng-model="notificationMessage">
+                        <div ng-messages="messageForm.messageText.$error">
+                            <div ng-message="required">Ce champs est obligatoire.</div>
+                        </div>
+                    </md-input-container>
+                    <md-button class="md-raised" ng-click="cancel()">Annuler</md-button>
+                    <md-button class="md-raised" ng-disabled="messageForm.$invalid" ng-click="sendNotification()">Envoyer</md-button>
+                </form>
+            </md-card-content>
+        </md-content>
     </md-card>
 </div>

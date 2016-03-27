@@ -2,8 +2,9 @@ angular.module('BarterApp').controller('NotificationsCtrl', ['$scope', '$mdDialo
 
     $scope.project_name = "Barter Project"
     $scope.is_auth = false
-    $scope.items
-    const currentUser = JSON.parse(LocalStorageService.get('user'))
+    $scope.items = []
+    $scope.data_loaded = false
+    const currentUser = LocalStorageService.getObject('user')
     const currentUserEmail = currentUser.email
     
     /*
@@ -47,17 +48,18 @@ angular.module('BarterApp').controller('NotificationsCtrl', ['$scope', '$mdDialo
             }
             else {
                 $scope.items = notifications
-                console.log($scope.items)
+                $scope.data_loaded = $scope.items.length > 0
                 $scope.$apply()
             }
         })
     }
 
-    $scope.showAdvanced = function(ev, _sender_email, _notification_id) {
+    $scope.showAdvanced = function(ev, notification) {
         var useFullScreen = ($mdMedia('sm') || $mdMedia('xs')) && $scope.customFullscreen
 
-        LocalStorageService.set('sender_email', _sender_email)
-        LocalStorageService.set('notification_id', _notification_id)
+        LocalStorageService.set('sender_email', notification.sender_email.S)
+        LocalStorageService.set('notification_message', notification.notification_message.S)
+        LocalStorageService.set('notification_id', notification.notification_id.S)
 
         $mdDialog.show({
                 controller: SendMessageCtrl,
@@ -84,9 +86,9 @@ angular.module('BarterApp').controller('NotificationsCtrl', ['$scope', '$mdDialo
         const currentUser = JSON.parse(LocalStorageService.get('user'))
         console.log(currentUser)
         const currentUserEmail = currentUser.email
-        const currentReceiverEmail = LocalStorageService.get('sender_email')
         const currentNotificationId = LocalStorageService.get('notification_id')
-        $scope.sender_email = currentReceiverEmail
+        $scope.message = LocalStorageService.get('notification_message')
+        $scope.sender_email = LocalStorageService.get('sender_email')
 
         $scope.hide = function() {
             $mdDialog.hide()
@@ -104,7 +106,7 @@ angular.module('BarterApp').controller('NotificationsCtrl', ['$scope', '$mdDialo
             const newNotification = {
                 notification_message: $scope.notificationMessage,
                 user_email: currentUserEmail,
-                email_to_send: currentReceiverEmail,
+                email_to_send: LocalStorageService.get('sender_email'),
                 sender_image_url: ""
             }
             NotificationService.notifyUser(newNotification, (err, newNotification) => {

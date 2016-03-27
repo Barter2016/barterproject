@@ -1,6 +1,6 @@
-angular.module('BarterApp').factory('AuthFactory', ['SessionService', 'LocalStorageService', 'GetService', '$window', 'FacebookService', 'UtilService', function(SessionService, LocalStorageService, GetService, $window, FacebookService, UtilService) {
+angular.module('BarterApp').factory('AuthService', ['SessionService', 'LocalStorageService', 'GetService', '$window', 'FacebookService', 'UtilService', function(SessionService, LocalStorageService, GetService, $window, FacebookService, UtilService) {
     
-    const AuthFactory = {
+    const authService = {
         
         signInWithFacebook: () => {
             
@@ -17,7 +17,7 @@ angular.module('BarterApp').factory('AuthFactory', ['SessionService', 'LocalStor
                                     
                                 }
                                 else { // The user is signed up, so sign im in
-                                    var credentials  = {
+                                    const credentials  = {
                                         IdentityPoolId: 'us-east-1:0eb351fe-a9b6-4f00-ab1f-393802d750a5',
                                         Logins: {
                                             'graph.facebook.com': response.authResponse.accessToken
@@ -84,6 +84,6 @@ angular.module('BarterApp').factory('AuthFactory', ['SessionService', 'LocalStor
     
     };
     
-    return AuthFactory;
+    return authService;
     
 }]);

@@ -74,3 +74,29 @@ md-toolbar {
 .div-button {
    padding-top: 10px;
 }
+
+.card-title {
+    border-bottom: 1px solid #DDD;
+    background-color: #F6F6F6;
+}
+
+#home-view md-card-content {
+    padding-bottom: 0;
+}
+
+#home-view md-card-content md-input-container {
+    margin-bottom: 0;
+} 
+
+#catalog-view md-card-content {
+    padding-bottom: 0;    
+}
+
+#catalog-view .product-research md-card-content md-input-container {
+    margin-bottom: 0;
+}
+
+
+.loading {
+    height: 92vh;
+}

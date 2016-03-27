@@ -7,6 +7,7 @@
   
   <title>Barter Project</title>
 
+
   <!-- Angular JS -->
   <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.0/angular.min.js"></script>
   <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.0/angular-route.min.js"></script>
@@ -22,7 +23,6 @@
   
   <!-- Font awesome -->
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
-
   
   <!-- AWS SDK -->
   <script src="https://sdk.amazonaws.com/js/aws-sdk-2.2.42.min.js"></script>
@@ -48,9 +48,11 @@
   <script src="js/factories/CategoryFactory.js"></script>
   <script src="js/factories/ProductFactory.js"></script>
   <script src="js/factories/FacebookFactory.js"></script>
+  <script src="js/factories/BucketFactory.js"></script>
   <script src="js/factories/AuthFactory.js"></script>
+  <script src="js/factories/NotificationFactory.js"></script>
   <script src="js/factories/ProductHistoryFactory.js"></script>
-  
+  <script src="js/factories/ImageFactory.js"></script>
   
   <!-- Controllers -->
   <script src="js/controllers/HomeCtrl.js"></script>
@@ -89,10 +91,10 @@
      }(document, 'script', 'facebook-jssdk'));
   </script>
   
-  <div layout="row" style="height: 100vh;">
+  <div ng-controller="MenuCtrl" layout="row" style="height: 100vh;">
     
     <!-- Sidenav -->
-    <div ng-controller="MenuCtrl" class="grey-background">
+    <div class="grey-background">
       <md-sidenav class="left-sidenav" md-is-locked-open="$mdMedia('gt-sm')">
       
         <!-- Menu header -->
@@ -109,7 +111,7 @@
         <!-- Menu content -->
         <md-content class="left-sidenav-content">
           <md-list>
-            <md-button ng-if="auth" ng-click="go(item.link)" ng-class="{ first:$first }" ng-repeat="item in menu_items.auth">
+            <md-button ng-if="auth" ng-click="go(item.link, item.title)" ng-class="{ first:$first }" ng-repeat="item in menu_items.auth">
               <div layout="row">
                 {{ item.title }}
                 <span flex></span>
@@ -152,9 +154,7 @@
             <span flex></span>
   
             <!-- Title -->
-            <h2>
-                <span>{{ view.title }}</span>
-            </h2>
+            <h2>{{ view.title }}</h2>
 
         </div>
       </md-toolbar>

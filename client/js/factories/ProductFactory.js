@@ -70,6 +70,135 @@ angular.module('BarterApp').factory('ProductService', [function() {
             catch(err) {
                 callback(err, null)
             }
+        },
+        
+        /**
+         * Add a product in the database.
+         * 
+         * param {product} is the new product the add
+         * param {callback} function to call when adding the product is done.
+         */ 
+        addProduct : (product, callback) => {
+            AWS.config.credentials.get(function(err) {
+                if (err) {
+                    callback(err, null);
+                } 
+                else {
+                    const lambda = new AWS.Lambda({region: 'us-west-2'})
+    
+                    const payload = {
+                            "user_email": product.user_email,
+                            "product_name": product.product_name,
+                            "product_description": product.product_description,
+                            "product_tags": product.product_tags,
+                            "category_id": product.category_id
+                    }
+                    
+                    const lambda_params = {
+                        FunctionName: 'addProduct',
+                        Payload: JSON.stringify(payload)
+                    }
+                    
+                    lambda.invoke(lambda_params, (error, response) => {
+                        if (error) {
+                            callback(error, null)
+                        }   
+                        else {
+                            const payload = JSON.parse(response.Payload)
+                            if (payload.errorMessage) {
+                                callback(payload.errorMessage, null)
+                            }
+                            else {
+                                callback(null, payload)
+                            }
+                        }
+                    });
+                }
+            })
+        }, 
+        
+        
+        addImageToProduct : (product, imageName, callback) => {
+            if(!product) {
+                callback(new Error('The product provided is undefined.'), null)
+            }
+            else if(!product.product_id){
+                callback(new Error('Product ID can not be null'), null)
+            }
+            else if(!imageName) {
+                callback(new Error('Image name can not be null'), null)
+            }
+            else {
+                AWS.config.credentials.get(function(err) {
+                    if (err) {
+                        callback(err, null);
+                    } 
+                    else {
+                        const lambda = new AWS.Lambda({region: 'us-west-2'})
+        
+                        const payload = {
+                            "product_id": product.product_id,
+                            "image_name": imageName
+                        }
+                        
+                        const lambda_params = {
+                            FunctionName: 'addImageToProduct',
+                            Payload: JSON.stringify(payload)
+                        }
+                        
+                        lambda.invoke(lambda_params, (error, response) => {
+                            if (error) {
+                                callback(error, null)
+                            }   
+                            else {
+                                const payload = JSON.parse(response.Payload)
+                                
+                                if (payload.errorMessage) {
+                                    callback(payload.errorMessage, null)
+                                }
+                                else {
+                                    callback(null, payload)
+                                }
+                            }
+                        })
+                    }
+                })
+            }
+        },
+        
+        scanProductsByUser: (user_id, callback) => {
+            AWS.config.credentials.get((err) => {
+                if (err) {
+                    callback(err, null)
+                }
+                else {
+                    const lambda = new AWS.Lambda({
+                        region: 'us-west-2'
+                    })
+    
+                    const lambda_params = {
+                        FunctionName: 'scanProductsByUser',
+                        Payload: JSON.stringify({
+                            user_id: user_id
+                        })
+                    }
+    
+                    lambda.invoke(lambda_params, (error, response) => {
+                        if (error) {
+                            callback(error, null)
+                        }
+                        else {
+                            const payload = JSON.parse(response.Payload);
+                            if (payload.errorMessage) {
+                                callback(payload.errorMessage, null)
+                            }
+                            else {
+                                callback(null, payload.Items)
+                            }
+                        }
+                    })
+                }
+            })
         }
         
     }

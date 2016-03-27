@@ -1,42 +1,61 @@
-<div ng-controller="NotificationsCtrl" data-ng-init="init()" ng-cloak="" layout-gt-sm="row" layout="column" ng-app="BarterApp">
-    <md-card flex="60">
-        <md-card-title style="background-color:#3F51B5;">
-            <md-card-title-text>
-                <span style="color:white;" class="md-headline">Notifications</span>
-            </md-card-title-text>
-        </md-card-title>
-            <md-content style="height: 550px;">
-            <section>
-                <md-list flex="">
-                    <md-subheader class="md-primary">Unread notifications</md-subheader>
-                    <md-list-item class="md-2-line" ng-repeat="item in items" ng-if="!item.notification_read.BOOL" layout="row" style="padding-left: 15px;">
-                        <img ng-src="{{item.sender_image_url.S}}" class="md-avatar">
-                        <div class="md-list-item-text" layout="column">
-                            <h3>{{ item.sender_email.S }}</h3>
-                            <h4 style="width: 550px;">{{ item.notification_message.S }}</h4>
-                        </div>
-                        <div class="div-button" layout="row">
-                            <md-button class="md-raised">Open</md-button>
-                            <md-button class="md-raised" ng-click="updateNotificationAsRead(item.notification_id.S)">Ignore</md-button>
-                            <md-button class="md-raised" ng-click="showAdvanced($event, item.sender_email.S, item.notification_id.S)">Reply</md-button>
-                        </div>
-                        <md-divider></md-divider>
-                    </md-list-item>
-                </md-list>
-            </section>
-            <section>
-                <md-list flex="">
-                    <md-subheader class="md-primary">Read notifications</md-subheader>
-                    <md-list-item class="md-2-line" ng-repeat="item in items" ng-if="item.notification_read.BOOL">
-                        <img ng-src="{{item.sender_image_url.S}}" class="md-avatar">
-                        <div class="md-list-item-text" layout="column">
-                            <h3>{{ item.sender_email.S }}</h3>
-                            <h4>{{ item.notification_message.S }}</h4>
-                        </div>
-                        <md-divider></md-divider>
-                    </md-list-item>
-                </md-list>
-            </section>
-            </md-content>
-    </md-card>
+<div ng-init="init()" ng-cloak>
+    
+    <!-- Loading -->
+    <div class="loading grey-background" layout="column" layout-align="center center" ng-show="!data_loaded">
+        <md-progress-circular md-mode="indeterminate" class="md-primary" md-diameter="80"></md-progress-circular>
+    </div>
+    
+    <!-- Page content -->
+    <div layout="column" flex ng-show="data_loaded">
+        <md-tabs md-dynamic-height md-border-bottom md-stretch-tabs="always">
+            
+            <!-- New messages tab -->
+            <md-tab label="Nouveaux messages">
+                <md-card flex>
+                    <md-card-title class="card-title">
+                        <md-card-title-text>
+                            <span class="md-headline">Nouveaux messages</span>
+                        </md-card-title-text>
+                    </md-card-title>
+                    <md-card-content>
+                        <md-list>
+                            <md-list-item class="md-2-line" ng-repeat="item in items" ng-if="!item.notification_read.BOOL" style="padding-left: 15px;">
+                                <img ng-src="{{item.sender_image_url.S}}" class="md-avatar">
+                                <div class="md-list-item-text" layout="column">
+                                    <h3>{{ item.sender_email.S }}</h3>
+                                    <h4 style="width: 550px;">{{ item.notification_message.S }}</h4>
+                                </div>
+                                <div class="div-button" layout="row">
+                                    <md-button class="md-raised" ng-click="updateNotificationAsRead(item.notification_id.S)">Ignorer</md-button>
+                                    <md-button class="md-raised" ng-click="showAdvanced($event, item)">Répondre</md-button>
+                                </div>
+                            </md-list-item>
+                        </md-list>
+                    </md-card-content>
+                </md-card>
+            </md-tab>
+            
+            <md-tab label="Messages lus">
+                 <md-card flex>
+                    <md-card-title class="card-title">
+                        <md-card-title-text>
+                            <span class="md-headline">Messages lus</span>
+                        </md-card-title-text>
+                    </md-card-title>
+                    <md-card-content>
+                        <md-list flex="">
+                            <md-list-item class="md-2-line" ng-repeat="item in items" ng-if="item.notification_read.BOOL">
+                                <img ng-src="{{item.sender_image_url.S}}" class="md-avatar">
+                                <div class="md-list-item-text" layout="column">
+                                    <h3>{{ item.sender_email.S }}</h3>
+                                    <h4 style="width: 550px;">{{ item.notification_message.S }}</h4>
+                                </div>
+                            </md-list-item>
+                        </md-list>
+                    </md-card-content>
+                </md-card>
+            </md-tab>
+            
+        </md-tabs>
+    </div>
 </div>

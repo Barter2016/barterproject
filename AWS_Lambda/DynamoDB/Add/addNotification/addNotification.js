@@ -28,6 +28,7 @@ exports.addNotification = function (event, context) {
                 "receiver_email" : { "S" : event.receiver_email },
                 "sender_image_url" : { "S" : event.sender_image_url },
                 "notification_message" : { "S" : event.notification_message },
+                "product_id" : { "S" : event.product_id },
                 "notification_read" : { "BOOL" : false }
             }
         };

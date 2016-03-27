@@ -1,47 +1,60 @@
-<div ng-cloak>
-    
-    <div layout="row">
-        
+<div ng-cloak id="home-view">
+
+    <div class="loading grey-background" layout="column" layout-align="center center" ng-show="!data_loaded">
+        <md-progress-circular md-mode="indeterminate" class="md-primary" md-diameter="80"></md-progress-circular>
+    </div>
+
+    <div layout="column" ng-show="data_loaded">
+
         <md-card flex>
-            <md-card-title style="background-color:#3F51B5;">
+            <md-card-title class="card-title">
                 <md-card-title-text>
-                    <span style="color:white;" class="md-headline">Annonces</span>
+                    <span class="md-headline">Recherche</span>
                 </md-card-title-text>
             </md-card-title>
             <md-card-content>
-                <div layout-gt-sm="row">
-                    <md-input-container>
+                <div layout="row">
+                    <md-input-container flex>
                         <label>Nom du produit</label>
-                        <input ng-model="productNameToFind">
+                        <input type="text" ng-model="productNameToFind">
                     </md-input-container>
-    
-                    <md-input-container style="margin-right: 10px;">
-                        <label>Categories</label>
+                    <md-input-container flex>
+                        <label>Categorie</label>
                         <md-select ng-model="selectedCategory">
+                            <md-option ng-value="Aucune" ng-selected="true">Aucune</md-option>
                             <md-option ng-repeat="category in categories" ng-value="{{category}}">{{category.category_name.S}}</md-option>
                         </md-select>
                     </md-input-container>
-                
-                    <md-input-container>
-                        <md-button class="md-raised md-primary" ng-click="searchProduct()">Rechercher</md-button>
-                        <md-button class="md-raised md-primary" ng-click="goBackInHistory()"><i class="fa fa-chevron-left"></i></md-button>
-                        <md-button class="md-raised md-primary" ng-click="goFowardInHistory()"><i class="fa fa-chevron-right"></i></md-button>
-                    </md-input-container>
                 </div>
+            </md-card-content>
+            <md-card-actions layout="row" layout-align="start center">
+                <md-button class="md-raised md-primary" ng-click="searchProduct()">Rechercher</md-button>
+                <span flex></span>
+                <md-button class="md-raised md-primary" ng-click="goBackInHistory()"><md-icon class="material-icons">keyboard_arrow_left</md-icon></md-button>
+                <md-button class="md-raised md-primary" ng-click="goFowardInHistory()"><md-icon class="material-icons">keyboard_arrow_right</md-icon></md-button>
+            </md-card-actions>
+        </md-card>
+
+        <md-card flex>
+            <md-card-title class="card-title">
+                <md-card-title-text>
+                    <span class="md-headline">Liste des annonces</span>
+                </md-card-title-text>
+            </md-card-title>
+            <md-card-content>
                 <div ng-cloak layout-gt-sm="row" layout="column">
-                <div flex-gt-sm="50" flex>
-                    <md-divider></md-divider>
-                    <md-list-item class="md-3-line" ng-repeat="product in productsToDisplay">
-                        <md-divider></md-divider>
-                        <div class="md-list-item-text" layout="column">
-                            <h3>Nom: {{ product.product_name.S }}</h3>
-                            <h4>Catégorie: {{ product.category_name.S}}</h4>
-                            <p>Description: {{ product.product_description.S }}</p>
-                        </div>
-                    </md-list-item>
+                    <div flex-gt-sm="50" flex>
+                        <md-list-item class="md-3-line" ng-repeat="product in productsToDisplay">
+                            <md-divider></md-divider>
+                            <div class="md-list-item-text" layout="column">
+                                <h3>Nom: {{ product.product_name.S }}</h3>
+                                <h4>Catégorie: {{ product.category_name.S}}</h4>
+                                <p>Description: {{ product.product_description.S }}</p>
+                            </div>
+                        </md-list-item>
+                    </div>
                 </div>
-            </div>
-                
+
             </md-card-content>
         </md-card>
     </div>

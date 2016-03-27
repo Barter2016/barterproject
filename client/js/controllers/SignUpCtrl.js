@@ -1,4 +1,4 @@
-angular.module('BarterApp').controller('SignUpCtrl', ['AuthFactory', function(AuthFactory) {
+angular.module('BarterApp').controller('SignUpCtrl', ['AuthService', function(AuthFactory) {
     
     
     
