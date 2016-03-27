@@ -76,7 +76,8 @@ angular.module('BarterApp').factory('ProductService', [function() {
          * Add a product in the database.
          * 
          * param {product} is the new product the add
-         * param {callback} function to call when adding the product is done.
+         * param {callback} if an error has occured the callback will have the
+         * signature of: (error, null), otherwise (null, productId)
          */ 
         addProduct : (product, callback) => {
             AWS.config.credentials.get(function(err) {
@@ -118,15 +119,12 @@ angular.module('BarterApp').factory('ProductService', [function() {
         }, 
         
         
-        addImageToProduct : (product, imageName, callback) => {
-            if(!product) {
-                callback(new Error('The product provided is undefined.'), null)
-            }
-            else if(!product.product_id){
+        addImageToProduct : (productId, imageURL, callback) => {
+            if(!productId){
                 callback(new Error('Product ID can not be null'), null)
             }
-            else if(!imageName) {
-                callback(new Error('Image name can not be null'), null)
+            else if(!imageURL) {
+                callback(new Error('Image URL can not be null'), null)
             }
             else {
                 AWS.config.credentials.get(function(err) {
@@ -137,8 +135,8 @@ angular.module('BarterApp').factory('ProductService', [function() {
                         const lambda = new AWS.Lambda({region: 'us-west-2'})
         
                         const payload = {
-                            "product_id": product.product_id,
-                            "image_name": imageName
+                            "product_id": productId,
+                            "image_url": imageURL
                         }
                         
                         const lambda_params = {

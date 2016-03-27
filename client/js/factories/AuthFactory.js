@@ -1,4 +1,9 @@
-angular.module('BarterApp').factory('AuthService', ['SessionService', 'LocalStorageService', 'GetService', '$window', 'FacebookService', 'UtilService', function(SessionService, LocalStorageService, GetService, $window, FacebookService, UtilService) {
+angular.module('BarterApp').factory('AuthService', ['SessionService', 
+'LocalStorageService', 
+'$window', 
+'FacebookService', 
+'UtilService',
+'UserService', function(SessionService, LocalStorageService, $window, FacebookService, UtilService, UserService) {
     
     const authService = {
         
@@ -8,7 +13,7 @@ angular.module('BarterApp').factory('AuthService', ['SessionService', 'LocalStor
                 if (response.status == "connected") {
                     FacebookService.getCurrentUserInfo((data) => {
                         
-                        GetService.queryUser(data.email, (err, data) => {
+                        UserService.queryUser(data.email, (err, data) => {
                             if (err) {
                                 console.log(err);
                             }

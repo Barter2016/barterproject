@@ -1,12 +1,12 @@
 angular.module('BarterApp').controller('HomeCtrl', ['$scope',
-    'UtilService',
-    'ProductService',
-    'CategoryService',
-    'LocalStorageService',
-    'ProductHistoryService',
-    'AuthService',
-    'ImageService',
-    function($scope, UtilService, ProductService, CategoryService, LocalStorageService, ProductHistoryService, AuthFactory, ImageService) {
+'UtilService',
+'ProductService',
+'CategoryService',
+'LocalStorageService',
+'ProductHistoryService',
+'AuthService',
+'ImageService',
+function($scope, UtilService, ProductService, CategoryService, LocalStorageService, ProductHistoryService, AuthFactory, ImageService) {
 
         $scope.is_auth = false
         $scope.categories = [] // Save the last scanned categories in an array.
@@ -66,15 +66,12 @@ angular.module('BarterApp').controller('HomeCtrl', ['$scope',
         }
 
         $scope.searchProduct = () => {
-            console.log($scope.productNameToFind);
-            console.log($scope.selectedCategory);
             ProductService.searchProductByName($scope.productNameToFind, $scope.selectedCategory, (err, products) => {
                 if (err) {
                     console.log(err)
                     $scope.productsToDisplay = ProductService.productsInCache
                 }
                 else {
-
                     // Before swaping the product displayed with the search results we save our current state.
                     ProductHistoryService.saveInHistory($scope.productsToDisplay,
                         ProductHistoryService.backwardStack)

@@ -1,6 +1,6 @@
 angular.module('BarterApp').factory('UserService', function() {
     
-    return  {
+    const userService = {
         addUser : (user, callback) => {
             
             if(!user.email) {
@@ -45,5 +45,47 @@ angular.module('BarterApp').factory('UserService', function() {
                 }
             })
         },
+        
+        queryUser: (email, callback) => {
+            
+            if(!email) {
+                callback(new Error('Undefined email.', null))
+            }
+            
+            AWS.config.credentials.get((err) => {
+                if (err) {
+                    callback(err, null)
+                }
+                else {
+                    const lambda = new AWS.Lambda({
+                        region: 'us-west-2'
+                    });
+    
+                    const lambda_params = {
+                        FunctionName: 'addUser',
+                        Payload: JSON.stringify({
+                            user_id: email
+                        })
+                    };
+    
+                    lambda.invoke(lambda_params, (error, response) => {
+                        if (error) {
+                            callback(error, null)
+                        }
+                        else {
+                            const payload = JSON.parse(response.Payload)
+                            if (payload.errorMessage) {
+                                callback(payload.errorMessage, null)
+                            }
+                            else {
+                                callback(null, payload.Items)
+                            }
+                        }
+                    })
+                }
+            })
+        }
     }
+    
+    return userService
 })

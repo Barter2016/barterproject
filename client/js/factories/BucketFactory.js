@@ -10,10 +10,17 @@ angular.module('BarterApp').factory('BucketService', function() {
         uploadFile : (obj, callback) => {
             if(obj) {
                 const s3 = new AWS.S3({ params: { Bucket: bucketName } })
-
-                // Here we're renamming the file to be the name of the file + the current time in milliseconds.
-                const keyName = obj.name + new Date().getDate()
                 
+                const splitedName = obj.name.split('.') 
+                
+                const fileExtension = splitedName[1]
+                
+                const keyName  = splitedName[0] 
+                    + new Date().getTime() 
+                    + '.' 
+                    + fileExtension
+                    
+                // Here we're renamming the file to be the name of the file + the current time in milliseconds.
                 const params = {
                     Key: keyName,
                     Body: obj   

@@ -2,12 +2,12 @@ angular.module('BarterApp').controller('CatalogueCtrl', ['$scope',
 'ProductService', 
 'CategoryService', 
 'LocalStorageService',
-'BucketService', 
-'AuthService', function($scope, ProductService, CategoryService, LocalStorageService, BucketService) {
+'AuthService',
+'BucketService', function($scope, ProductService, CategoryService, LocalStorageService, AuthService, BucketService) {
     const user = LocalStorageService.getObject('user')
     $scope.data_loaded = false
-    $scope.products = []
-    $scope.categories = []
+    $scope.products
+    $scope.categories
     
     ProductService.scanProductsByUser(user.email, (err, products) => {
         if (err) {
@@ -15,8 +15,7 @@ angular.module('BarterApp').controller('CatalogueCtrl', ['$scope',
         }
         else {
             $scope.products = products
-            console.log(products[0].image_names['SS'][0])
-            $scope.data_loaded = $scope.categories.length > 0 && $scope.products.length > 0 
+            $scope.data_loaded = $scope.categories && $scope.products 
             $scope.$apply()
         }
     })
@@ -27,13 +26,13 @@ angular.module('BarterApp').controller('CatalogueCtrl', ['$scope',
         }
         else {
             $scope.categories = categories
-            $scope.data_loaded = $scope.categories.length > 0 && $scope.products.length > 0 
+            $scope.data_loaded = $scope.categories && $scope.products
             $scope.$apply()
             
         }
     })
     
-    $scope.addProduct = function(new_product) {
+    $scope.addProduct = (new_product) => {
         
         if(AuthService.checkIfAuth()) {
         
@@ -41,23 +40,25 @@ angular.module('BarterApp').controller('CatalogueCtrl', ['$scope',
             new_product.product_tags = "product";
     
             new_product.user_email = user.email;
+            
+            console.log(new_product)
         
-            ProductService.addProduct(new_product, (err, data) => {
+            ProductService.addProduct(new_product, (err, productId) => {
                 if (err) {
                     console.log(err)
                 }
                 else {
-                    alert("Le produit " + new_product.product_name + "a été créé avec succès");
+                    console.log(productId)
+                    alertify.success("Le produit " + new_product.product_name + "a été créé avec succès")
     
                     const file = document.getElementById('imageFile').files[0]
                     
-                    BucketService.uploadFile(file,(err, data) =>{
+                    BucketService.uploadFile(file, (err, data) => {
                         if (err) {
                             console.log(err)
-                        }else{
-                           new_product.image_url = data.Location
-    
-                            AddService.addProductImage(new_product.product_image_url, (err, data) => {
+                        }
+                        else {
+                            ProductService.addImageToProduct(productId, data.Location, (err, data) => {
                                 if (err) {
                                     console.log(err)
                                 }

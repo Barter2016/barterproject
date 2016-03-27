@@ -62,7 +62,7 @@ exports.addProduct = function (event, context) {
                     if (err) {
                         context.fail(err)
                     } else {
-                        context.succeed(message.succeed)
+                        context.succeed(data)
                     }
                 })
             }

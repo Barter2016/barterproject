@@ -2,7 +2,7 @@ angular.module('BarterApp').controller('NotificationsCtrl', ['$scope', '$mdDialo
 
     $scope.project_name = "Barter Project"
     $scope.is_auth = false
-    $scope.items = []
+    $scope.items
     $scope.data_loaded = false
     const currentUser = LocalStorageService.getObject('user')
     const currentUserEmail = currentUser.email
@@ -48,7 +48,7 @@ angular.module('BarterApp').controller('NotificationsCtrl', ['$scope', '$mdDialo
             }
             else {
                 $scope.items = notifications
-                $scope.data_loaded = $scope.items.length > 0
+                $scope.data_loaded = $scope.items
                 $scope.$apply()
             }
         })
