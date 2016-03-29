@@ -51,6 +51,9 @@
                                 <h4>Catégorie: {{ product.category_name.S}}</h4>
                                 <p>Description: {{ product.product_description.S }}</p>
                             </div>
+                            <md-list-item>
+                                 <md-button class="md-raised md-primary" ng-click="doOffer(product)">Faire une offre</md-button>
+                            </md-list-item>
                         </md-list-item>
                     </div>
                 </div>

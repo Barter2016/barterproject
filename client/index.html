@@ -41,17 +41,15 @@
   <script src="js/app.themes.js"></script>
   
   <!-- Services -->
-  <script src="js/services/AddService.js"></script>
-  <script src="js/services/DeleteService.js"></script>
+  
   <script src="js/services/LocalStorageService.js"></script>
   <script src="js/services/SessionService.js"></script>
-  <script src="js/services/UpdateService.js"></script>
   <script src="js/services/UtilService.js"></script>
+
   
   <!-- Factories -->
   <script src="js/factories/CategoryFactory.js"></script>
   <script src="js/factories/ProductFactory.js"></script>
-  <script src="js/factories/FacebookFactory.js"></script>
   <script src="js/factories/BucketFactory.js"></script>
   <script src="js/factories/AuthFactory.js"></script>
   <script src="js/factories/NotificationFactory.js"></script>
@@ -64,6 +62,9 @@
   <script src="js/controllers/CatalogueCtrl.js"></script>
   <script src="js/controllers/NotificationsCtrl.js"></script>
   <script src="js/controllers/MenuCtrl.js"></script>
+  <script src="js/controllers/ProductCtrl.js"></script>
+  <script src="js/controllers/OfferCtrl.js"></script>
+  <script src="js/controllers/SignUpCtrl.js"></script>
   
   <!-- AWS Cognito Credentials Hardcoded -->
   <script>
@@ -100,16 +101,21 @@
     
     <!-- Sidenav -->
     <div class="grey-background">
-      <md-sidenav class="left-sidenav" md-is-locked-open="$mdMedia('gt-sm')">
+      <md-sidenav class="left-sidenav" md-is-locked-open="$mdMedia('gt-sm')" md-component-id="sidenav">
       
         <!-- Menu header -->
         <md-toolbar class="md-tall left-sidenav-header md-primary">
           <div layout="column" layout-align="center center" class="md-toolbar-tools-bottom inset" ng-class="{'full-height': !auth}">
-            <div class="user-avatar">
-              <md-icon class="material-icons" style="font-size: 64px; width: 64px; height: 64px;">person</md-icon>
+            <div ng-if="auth" class="user-avatar">
+              <img class="image-icon" src="{{ user.picture.data.url }}"></img>
             </div>
+            <div ng-if="auth == null" class="user-avatar">
+              <md-icon class="material-icons" style="font-size:64px;height:64px;width:64px;">person</md-icon>
+            </div>
+              
             <div ng-if="auth" style="font-weight: bold;">{{ user.name }}</div>
             <div ng-if="auth" style="font-style: oblique;">{{ user.email }}</div>
+            <div ng-if="!auth" style="font-weight: bold;">Invité</div>
           </div>
         </md-toolbar>
         
@@ -155,6 +161,10 @@
       <!-- Toolbar -->
       <md-toolbar class="main-toolbar md-primary">
         <div class="md-toolbar-tools">
+            
+            <md-button class="md-icon-button" hide-gt-md ng-click="toggleMenu()">
+              <md-icon class="material-icons">menu</md-icon>
+            </md-button>
             
             <span flex></span>
   

@@ -46,7 +46,7 @@ angular.module('BarterApp').factory('ProductService', [function() {
         
         /**
          * Search in the last scan if a the product name exists in our list. If the category is
-         * not null it will checks the category too.
+         * not null it will check the category too.
          */ 
         searchProductByName : (productName, category, callback) => {
             var searchResult = []
@@ -187,6 +187,46 @@ angular.module('BarterApp').factory('ProductService', [function() {
                         }
                         else {
                             const payload = JSON.parse(response.Payload);
+                            if (payload.errorMessage) {
+                                callback(payload.errorMessage, null)
+                            }
+                            else {
+                                callback(null, payload.Items)
+                            }
+                        }
+                    })
+                }
+            })
+        },
+        
+        queryProduct: (id, callback) => {
+            
+            if(!id) {
+                callback(new Error('Undefined product id.', null))
+            }
+            
+            AWS.config.credentials.get((err) => {
+                if (err) {
+                    callback(err, null)
+                }
+                else {
+                    const lambda = new AWS.Lambda({
+                        region: 'us-west-2'
+                    });
+    
+                    const lambda_params = {
+                        FunctionName: 'queryProduct',
+                        Payload: JSON.stringify({
+                            product_id: id
+                        })
+                    };
+    
+                    lambda.invoke(lambda_params, (error, response) => {
+                        if (error) {
+                            callback(error, null)
+                        }
+                        else {
+                            const payload = JSON.parse(response.Payload)
                             if (payload.errorMessage) {
                                 callback(payload.errorMessage, null)
                             }

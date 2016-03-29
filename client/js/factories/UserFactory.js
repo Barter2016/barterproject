@@ -62,7 +62,7 @@ angular.module('BarterApp').factory('UserService', function() {
                     });
     
                     const lambda_params = {
-                        FunctionName: 'addUser',
+                        FunctionName: 'queryUser',
                         Payload: JSON.stringify({
                             user_id: email
                         })

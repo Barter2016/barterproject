@@ -1,5 +1,4 @@
 angular.module('BarterApp').controller('NotificationsCtrl', ['$scope', '$mdDialog', '$mdToast', '$mdMedia', 'NotificationService', 'LocalStorageService', function($scope, $mdDialog, $mdToast, $mdMedia, NotificationService, LocalStorageService) {
-
     $scope.project_name = "Barter Project"
     $scope.is_auth = false
     $scope.items
@@ -57,9 +56,7 @@ angular.module('BarterApp').controller('NotificationsCtrl', ['$scope', '$mdDialo
     $scope.showAdvanced = function(ev, notification) {
         var useFullScreen = ($mdMedia('sm') || $mdMedia('xs')) && $scope.customFullscreen
 
-        LocalStorageService.set('sender_email', notification.sender_email.S)
-        LocalStorageService.set('notification_message', notification.notification_message.S)
-        LocalStorageService.set('notification_id', notification.notification_id.S)
+        LocalStorageService.set('currentNotification', JSON.stringify(notification))
 
         $mdDialog.show({
                 controller: SendMessageCtrl,
@@ -70,9 +67,9 @@ angular.module('BarterApp').controller('NotificationsCtrl', ['$scope', '$mdDialo
                 fullscreen: useFullScreen
             })
             .then(function(answer) {
-                $scope.status = 'You said the information was "' + answer + '".'
+                getAllNotificationOfUser(currentUser.email)
             }, function() {
-                $scope.status = 'You cancelled the dialog.'
+                getAllNotificationOfUser(currentUser.email)
             })
 
         $scope.$watch(function() {
@@ -83,12 +80,11 @@ angular.module('BarterApp').controller('NotificationsCtrl', ['$scope', '$mdDialo
     }
 
     function SendMessageCtrl($scope, $mdDialog, LocalStorageService) {
-        const currentUser = JSON.parse(LocalStorageService.get('user'))
-        console.log(currentUser)
-        const currentUserEmail = currentUser.email
-        const currentNotificationId = LocalStorageService.get('notification_id')
-        $scope.message = LocalStorageService.get('notification_message')
-        $scope.sender_email = LocalStorageService.get('sender_email')
+        const user = JSON.parse(LocalStorageService.get('user'))
+        var currentNotification = LocalStorageService.get('currentNotification')
+        currentNotification = JSON.parse(currentNotification)
+        $scope.message = currentNotification.notification_message.S
+        $scope.sender_name = currentNotification.sender_name.S
 
         $scope.hide = function() {
             $mdDialog.hide()
@@ -105,9 +101,11 @@ angular.module('BarterApp').controller('NotificationsCtrl', ['$scope', '$mdDialo
         $scope.sendNotification = function() {
             const newNotification = {
                 notification_message: $scope.notificationMessage,
-                user_email: currentUserEmail,
-                email_to_send: LocalStorageService.get('sender_email'),
-                sender_image_url: ""
+                user_email: user.email,
+                user_name: user.name,
+                user_picture: user.picture.data.url,
+                receiver_email: LocalStorageService.get('sender_email'),
+                product_id: " "
             }
             NotificationService.notifyUser(newNotification, (err, newNotification) => {
                 if (err) {
@@ -115,7 +113,8 @@ angular.module('BarterApp').controller('NotificationsCtrl', ['$scope', '$mdDialo
                 }
                 else {
                     console.log(newNotification)
-                    updateNotificationAsRead(currentNotificationId)
+                    $mdDialog.hide("Message envoyé")
+                    updateNotificationAsRead(currentNotification.notification_id.S)
                 }
             })
         }
@@ -128,7 +127,6 @@ angular.module('BarterApp').controller('NotificationsCtrl', ['$scope', '$mdDialo
                 else {
                     console.log(data)
                     getAllNotificationOfUser(currentUserEmail)
-                    $mdDialog.hide()
                     $scope.$apply()
                 }
             })

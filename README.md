@@ -1,14 +1,43 @@
 # barterproject
 
-#TODO (base ++ prioritaire)
+#GOOGLE API 
+
+ajouter la localisation (les offres les plus proches)
+
+#INTERFACE GRAFIQUE
+
+menu en petites résolutions (tout responsive)
+Faire une page not found.
+alertify js
+
+#NOTIFICATIONS (pk)
 
 ajouter date dans notifications
+ajouter nom et picture dans notifications
+refresh lors d'actions sur les notifications
 
-interface
-    page d'accueil
-    profil utilisateur
-    
+#USERS
+
+création des users selon le compte facebook
+
+#Annonces
+
+notification sur les produits et proposition d'un produit en échange
+image par défaut sur les produits
+selection d'image
+
+#Page Produit singulier
+
+affichage d'un produit et des plusieurs images de ce produit
+
+
+
 #TODO (non prioritaire)
 
-1)tags
-2)tinder
+watch list (wish list un peu)
+création d'utilisateurs local
+authentification avec google
+localisation
+tags
+tinder
+interface admin simple pour ajouter des catégories, etc...

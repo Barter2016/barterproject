@@ -2,16 +2,6 @@ md-toolbar {
     box-shadow: 0 2px 5px 0 rgba(0,0,0,.26);
 }
 
-.user-avatar {
-    background-color: white;
-    border-radius: 100%;
-    margin-bottom: 10px;
-}
-
-.user-avatar md-icon {
-    color: rgba(0,0,0,0.54) !important;
-}
-
 .full-height {
     height: 100%;
 }
@@ -22,6 +12,10 @@ md-toolbar {
 
 .md-toolbar-tools-bottom {
     font-size: small;
+}
+
+.message-paragraphe {
+    text-overflow: ellipsis;
 }
 
 .left-sidenav {
@@ -99,4 +93,33 @@ md-toolbar {
 
 .loading {
     height: 92vh;
+}
+
+/*  Facebook profile picture */
+.image-icon{
+    display: inline-block;
+    background-repeat: no-repeat no-repeat;
+    pointer-events: none;
+    border-radius: 100%;
+	-webkit-border-radius: 100%;
+	-moz-border-radius: 100%;
+	width: 64px;
+	height: 64px;
+	margin-top : 3px;
+}
+
+.responde-card-title {
+    background-color: #F6F6F6;
+    color: #000000;
+}
+
+/* White background for profile picture */
+.user-avatar {
+    background-color: white;
+    border-radius: 100%;
+    width: 70px;
+	height: 70px;
+    -webkit-border-radius: 100%;
+	-moz-border-radius: 100%;
+	text-align : center;
 }

@@ -2,7 +2,7 @@ angular.module('BarterApp').factory('ImageService', [function() {
     
     const imageService = {
         
-        encodeToBase64(file, callback) {
+        encodeToBase64: (file, callback) => {
             // If the file is not null.
             if(file) {
                 try {

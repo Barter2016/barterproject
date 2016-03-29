@@ -24,9 +24,10 @@
                                     <md-divider></md-divider>
                                     <div class="md-list-item-text" layout="column">
                                         <h3>Nom: {{ product.product_name.S }}</h3>
-                                        <h4>Catégorie: {{ product.category_id.S}}</h4>
+                                        <h4>Catégorie: {{ product.category_name.S}}</h4>
                                         <p>Description: {{ product.product_description.S }}</p>
                                         <img ng-src="{{ product.image_names['SS'][0] }}" class="md-avatar">
+                                        <md-button ng-click="viewProduct(product.product_id.S)">Afficher</md-button>
                                     </div>
                                 </md-list-item>
                             </div>

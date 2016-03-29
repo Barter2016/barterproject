@@ -15,6 +15,7 @@ angular.module('BarterApp').controller('CatalogueCtrl', ['$scope',
         }
         else {
             $scope.products = products
+            console.log(products)
             $scope.data_loaded = $scope.categories && $scope.products 
             $scope.$apply()
         }
@@ -49,7 +50,7 @@ angular.module('BarterApp').controller('CatalogueCtrl', ['$scope',
                 }
                 else {
                     console.log(productId)
-                    alertify.success("Le produit " + new_product.product_name + "a été créé avec succès")
+                    alertify.success("Le produit " + new_product.product_name + " a été créé avec succès")
     
                     const file = document.getElementById('imageFile').files[0]
                     
@@ -69,5 +70,8 @@ angular.module('BarterApp').controller('CatalogueCtrl', ['$scope',
                 }
             })
         }
+    }
+    $scope.viewProduct = (product) => {
+        window.location.href = '/#/Product/' + product;
     }
 }]);

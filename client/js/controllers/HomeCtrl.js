@@ -83,6 +83,13 @@ function($scope, UtilService, ProductService, CategoryService, LocalStorageServi
             })
         }
 
+        $scope.doOffer = function(selectedProduct) {
+            if(selectedProduct
+            && selectedProduct.product_id) {
+                UtilService.go('/Offer/' + selectedProduct.product_id.S)
+            }
+        }
+
         if (productsInCache.length == 0 && AuthFactory.checkIfAuth()) {
             refreshProducts()
         }
@@ -90,6 +97,5 @@ function($scope, UtilService, ProductService, CategoryService, LocalStorageServi
         if ($scope.categories.length == 0 && AuthFactory.checkIfAuth()) {
             refreshCategories()
         }
-
     }
 ]);

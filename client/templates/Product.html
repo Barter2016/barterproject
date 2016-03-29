@@ -1,0 +1,28 @@
+<div ng-cloak id="product-view">
+
+    <!-- Page content -->
+    <div layout="column" flex>
+        <md-card flex>
+            <md-card-title class="card-title">
+                <md-card-title-text>
+                    <span class="md-headline">Mes annonces</span>
+                </md-card-title-text>
+            </md-card-title>
+            <md-card-content>
+                <div ng-cloak layout-gt-sm="row" layout="column">
+                    <div flex-gt-sm="50" flex>
+                        <md-divider></md-divider>
+                        <div class="md-list-item-text" layout="column">
+                            <h3>Nom: {{ selected_product.product_name.S }}</h3>
+                            <h4>Catégorie: {{ selected_product.category_name.S}}</h4>
+                            <p>Description: {{ selected_product.product_description.S }}</p>
+                            <md-list-item class="md-3-line" ng-repeat="image in selected_product.image_names">
+                                <!--<img ng-src="{{ image['SS'] }}" class="md-avatar">-->
+                            </md-list-item>
+                        </div>
+                    </div>
+                </div>
+            </md-card-content>
+        </md-card>
+    </div>
+</div>

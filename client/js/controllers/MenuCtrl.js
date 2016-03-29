@@ -1,23 +1,26 @@
-angular.module('BarterApp').controller('MenuCtrl', ['$scope', 'UtilService', 'FacebookService', 'LocalStorageService', 'SessionService', '$window', 'AuthService', function($scope, UtilService, FacebookService, LocalStorageService, SessionService, $window, AuthFactory) {
+angular.module('BarterApp').controller('MenuCtrl', ['$scope', 'UtilService', 'LocalStorageService', 'SessionService', '$window', 'AuthService', '$mdSidenav', function($scope, UtilService, LocalStorageService, SessionService, $window, AuthService, $mdSidenav) {
     
     $scope.menu_items = {
         auth: [
-            {"title": "Les annonces", "icon": "shopping_cart", "link": "/Home"}, 
-            {"title": "Mon catalogue", "icon": "assignment", "link": "/Catalogue"},
+            {"title": "Les annonces", "icon": "assignment", "link": "/Home"}, 
+            {"title": "Mon catalogue", "icon": "import_contacts", "link": "/Catalogue"},
             {"title": "Mes notifications", "icon": "notifications", "link": "/Notifications"},
-            {"title": "Paramètres", "icon": "settings", "link": ""},
         ]
     }
     
-    $scope.signInWithFacebook = FacebookService.login
-    $scope.signInWithGoogle = AuthFactory.signInWithFacebook
-    $scope.signOut = AuthFactory.signOut
+    $scope.signInWithFacebook = AuthService.signInWithFacebook
+    $scope.signInWithGoogle = AuthService.signInWithFacebook
+    $scope.signOut = AuthService.signOut
     $scope.view = {title: "Les annonces"}
 
-    const auth = AuthFactory.checkIfAuth()
+    const auth = AuthService.checkIfAuth()
     if(auth) {
         $scope.auth = auth.auth
         $scope.user = auth.user
+    }
+    
+    $scope.toggleMenu = function() {
+        $mdSidenav('sidenav').toggle();
     }
     
     $scope.go = function(path, title) {

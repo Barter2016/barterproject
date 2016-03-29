@@ -62,7 +62,10 @@ angular.module('BarterApp').factory('NotificationService', [function() {
                         FunctionName: 'addNotification',
                         Payload: JSON.stringify({
                             "sender_email": new_notification.user_email,
-                            "receiver_email": new_notification.email_to_send,
+                            "sender_name": new_notification.user_name,
+                            "sender_picture": new_notification.user_picture,
+                            "receiver_email": new_notification.receiver_email,
+                            "product_id": new_notification.product_id,
                             "notification_message": new_notification.notification_message
                         })
                     };
