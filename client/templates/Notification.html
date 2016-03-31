@@ -1,0 +1,72 @@
+<div ng-init="init()" ng-cloak>
+    
+    <!-- Loading -->
+    <div class="loading grey-background" layout="column" layout-align="center center" ng-show="!data_loaded">
+        <md-progress-circular md-mode="indeterminate" class="md-primary" md-diameter="80"></md-progress-circular>
+    </div>
+    
+    <!-- Page content -->
+    <div layout="column" flex ng-show="data_loaded">
+        <md-tabs md-dynamic-height md-border-bottom md-stretch-tabs="always">
+            
+            <!-- New messages tab -->
+            <md-tab label="Nouveaux messages" flex>
+                <md-card flex>
+                    <md-card-title class="card-title">
+                        <md-card-title-text>
+                            <span class="md-headline">Nouveaux messages</span>
+                        </md-card-title-text>
+                    </md-card-title>
+                    <md-card-content>
+                        <md-list>
+                            <md-list-item class="md-2-line" ng-repeat="item in messages" ng-if="!item.message_read.BOOL" style="padding-left: 15px;">
+                                <img ng-src="{{item.message_sender_picture.S}}" class="md-avatar">
+                                <div class="md-list-item-text" layout="column" flex>
+                                    <h3>{{ item.message_sender_name.S }}</h3>
+                                    <h4>{{ item.message_sender_email.S }}</h4>
+                                    <p style="white-space: pre-wrap;">{{ item.message_text.S | limitTo : 75}}</p>
+                                </div>
+                                <div class="div-button" layout="column">
+                                    <md-button class="md-primary md-icon-button" ng-click="updateMessageAsRead(item.message_id.S)">
+                                        <md-icon class="material-icons">close</icon>
+                                        <md-tooltip md-direction="left" md-autohide="true">
+                                            Ignorer le message
+                                        </md-tooltip>
+                                    </md-button>
+                                    <md-button class="md-primary md-icon-button" ng-click="replyMessage($event, item)">
+                                        <md-icon class="material-icons">message</icon>
+                                        <md-tooltip md-direction="left" md-autohide="true">
+                                            Répondre au message
+                                        </md-tooltip>
+                                    </md-button>
+                                </div>
+                            </md-list-item>
+                        </md-list>
+                    </md-card-content>
+                </md-card>
+            </md-tab>
+            <md-tab label="Messages lus" flex="50">
+                 <md-card flex>
+                    <md-card-title class="card-title">
+                        <md-card-title-text>
+                            <span class="md-headline">Messages lus</span>
+                        </md-card-title-text>
+                    </md-card-title>
+                    <md-card-content>
+                        <md-list flex="">
+                            <md-list-item class="md-2-line" ng-repeat="item in messages" ng-if="item.message_read.BOOL">
+                                <img ng-src="{{item.message_sender_picture.S}}" class="md-avatar">
+                                <div class="md-list-item-text" layout="column">
+                                    <h3>{{ item.message_sender_name.S }}</h3>
+                                    <h4>{{ item.message_sender_email.S }}</h4>
+                                    <p>{{ item.message_text.S | limitTo : 75}}</p>
+                                </div>
+                            </md-list-item>
+                        </md-list>
+                    </md-card-content>
+                </md-card>
+            </md-tab>
+            
+        </md-tabs>
+    </div>
+</div>

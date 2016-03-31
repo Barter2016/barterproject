@@ -1,11 +1,10 @@
 <div ng-cloak id="product-view">
-
     <!-- Page content -->
     <div layout="column" flex>
         <md-card flex>
             <md-card-title class="card-title">
                 <md-card-title-text>
-                    <span class="md-headline">Mes annonces</span>
+                    <span class="md-headline">Fiche détaillée de {{ selected_product.product_name.S }}</span>
                 </md-card-title-text>
             </md-card-title>
             <md-card-content>
@@ -16,9 +15,11 @@
                             <h3>Nom: {{ selected_product.product_name.S }}</h3>
                             <h4>Catégorie: {{ selected_product.category_name.S}}</h4>
                             <p>Description: {{ selected_product.product_description.S }}</p>
-                            <md-list-item class="md-3-line" ng-repeat="image in selected_product.image_names">
-                                <!--<img ng-src="{{ image['SS'] }}" class="md-avatar">-->
-                            </md-list-item>
+                            <div layout="row" flex>
+                                <div class="product_image"ng-repeat="image in selected_product.image_names.SS">
+                                    <img ng-src="{{image}}" style="width:250px;height:250px;">
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>

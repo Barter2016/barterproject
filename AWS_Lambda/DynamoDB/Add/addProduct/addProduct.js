@@ -51,8 +51,7 @@ exports.addProduct = function (event, context) {
                         "user_email" : { "S" : event.user_email },
                         "product_name" : { "S" : event.product_name },
                         "product_tags" : { "S" : event.product_tags },
-                        "category_id" : { "S" : category.Items[0].category_id.S },
-						"category_name" : { "S" : category.Items[0].category_name.S },
+                        "category_id" : { "S" : event.category_id },
                         "product_description" : { "S" : event.product_description },
                         "image_names": { "SS" : [] }
                     }

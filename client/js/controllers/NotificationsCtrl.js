@@ -1,14 +1,10 @@
 angular.module('BarterApp').controller('NotificationsCtrl', ['$scope', '$mdDialog', '$mdToast', '$mdMedia', 'NotificationService', 'LocalStorageService', function($scope, $mdDialog, $mdToast, $mdMedia, NotificationService, LocalStorageService) {
-    $scope.project_name = "Barter Project"
-    $scope.is_auth = false
-    $scope.items
     $scope.data_loaded = false
     const currentUser = LocalStorageService.getObject('user')
     const currentUserEmail = currentUser.email
-    
-    /*
-     * This function is called the notifications page init.
-     */
+        /*
+         * This function is called the notifications page init.
+         */
     $scope.init = function() {
         if (currentUser) {
             getAllNotificationOfUser(currentUserEmail)
@@ -53,59 +49,92 @@ angular.module('BarterApp').controller('NotificationsCtrl', ['$scope', '$mdDialo
         })
     }
 
-    $scope.showAdvanced = function(ev, notification) {
-        var useFullScreen = ($mdMedia('sm') || $mdMedia('xs')) && $scope.customFullscreen
-
+    /*
+     * Opens up a new window that allows the user to reply to an existing message in the list.
+     *
+     * param="ev" The event that the user did.
+     * param="notification" The notification in JSON format the will be replied.
+     */
+    $scope.replyToMessage = function(ev, notification) {
         LocalStorageService.set('currentNotification', JSON.stringify(notification))
 
         $mdDialog.show({
-                controller: SendMessageCtrl,
-                templateUrl: 'templates/SendMessage.html',
+                controller: SendReplyMessageCtrl,
+                templateUrl: 'templates/ReplyNotification.html',
                 parent: angular.element(document.body),
                 targetEvent: ev,
                 clickOutsideToClose: true,
-                fullscreen: useFullScreen
+                fullscreen: true
             })
             .then(function(answer) {
                 getAllNotificationOfUser(currentUser.email)
             }, function() {
                 getAllNotificationOfUser(currentUser.email)
             })
-
-        $scope.$watch(function() {
-            return $mdMedia('xs') || $mdMedia('sm')
-        }, function(wantsFullScreen) {
-            $scope.customFullscreen = (wantsFullScreen === true)
-        })
     }
 
-    function SendMessageCtrl($scope, $mdDialog, LocalStorageService) {
+    /*
+     * Opens up a new window that allows the user to send a new message to another user.
+     *
+     * param="ev" The event that the user did.
+     * param="user_email_of_product" The email of the user that has the product.
+     */
+    $scope.sendNewMessage = function (ev, user_email_of_product) {
+        LocalStorageService.set('user_email_of_product', user_email_of_product);
+        console.log(LocalStorageService.get('user_email_of_product'))
+        $mdDialog.show({
+                controller: SendNewMessageCtrl,
+                templateUrl: 'templates/NewNotification.html',
+                parent: angular.element(document.body),
+                targetEvent: ev,
+                clickOutsideToClose: true,
+                fullscreen: true
+            })
+            .then(function(answer) {
+                getAllNotificationOfUser(currentUser.email)
+            }, function() {
+                getAllNotificationOfUser(currentUser.email)
+            })
+    }
+
+    /*
+     * The controller that has the behavior of replying to existing notifications.
+     *
+     * param="$scope" Angularjs' $scope.
+     * param="$mdDialog" Angular Material's $mdDialog.
+     * param="LocalStorageService" The service that allows to store data in the local storage of the browser.
+     */
+    function SendReplyMessageCtrl($scope, $mdDialog, LocalStorageService) {
         const user = JSON.parse(LocalStorageService.get('user'))
         var currentNotification = LocalStorageService.get('currentNotification')
         currentNotification = JSON.parse(currentNotification)
         $scope.message = currentNotification.notification_message.S
         $scope.sender_name = currentNotification.sender_name.S
 
+        /*
+         * This function hides the $mdDialog window without any actions.
+         */
         $scope.hide = function() {
             $mdDialog.hide()
         }
 
+        /*
+         * This function cancels the $mdDialog window with all its proceses.
+         */
         $scope.cancel = function() {
             $mdDialog.cancel()
         }
 
-        $scope.answer = function(answer) {
-            $mdDialog.hide(answer)
-        }
-
+        /*
+         * Creates a new notification in the database.
+         */
         $scope.sendNotification = function() {
             const newNotification = {
                 notification_message: $scope.notificationMessage,
                 user_email: user.email,
                 user_name: user.name,
                 user_picture: user.picture.data.url,
-                receiver_email: LocalStorageService.get('sender_email'),
-                product_id: " "
+                receiver_email: LocalStorageService.get('sender_email')
             }
             NotificationService.notifyUser(newNotification, (err, newNotification) => {
                 if (err) {
@@ -119,6 +148,11 @@ angular.module('BarterApp').controller('NotificationsCtrl', ['$scope', '$mdDialo
             })
         }
 
+        /*
+         * Update a notification of the user as read.
+         *
+         * param="_notification_id" The id of the notification to update.
+         */
         function updateNotificationAsRead(_notification_id) {
             NotificationService.updateNotificationAsRead(_notification_id, (err, data) => {
                 if (err) {
@@ -127,6 +161,51 @@ angular.module('BarterApp').controller('NotificationsCtrl', ['$scope', '$mdDialo
                 else {
                     console.log(data)
                     getAllNotificationOfUser(currentUserEmail)
+                    $scope.$apply()
+                }
+            })
+        }
+    }
+
+    /*
+     * The controller that has the behavior of creating new notifications.
+     *
+     * param="$scope" Angularjs' $scope.
+     * param="$mdDialog" Angular Material's $mdDialog.
+     */
+    function SendNewMessageCtrl($scope, $mdDialog) {
+        const user = JSON.parse(LocalStorageService.get('user'))
+
+        /*
+         * This function hides the $mdDialog window without any actions.
+         */
+        $scope.hide = function() {
+            $mdDialog.hide()
+        }
+
+        /*
+         * This function cancels the $mdDialog window with all its proceses.
+         */
+        $scope.cancel = function() {
+            $mdDialog.cancel()
+        }
+
+        /*
+         * Creates a new notification in the database.
+         */
+        $scope.createNewMessage = function() {
+            const newNotification = {
+                notification_message: $scope.newMessage,
+                user_email: user.email,
+                user_name: user.name,
+                user_picture: user.picture.data.url,
+                receiver_email: LocalStorageService.get('user_email_of_product')
+            }
+            NotificationService.notifyUser(newNotification, (err, newNotification) => {
+                if (err) {
+                    console.log(err)
+                }
+                else {
                     $scope.$apply()
                 }
             })

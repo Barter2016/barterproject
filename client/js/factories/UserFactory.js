@@ -1,4 +1,4 @@
-angular.module('BarterApp').factory('UserService', function() {
+angular.module('BarterApp').factory('UserService', ['UtilService', 'SessionService', 'LocalStorageService', '$window', function(UtilService, SessionService, LocalStorageService, $window) {
     
     const userService = {
         addUser : (user, callback) => {
@@ -9,22 +9,34 @@ angular.module('BarterApp').factory('UserService', function() {
             
             AWS.config.credentials.get((err) => {
                 if (err) {
-                    callback(err, null)
+                    if (err.message.indexOf("Invalid login token") > -1) {
+                        AWS.config.credentials = new AWS.CognitoIdentityCredentials({IdentityPoolId: 'us-east-1:0eb351fe-a9b6-4f00-ab1f-393802d750a5'})
+                        AWS.config.credentials.clearCachedId()
+                        LocalStorageService.setObject('local_session', null)
+                        SessionService.destroy()
+                        UtilService.go('/Home')
+                        $window.location.reload()  
+                    }
+                    else {
+                        callback(err, null)
+                    }
                 }
                 else {
                     const lambda = new AWS.Lambda({
                         region: 'us-west-2'
                     });
-    
+                    
                     const lambda_params = {
                         FunctionName: 'addUser',
                         Payload: JSON.stringify({
-                            user_id: user.email,
                             email: user.email,
                             first_name: user.first_name,
                             last_name: user.last_name,
                             address: user.address,
-                            auth_type: 'facebook'
+                            city: user.city,
+                            country: user.country,
+                            province: user.province,
+                            postalcode: user.postalcode
                         })
                     };
     
@@ -54,7 +66,17 @@ angular.module('BarterApp').factory('UserService', function() {
             
             AWS.config.credentials.get((err) => {
                 if (err) {
-                    callback(err, null)
+                    if (err.message.indexOf("Invalid login token") > -1) {
+                        AWS.config.credentials = new AWS.CognitoIdentityCredentials({IdentityPoolId: 'us-east-1:0eb351fe-a9b6-4f00-ab1f-393802d750a5'})
+                        AWS.config.credentials.clearCachedId()
+                        LocalStorageService.setObject('local_session', null)
+                        SessionService.destroy()
+                        UtilService.go('/Home')
+                        $window.location.reload()  
+                    }
+                    else {
+                        callback(err, null)
+                    }
                 }
                 else {
                     const lambda = new AWS.Lambda({
@@ -69,7 +91,7 @@ angular.module('BarterApp').factory('UserService', function() {
                     };
     
                     lambda.invoke(lambda_params, (error, response) => {
-                        if (error) {
+                         if (error) {
                             callback(error, null)
                         }
                         else {
@@ -88,4 +110,4 @@ angular.module('BarterApp').factory('UserService', function() {
     }
     
     return userService
-})
+}])

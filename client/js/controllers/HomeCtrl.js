@@ -4,9 +4,20 @@ angular.module('BarterApp').controller('HomeCtrl', ['$scope',
 'CategoryService',
 'LocalStorageService',
 'ProductHistoryService',
+'MessageService',
 'AuthService',
 'ImageService',
-function($scope, UtilService, ProductService, CategoryService, LocalStorageService, ProductHistoryService, AuthFactory, ImageService) {
+'OfferService',
+function($scope, 
+UtilService, 
+ProductService, 
+CategoryService, 
+LocalStorageService, 
+ProductHistoryService, 
+MessageService, 
+AuthFactory,
+ImageService,
+OfferService) {
 
         $scope.is_auth = false
         $scope.categories = [] // Save the last scanned categories in an array.
@@ -16,7 +27,12 @@ function($scope, UtilService, ProductService, CategoryService, LocalStorageServi
         $scope.selectedCategory
         $scope.go = UtilService.go
         $scope.data_loaded = false
-
+        
+        OfferService.addOffer(null, null, null, (err, tt) => {
+            console.log("test")
+            console.log(err, tt)
+        })
+        
         $scope.categoryChanged = () => {
             try {
                 const selectedCategoryName = $scope.selectedCategory.category_name.S
@@ -89,6 +105,10 @@ function($scope, UtilService, ProductService, CategoryService, LocalStorageServi
                 UtilService.go('/Offer/' + selectedProduct.product_id.S)
             }
         }
+        
+        $scope.sendNewMessageDialog = function(event, product_user_email) {
+            MessageService.sendNewMessage(event, product_user_email)
+        }
 
         if (productsInCache.length == 0 && AuthFactory.checkIfAuth()) {
             refreshProducts()
@@ -96,6 +116,10 @@ function($scope, UtilService, ProductService, CategoryService, LocalStorageServi
 
         if ($scope.categories.length == 0 && AuthFactory.checkIfAuth()) {
             refreshCategories()
+        }
+        
+        $scope.viewProduct = (product) => {
+            window.location.href = '/#/Product/' + product;
         }
     }
 ]);

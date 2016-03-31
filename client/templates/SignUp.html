@@ -1,46 +1,73 @@
 <div id="sign-up-view">
-    
-    <md-card flex>
+    <div class="loading grey-background" layout="column" layout-align="center center" ng-show="show_loading">
+        <md-progress-circular md-mode="indeterminate" class="md-primary" md-diameter="80"></md-progress-circular>
+    </div>
+    <md-card flex ng-hide="show_loading">
         <md-card-title class="card-title">
             <md-card-title-text>
                 <span class="md-headline">Inscription</span>
             </md-card-title-text>
         </md-card-title>
         <md-card-content>
-            <div layout="row">
-                <md-input-container flex>
-                    <label>Email</label>
-                    <input type="text" ng-model="user.email" ng-disabled="true">
-                </md-input-container>
-                <md-input-container flex>
-                    <label>Nom</label>
-                    <input type="text" ng-model="user.name" ng-disabled="true">
-                </md-input-container>
-            </div>
-            <div layout="row">
-                <md-input-container flex>
-                    <label>Adresse postale</label>
-                    <input type="text" ng-model="user.adress">
-                </md-input-container>
-                <md-input-container flex>
-                    <label>Ville</label>
-                    <input type="text" ng-model="user.city">
-                </md-input-container>
-                <md-input-container flex>
-                    <label>Pays</label>
-                    <input type="text" ng-model="user.country" ng-disabled="false" value="Canada">
-                </md-input-container>
-                <md-input-container flex>
-                    <label>Code postal</label>
-                    <input type="text" ng-model="user.postalcode">
-                </md-input-container>
-            </div>
+            <form name="signupForm">
+                <div layout="row" layout-xs="column">
+                    <md-input-container flex class="md-block">
+                        <label>Email</label>
+                        <input type="email" name="email" ng-model="user.email" ng-disabled="true" required />
+                        <ng-messages for="signupForm.email.$error" md-auto-hide="false">
+                            <ng-message when="required">Ce champ est obligatoire.</ng-message>
+                        </ng-messages>
+                    </md-input-container>
+                    <md-input-container flex class="md-block">
+                        <label>Nom</label>
+                        <input type="text" name="name" ng-model="user.name" ng-disabled="true" required />
+                        <ng-messages for="signupForm.name.$error" md-auto-hide="false">
+                            <ng-message when="required">Ce champ est obligatoire.</ng-message>
+                        </ng-messages>
+                    </md-input-container>
+                </div>
+                <div layout="row" layout-xs="column">
+                    <md-input-container flex class="md-block">
+                        <label>Adresse postale</label>
+                        <input type="text" name="address" ng-model="user.address" required />
+                        <ng-messages for="signupForm.address.$error" md-auto-hide="false">
+                            <ng-message when="required">Ce champ est obligatoire.</ng-message>
+                        </ng-messages>
+                    </md-input-container>
+                    <md-input-container flex class="md-block">
+                        <label>Pays</label>
+                        <input type="text" name="country" ng-model="user.country" ng-disabled="false" required />
+                        <ng-messages for="signupForm.country.$error" md-auto-hide="false">
+                            <ng-message when="required">Ce champ est obligatoire.</ng-message>
+                        </ng-messages>
+                    </md-input-container>
+                    <md-input-container flex class="md-block" ng-show="user.country === 'Canada'">
+                        <label>Province</label>
+                        <input type="text" name="province" ng-model="user.province" required />
+                        <ng-messages for="signupForm.province.$error" md-auto-hide="false">
+                            <ng-message when="required">Ce champ est obligatoire.</ng-message>
+                        </ng-messages>
+                    </md-input-container>
+                    <md-input-container flex class="md-block">
+                        <label>Ville</label>
+                        <input type="text" name="city" ng-model="user.city" required />
+                        <ng-messages for="signupForm.city.$error" md-auto-hide="false">
+                            <ng-message when="required">Ce champ est obligatoire.</ng-message>
+                        </ng-messages>
+                    </md-input-container>
+                    <md-input-container flex class="md-block">
+                        <label>Code postal</label>
+                        <input type="text" name="postalcode" ng-model="user.postalcode" ng-pattern="postalcode_regex" required />
+                        <ng-messages for="signupForm.postalcode.$error" multiple md-auto-hide="false">
+                            <ng-message when="required">Ce champ est obligatoire.</ng-message>
+                            <ng-message when="pattern">Vous devez entrer un code postal valide (ex: A1B 2C3).</ng-message>
+                        </ng-messages>
+                    </md-input-container>
+                </div>
+            </form>
         </md-card-content>
         <md-card-actions layout="row" layout-align="start center">
-            <span flex></span>
             <md-button class="md-raised md-primary" ng-click="signUp()">M'inscrire</md-button>
-            <span flex></span>
         </md-card-actions>
     </md-card>
-
 </div>

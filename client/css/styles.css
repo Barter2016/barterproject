@@ -109,8 +109,20 @@ md-toolbar {
 }
 
 .responde-card-title {
-    background-color: #F6F6F6;
-    color: #000000;
+    background-color: #607d8b;
+    color: #ffffff;
+}
+
+.text-centered {
+    text-align: center;
+}
+
+.offers-list {
+    padding: 0;
+}
+
+.offers-list md-list {
+    padding: 0;
 }
 
 /* White background for profile picture */
@@ -122,4 +134,21 @@ md-toolbar {
     -webkit-border-radius: 100%;
 	-moz-border-radius: 100%;
 	text-align : center;
+}
+
+/* CAROUSEL for product images*/
+
+#slides_control > div{
+  height: 200px;
+}
+img{
+  margin:auto;
+  width: 400px;
+}
+#slides_control {
+  position:absolute;
+  width: 400px;
+  left:50%;
+  top:20px;
+ margin-left:-200px;
 }

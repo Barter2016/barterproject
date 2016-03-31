@@ -4,7 +4,8 @@ angular.module('BarterApp').factory('AuthService', ['SessionService',
 'UtilService',
 'UserService', function(SessionService, LocalStorageService, $window, UtilService, UserService) {
     
-    var user;
+    var user
+    var facebookResponse
     
     const AuthService = {
         
@@ -16,18 +17,27 @@ angular.module('BarterApp').factory('AuthService', ['SessionService',
             return user
         },
         
+        setFacebookResponse: (data) => {
+            facebookResponse = data
+        },
+        
+        getFacebookResponse: () => {
+            return facebookResponse
+        },
+        
         signInWithFacebook : () => FB.login((response) => {
             if (response.status == "connected") {
                 AuthService.getFacebookUserInfo(function(data) {
                     
                     UserService.queryUser(data.email, function(err, user) {
                         if (err) {
-                            console.log(err);
+                            console.log(err)
                         }
                         else {
                             if (user.length === 0) { // The user isn't in the database
                                 
                                 AuthService.setUser(data)
+                                AuthService.setFacebookResponse(response)
                                 UtilService.goApply('/SignUp', true)
                                 
                             }
@@ -53,7 +63,31 @@ angular.module('BarterApp').factory('AuthService', ['SessionService',
         
         getFacebookUserInfo : (callback) => FB.api('me?fields=email,name,picture', (userInfo) => callback(userInfo)),
 
-        signUpWithFacebook: () => {
+        signUp: (new_user, callback) => {
+            
+            UserService.addUser(new_user, function(err, response) {
+                
+                if (err) {
+                    callback(err)
+                }
+                else {
+                    
+                    const credentials  = {
+                        IdentityPoolId: 'us-east-1:0eb351fe-a9b6-4f00-ab1f-393802d750a5',
+                        Logins: {
+                            'graph.facebook.com': AuthService.getFacebookResponse().authResponse.accessToken
+                        }
+                    }
+                    AWS.config.region = 'us-east-1'
+                    AWS.config.credentials = new AWS.CognitoIdentityCredentials(credentials)
+                    SessionService.create(credentials, null)
+                    LocalStorageService.setObject('local_session', SessionService.get().user_credentials)
+                    const user = AuthService.getUser()
+                    LocalStorageService.setObject('user', {email: user.email, name: user.name, picture : user.picture})
+                    callback(null)
+                }
+                
+            })
             
         },
         
@@ -61,13 +95,9 @@ angular.module('BarterApp').factory('AuthService', ['SessionService',
             
         },
         
-        signUpWithGoogle: () => {
-            
-        },
-        
         signOut: () => {
-            AWS.config.credentials = new AWS.CognitoIdentityCredentials({IdentityPoolId: 'us-east-1:0eb351fe-a9b6-4f00-ab1f-393802d750a5'});
-            AWS.config.credentials.clearCachedId();
+            AWS.config.credentials = new AWS.CognitoIdentityCredentials({IdentityPoolId: 'us-east-1:0eb351fe-a9b6-4f00-ab1f-393802d750a5'})
+            AWS.config.credentials.clearCachedId()
             LocalStorageService.setObject('local_session', null)
             SessionService.destroy()
             UtilService.go('/Home')
@@ -95,8 +125,8 @@ angular.module('BarterApp').factory('AuthService', ['SessionService',
             return auth
         }
     
-    };
+    }
     
-    return AuthService;
+    return AuthService
     
-}]);
+}])

@@ -1,4 +1,4 @@
-angular.module('BarterApp').factory('CategoryService', function() {
+angular.module('BarterApp').factory('CategoryService', ['AuthService', function(AuthService) {
     
     return  {
         
@@ -10,7 +10,12 @@ angular.module('BarterApp').factory('CategoryService', function() {
         scanAllCategories : (callback) => {
             AWS.config.credentials.get((err) => {
                 if (err) {
-                    callback(err, null)
+                    if (err.message.indexOf("Invalid login token") > -1) {
+                        AuthService.signOut();
+                    }
+                    else {
+                        callback(err, null)
+                    }
                 }
                 else {
                     const lambda = new AWS.Lambda({
@@ -48,7 +53,12 @@ angular.module('BarterApp').factory('CategoryService', function() {
         queryCategory : (idToFind, callback) => {
             AWS.config.credentials.get((err) => {
                 if (err) {
-                    callback(err, null)
+                    if (err.message.indexOf("Invalid login token") > -1) {
+                        AuthService.signOut();
+                    }
+                    else {
+                        callback(err, null)
+                    }
                 }
                 else {
                     const lambda = new AWS.Lambda({
@@ -64,7 +74,7 @@ angular.module('BarterApp').factory('CategoryService', function() {
         
                     lambda.invoke(lambda_params, (error, response) => {
                         if (error) {
-                            callback(error, null);
+                            callback(error, null)
                         }
                         else {
                             const payload = JSON.parse(response.Payload);
@@ -80,4 +90,4 @@ angular.module('BarterApp').factory('CategoryService', function() {
             })
         }
     }
-})
+}])

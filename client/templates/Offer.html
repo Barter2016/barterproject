@@ -1,13 +1,40 @@
 <div ng-cloak id="catalog-view">
 
-    <!-- Loading
-    <div class="loading grey-background" layout="column" layout-align="center center" ng-show="!data_loaded">
+    <!-- Loading -->
+    <div class="loading grey-background" layout="column" layout-align="center center" ng-show="!dataLoaded">
         <md-progress-circular md-mode="indeterminate" class="md-primary" md-diameter="80"></md-progress-circular>
     </div>
-     -->
+
     <!-- Page content -->
-    <div layout="column" flex>
-         <div style="width:500px; height:300px; background-color:black;"></div>
+    <div layout="column" ng-show="dataLoaded" flex>
+
+        <md-card>
+            <img ng-src="{{selectedProduct.image_names['SS'][0]}}" class="md-card-image" alt="Washed Out">
+            <md-card-title>
+                <md-card-title-text>
+                    <span class="md-headline">{{selectedProduct.product_name.S}}</span>
+                </md-card-title-text>
+            </md-card-title>
+            <md-card-content>
+                <p>
+                    {{selectedProduct.product_description.S}}
+                </p>
+            </md-card-content>
+            <md-card-content>
+                <md-list ng-cloak>
+                <md-subheader class="md-no-sticky">Sélectionner un ou plusieurs de vos objets dans votre catalogues</md-subheader>
+                <md-list-item ng-repeat="product in userProducts">
+                    <p>{{product.product_name.S}}</p>
+                    <md-checkbox class="md-secondary" ng-click="onProductChecked(product)"></md-checkbox>
+                </md-list-item>
+            </md-card-content>
+            <md-card-actions layout="row" layout-align="end center">
+                <md-button class="md-raised md-primary" ng-disabled="productToOffer.length == 0">Envoyer votre offre</md-button>
+                <md-button class="md-raised md-primary" href="/#/Home">Annuler</md-button>
+            </md-card-actions>
+        </md-card>
+
+        <h1></h1>
     </div>
 </div>
 

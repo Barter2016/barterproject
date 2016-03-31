@@ -11,7 +11,7 @@ angular.module('BarterApp').controller('MenuCtrl', ['$scope', 'UtilService', 'Lo
     $scope.signInWithFacebook = AuthService.signInWithFacebook
     $scope.signInWithGoogle = AuthService.signInWithFacebook
     $scope.signOut = AuthService.signOut
-    $scope.view = {title: "Les annonces"}
+    $scope.view = {title: " "}
 
     const auth = AuthService.checkIfAuth()
     if(auth) {

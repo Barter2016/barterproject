@@ -1,7 +1,4 @@
 angular.module('BarterApp').factory('ProductHistoryService', function() {
-
-
-
     /**
      * This service is a generic history of any kind of object the user wants to keep.
      */

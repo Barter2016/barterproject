@@ -1,4 +1,4 @@
-angular.module('BarterApp').factory('ProductService', [function() {
+angular.module('BarterApp').factory('ProductService', ['AuthService', function(AuthService) {
     
     const productService = {
     
@@ -13,7 +13,12 @@ angular.module('BarterApp').factory('ProductService', [function() {
             
             AWS.config.credentials.get(function(err) {
                 if (err) {
-                    callback(err, null)
+                    if (err.message.indexOf("Invalid login token") > -1) {
+                        AuthService.signOut();
+                    }
+                    else {
+                        callback(err, null)
+                    }
                 }
                 else {
                     const lambda = new AWS.Lambda({
@@ -82,7 +87,12 @@ angular.module('BarterApp').factory('ProductService', [function() {
         addProduct : (product, callback) => {
             AWS.config.credentials.get(function(err) {
                 if (err) {
-                    callback(err, null);
+                    if (err.message.indexOf("Invalid login token") > -1) {
+                        AuthService.signOut();
+                    }
+                    else {
+                        callback(err, null)
+                    }
                 } 
                 else {
                     const lambda = new AWS.Lambda({region: 'us-west-2'})
@@ -103,7 +113,57 @@ angular.module('BarterApp').factory('ProductService', [function() {
                     lambda.invoke(lambda_params, (error, response) => {
                         if (error) {
                             callback(error, null)
-                        }   
+                        }  
+                        else {
+                            const payload = JSON.parse(response.Payload)
+                            if (payload.errorMessage) {
+                                callback(payload.errorMessage, null)
+                            }
+                            else {
+                                callback(null, payload)
+                            }
+                        }
+                    });
+                }
+            })
+        },
+        /**
+         * updates a product in the database.
+         * 
+         * param {product} is the product to update
+         * param {callback} if an error has occured the callback will have the
+         * signature of: (error, null), otherwise (null, productId)
+         */ 
+        updateProduct : (product, callback) => {
+            AWS.config.credentials.get(function(err) {
+                if (err) {
+                    if (err.message.indexOf("Invalid login token") > -1) {
+                        AuthService.signOut();
+                    }
+                    else {
+                        callback(err, null)
+                    }
+                } 
+                else {
+                    const lambda = new AWS.Lambda({region: 'us-west-2'})
+    
+                    const payload = {
+                            "product_id": product.product_id,
+                            "product_name": product.product_name,
+                            "product_description": product.product_description,
+                            "product_tags": product.product_tags,
+                            "category_id": product.category_id,
+                    }
+                    
+                    const lambda_params = {
+                        FunctionName: 'updateProduct',
+                        Payload: JSON.stringify(payload)
+                    }
+                    
+                    lambda.invoke(lambda_params, (error, response) => {
+                        if (error) {
+                            callback(error, null)
+                        }  
                         else {
                             const payload = JSON.parse(response.Payload)
                             if (payload.errorMessage) {
@@ -118,7 +178,6 @@ angular.module('BarterApp').factory('ProductService', [function() {
             })
         }, 
         
-        
         addImageToProduct : (productId, imageURL, callback) => {
             if(!productId){
                 callback(new Error('Product ID can not be null'), null)
@@ -129,8 +188,13 @@ angular.module('BarterApp').factory('ProductService', [function() {
             else {
                 AWS.config.credentials.get(function(err) {
                     if (err) {
-                        callback(err, null);
-                    } 
+                    if (err.message.indexOf("Invalid login token") > -1) {
+                            AuthService.signOut();
+                        }
+                        else {
+                            callback(err, null)
+                        }
+                    }
                     else {
                         const lambda = new AWS.Lambda({region: 'us-west-2'})
         
@@ -147,7 +211,7 @@ angular.module('BarterApp').factory('ProductService', [function() {
                         lambda.invoke(lambda_params, (error, response) => {
                             if (error) {
                                 callback(error, null)
-                            }   
+                            }  
                             else {
                                 const payload = JSON.parse(response.Payload)
                                 
@@ -167,7 +231,12 @@ angular.module('BarterApp').factory('ProductService', [function() {
         scanProductsByUser: (user_id, callback) => {
             AWS.config.credentials.get((err) => {
                 if (err) {
-                    callback(err, null)
+                    if (err.message.indexOf("Invalid login token") > -1) {
+                        AuthService.signOut();
+                    }
+                    else {
+                        callback(err, null)
+                    }
                 }
                 else {
                     const lambda = new AWS.Lambda({
@@ -207,7 +276,12 @@ angular.module('BarterApp').factory('ProductService', [function() {
             
             AWS.config.credentials.get((err) => {
                 if (err) {
-                    callback(err, null)
+                    if (err.message.indexOf("Invalid login token") > -1) {
+                        AuthService.signOut();
+                    }
+                    else {
+                        callback(err, null)
+                    }
                 }
                 else {
                     const lambda = new AWS.Lambda({

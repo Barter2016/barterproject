@@ -9,34 +9,38 @@ angular.module('BarterApp').config(function($routeProvider) {
     
     .when('/Home', {
         templateUrl: 'templates/Home.html',
-        controller: 'HomeCtrl',
-        cache: true
+        controller: 'HomeCtrl'
     })
     
     .when('/Catalogue', {
         templateUrl: 'templates/Catalogue.html',
-        controller: 'CatalogueCtrl',
-        cache: true
+        controller: 'CatalogueCtrl'
     })
     
     .when('/Notifications', {
-        templateUrl: 'templates/ViewNotifications.html',
-        controller: 'NotificationsCtrl',
-        cache: true
+        templateUrl: 'templates/Notification.html',
+        controller: 'MessageCtrl'
     })
     
     .when('/Product/:id', {
         templateUrl: 'templates/Product.html',
-        controller: 'ProductCtrl',
-        cache: true
+        controller: 'ProductCtrl'
+    })
+    
+    .when('/EditProduct/:id', {
+        templateUrl: 'templates/EditProduct.html',
+        controller: 'EditProductCtrl'
     })
     
     .when('/Offer/:id', {
         templateUrl: 'templates/Offer.html',
-        controller: 'OfferCtrl',
-        cache: true
+        controller: 'OfferCtrl'
     })
     
-    .otherwise('/Home');
+    .when('/PageNotFound', {
+        templateUrl: 'templates/404.html'
+    })
+    
+    .otherwise('/PageNotFound');
    
 });

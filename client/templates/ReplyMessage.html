@@ -1,0 +1,34 @@
+<md-dialog flex>
+    <md-dialog-content>
+        <div ng-app="BarterApp" ng-cloak="" layout-md-lg="row">
+            <md-card>
+                <md-card-title class="responde-card-title">
+                    <md-card-title-text>
+                        <span class="md-headline">Répondre au message</span>
+                    </md-card-title-text>
+                </md-card-title>
+                <md-content>
+                    <md-card-content>
+                        <form name="messageForm">
+                            <h4>Message de {{ sender_name }} :</h4>
+                            <md-container class="md-block">
+                                <p>{{ message }}</p>
+                            </md-container>
+                            <h4>Votre réponse :</h4>
+                            <md-input-container class="md-block">
+                                <input required="" md-maxlength="300" type="textarea" placeholder="Le contenu de votre message" name="messageText" ng-model="messageText">
+                                <div ng-messages="messageForm.messageText.$error">
+                                    <div ng-message="required">Ce champs est obligatoire.</div>
+                                </div>
+                            </md-input-container>
+                        </form>
+                        <div class="div-button" layout="row">
+                            <md-button layout-align="center right" class="md-raised" ng-click="cancel()">Annuler</md-button>
+                            <md-button layout-align="center right" class="md-raised" ng-disabled="messageForm.$invalid" ng-click="sendNewMessage()">Envoyer</md-button>
+                        </div>
+                    </md-card-content>
+                </md-content>
+            </md-card>
+    </md-dialog-content>
+    </div>
+</md-dialog>

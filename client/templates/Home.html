@@ -28,10 +28,23 @@
                 </div>
             </md-card-content>
             <md-card-actions layout="row" layout-align="start center">
-                <md-button class="md-raised md-primary" ng-click="searchProduct()">Rechercher</md-button>
+                <md-button class="md-raised md-primary" ng-click="searchProduct()">
+                    <md-icon class="material-icons">search</md-icon>
+                    Rechercher
+                </md-button>
                 <span flex></span>
-                <md-button class="md-raised md-primary" ng-click="goBackInHistory()"><md-icon class="material-icons">keyboard_arrow_left</md-icon></md-button>
-                <md-button class="md-raised md-primary" ng-click="goFowardInHistory()"><md-icon class="material-icons">keyboard_arrow_right</md-icon></md-button>
+                <md-button class="md-primary md-icon-button" ng-click="goBackInHistory()">
+                    <md-icon class="material-icons">keyboard_arrow_left</md-icon>
+                    <md-tooltip md-direction="top" md-autohide="true">
+                        Reculer dans votre historique de recherches
+                    </md-tooltip>
+                </md-button>
+                <md-button class="md-primary md-icon-button" ng-click="goFowardInHistory()">
+                    <md-icon class="material-icons">keyboard_arrow_right</md-icon>
+                    <md-tooltip md-direction="top" md-autohide="true">
+                        Avancer dans votre historique de recherches
+                    </md-tooltip>
+                </md-button>
             </md-card-actions>
         </md-card>
 
@@ -41,23 +54,32 @@
                     <span class="md-headline">Liste des annonces</span>
                 </md-card-title-text>
             </md-card-title>
-            <md-card-content>
-                <div ng-cloak layout-gt-sm="row" layout="column">
-                    <div flex-gt-sm="50" flex>
-                        <md-list-item class="md-3-line" ng-repeat="product in productsToDisplay">
-                            <md-divider></md-divider>
-                            <div class="md-list-item-text" layout="column">
-                                <h3>Nom: {{ product.product_name.S }}</h3>
-                                <h4>Catégorie: {{ product.category_name.S}}</h4>
-                                <p>Description: {{ product.product_description.S }}</p>
-                            </div>
-                            <md-list-item>
-                                 <md-button class="md-raised md-primary" ng-click="doOffer(product)">Faire une offre</md-button>
-                            </md-list-item>
-                        </md-list-item>
-                    </div>
-                </div>
-
+            <md-card-content class="offers-list">
+                <md-list>
+                    <md-list-item class="md-3-line" ng-repeat="product in productsToDisplay" ng-click="null">
+                        <md-divider></md-divider>
+                        <img ng-src="{{ product.image_names['SS'][0] }}" style="width:125px;height:125px;margin-right:10px;margin:5px" />
+                        <div class="md-list-item-text" layout="column">
+                            <h3>{{ product.product_name.S }}</h3>
+                            <h4>{{ product.category_name.S}}</h4>
+                            <p>{{ product.product_description.S }}</p>
+                        </div>
+                        <div layout="column" layout-align="space-between end">
+                            <md-button class="md-primary md-icon-button" ng-click="viewProduct(product.product_id.S)">
+                                <md-icon class="material-icons">add</md-icon>
+                                <md-tooltip md-direction="left" md-autohide="true">
+                                    Voir les détails
+                                </md-tooltip>
+                            </md-button>
+                            <md-button class="md-primary md-icon-button" ng-click="sendNewMessage($event, product.user_email.S)">
+                                <md-icon class="material-icons">message</md-icon>
+                                <md-tooltip md-direction="left" md-autohide="true">
+                                    Envoyer un message à l'annonceur
+                                </md-tooltip>
+                            </md-button>
+                        </div>
+                    </md-list-item>
+                </md-list>
             </md-card-content>
         </md-card>
     </div>

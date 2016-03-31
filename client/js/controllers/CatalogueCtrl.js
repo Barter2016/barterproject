@@ -3,7 +3,9 @@ angular.module('BarterApp').controller('CatalogueCtrl', ['$scope',
 'CategoryService', 
 'LocalStorageService',
 'AuthService',
-'BucketService', function($scope, ProductService, CategoryService, LocalStorageService, AuthService, BucketService) {
+'BucketService',
+'UtilService',
+function($scope, ProductService, CategoryService, LocalStorageService, AuthService, BucketService, UtilService) {
     const user = LocalStorageService.getObject('user')
     $scope.data_loaded = false
     $scope.products
@@ -72,6 +74,10 @@ angular.module('BarterApp').controller('CatalogueCtrl', ['$scope',
         }
     }
     $scope.viewProduct = (product) => {
-        window.location.href = '/#/Product/' + product;
+        //window.location.href = '/#/Product/' + product;
+        UtilService.go('/Product/' + product)
+    }
+    $scope.editProduct = (product) => {
+        UtilService.go('/EditProduct/' + product)
     }
 }]);

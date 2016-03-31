@@ -1,0 +1,52 @@
+<div ng-cloak id="edit-product-view">
+    <div layout="column" flex>
+        <md-card flex>
+            <md-card-title class="card-title">
+                <md-card-title-text>
+                    <span class="md-headline">Modification d'une annonce</span>
+                </md-card-title-text>
+            </md-card-title>
+            <md-card-content>
+                <form ng-submit="submit()" class="md-inline-form" name="editProductForm" ng-cloak>
+                    <div layout="row">
+                        
+                        <md-input-container class="md-block" flex-gt-sm>
+                            <label>Nom du produit</label>
+                            <input ng-model="new_product.product_name" name="productName" value="pouet" required>
+                            <div ng-messages="editProductForm.productName.$error">
+                                <div ng-message="required">Veuillez entrer le nouveau nom de votre produit.</div>
+                            </div>
+                        </md-input-container>
+                    </div>
+                    <div layout="row">
+                        <md-input-container class="md-block" flex-gt-sm>
+                            <label>Description du produit</label>
+                            <input name="productDescription" type="textarea" ng-model="new_product.product_description" md-maxlength="200" rows="5" md-select-on-focus required>
+                            <div ng-messages="addProductForm.productDescription.$error">
+                                <div ng-message="required">Veuillez entrer la nouvelle description de votre produit.</div>
+                            </div>
+                        </md-input-container>
+                    </div>
+                    <div layout="row">
+                        <md-input-container class="md-block" flex>
+                            <label>Categories</label>
+                            <md-select ng-model="new_product.category_id" name "productCategory" required>
+                                <md-option ng-repeat="category in categories" value={{category.category_id.S}}>{{category.category_name.S}}</md-option>
+                            </md-select>
+                            <div ng-messages="editProductForm.productCategory.$error">
+                                <div ng-message="required">Veuillez sélectionner la nouvelle catégorie de votre produit.</div>
+                            </div>
+                        </md-input-container>
+                        <md-input-container class="md-block" flex>
+                            <input id="imageFile" type="file">
+                        </md-input-container>
+                    </div>
+                </form>
+            </md-card-content>
+            <md-card-actions layout="row" layout-align="start center">
+                <md-button class="md-raised md-primary" ng-disabled="editProductForm.$invalid" ng-click="editProduct(new_product)">Modifier produit</md-button>
+                <span flex></span>
+            </md-card-actions>
+        </md-card>
+    </div>
+</div>

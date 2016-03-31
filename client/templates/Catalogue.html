@@ -22,13 +22,16 @@
                             <div flex-gt-sm="50" flex>
                                 <md-list-item class="md-3-line" ng-repeat="product in products">
                                     <md-divider></md-divider>
-                                    <div class="md-list-item-text" layout="column">
-                                        <h3>Nom: {{ product.product_name.S }}</h3>
-                                        <h4>Catégorie: {{ product.category_name.S}}</h4>
-                                        <p>Description: {{ product.product_description.S }}</p>
-                                        <img ng-src="{{ product.image_names['SS'][0] }}" class="md-avatar">
-                                        <md-button ng-click="viewProduct(product.product_id.S)">Afficher</md-button>
-                                    </div>
+                                        <img ng-src="{{ product.image_names['SS'][0] }}" style="width:125px;height:125px;margin-right:10px;margin:5px">
+                                        <div class="md-list-item-text" layout="column">
+                                            <h3>Nom: {{ product.product_name.S }}</h3>
+                                            <p>Catégorie: {{ product.category_name.S}}</p>
+                                            <p>Description: {{ product.product_description.S }}</p>
+                                        </div>
+                                        <md-list-item>
+                                            <md-button class="md-raised md-primary" ng-click="viewProduct(product.product_id.S)">Afficher</md-button>
+                                            <md-button class="md-raised md-primary" ng-click="editProduct(product.product_id.S)">Modifier</md-button>
+                                        </md-list-item>
                                 </md-list-item>
                             </div>
                         </div>

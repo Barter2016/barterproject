@@ -1,0 +1,15 @@
+{
+  "name": "add-offer",
+  "version": "1.0.0",
+  "description": "",
+  "main": "addOffer.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "aws-sdk": "^2.2.48",
+    "md5": "^2.1.0"
+  }
+}
