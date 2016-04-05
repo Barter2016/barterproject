@@ -37,8 +37,6 @@ exports.addProduct = function (event, context) {
                 context.fail(err)
             }  
             else {
-				console.log(category.Items[0].category_id)
-				console.log(category.Items[0].category_name)
 				
                 const date = new Date()	
                 const productId = event.user_email + date.getTime()
@@ -53,7 +51,8 @@ exports.addProduct = function (event, context) {
                         "product_tags" : { "S" : event.product_tags },
                         "category_id" : { "S" : event.category_id },
                         "product_description" : { "S" : event.product_description },
-                        "image_names": { "SS" : [] }
+                        //"image_names": { "SS" : [] }
+                        "product_date": { "S" : date.toLocaleDateString() }
                     }
                 }
                 
@@ -61,7 +60,7 @@ exports.addProduct = function (event, context) {
                     if (err) {
                         context.fail(err)
                     } else {
-                        context.succeed(data)
+                        context.succeed(hashedProductId)
                     }
                 })
             }

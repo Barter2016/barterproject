@@ -153,6 +153,7 @@ angular.module('BarterApp').factory('ProductService', ['AuthService', function(A
                             "product_description": product.product_description,
                             "product_tags": product.product_tags,
                             "category_id": product.category_id,
+                            "image_names": product.image_names,
                     }
                     
                     const lambda_params = {
@@ -177,6 +178,52 @@ angular.module('BarterApp').factory('ProductService', ['AuthService', function(A
                 }
             })
         }, 
+        /**
+         * deletes a product in the database.
+         * 
+         * param {product} is the product to delete
+         * param {callback} if an error has occured the callback will have the
+         * signature of: (error, null), otherwise (null, productId)
+         */ 
+        deleteProduct : (product, callback) => {
+            AWS.config.credentials.get(function(err) {
+                if (err) {
+                    if (err.message.indexOf("Invalid login token") > -1) {
+                        AuthService.signOut();
+                    }
+                    else {
+                        callback(err, null)
+                    }
+                } 
+                else {
+                    const lambda = new AWS.Lambda({region: 'us-west-2'})
+    
+                    const payload = {
+                            "product_id": product.product_id
+                    }
+                    
+                    const lambda_params = {
+                        FunctionName: 'deleteProduct',
+                        Payload: JSON.stringify(payload)
+                    }
+                    
+                    lambda.invoke(lambda_params, (error, response) => {
+                        if (error) {
+                            callback(error, null)
+                        }  
+                        else {
+                            const payload = JSON.parse(response.Payload)
+                            if (payload.errorMessage) {
+                                callback(payload.errorMessage, null)
+                            }
+                            else {
+                                callback(null, payload)
+                            }
+                        }
+                    });
+                }
+            })
+        },
         
         addImageToProduct : (productId, imageURL, callback) => {
             if(!productId){

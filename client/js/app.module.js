@@ -1,1 +1,1 @@
-angular.module('BarterApp', ['ngRoute', 'ngMaterial', 'ngMessages']);
+angular.module('BarterApp', ['ngRoute', 'ngMaterial', 'ngMessages', 'ngSanitize']);

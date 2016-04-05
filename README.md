@@ -6,7 +6,6 @@ ajouter la localisation (les offres les plus proches)
 
 #INTERFACE GRAFIQUE
 
-Faire une page not found.
 alertify js
 
 #NOTIFICATIONS (pk)
@@ -16,7 +15,7 @@ clear all read messages (flag delete)
 
 #USERS
 
-création des users selon le compte facebook
+Création d'un user par google.
 
 #Annonces
 
@@ -35,8 +34,8 @@ ajout de plusieurs images pour un produit
 
 watch list (wish list un peu)
 création d'utilisateurs local
-authentification avec google
 localisation
-tags
 tinder
+tags
+création d'utilisateur en local.
 interface admin simple pour ajouter des catégories, etc...

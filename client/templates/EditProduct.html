@@ -1,4 +1,7 @@
-<div ng-cloak id="edit-product-view">
+<div class="loading grey-background" layout="column" layout-align="center center" ng-show="!data_loaded">
+    <md-progress-circular md-mode="indeterminate" class="md-primary" md-diameter="80"></md-progress-circular>
+</div>
+<div ng-cloak id="edit-product-view" ng-show="data_loaded">
     <div layout="column" flex>
         <md-card flex>
             <md-card-title class="card-title">
@@ -42,6 +45,30 @@
                         </md-input-container>
                     </div>
                 </form>
+                <md-subheader class="md-primary md-no-sticky">Images</md-subheader>
+                
+                <div flex="26" class="md-media-md card-media" layout="column">
+                    <ul class="photos-navigation">
+                        <li ng-repeat="img in selected_product.image_names['SS']" flex ng-hide="!isCurrentImgIndex($index)">
+                            <img ng-src="{{ img }}" class="md-card-image" />
+                        </li>
+                    </ul>
+                     <div>
+                            {{ currentImgIndex + 1 }} / {{ selected_product.image_names['SS'].length }}
+                        </div>
+                    <div class="photos-scroll" flex layout="row">
+                        <md-button class="md-icon-button md-primary" ng-click="showPreviousImg()">
+                            <md-icon class="material-icons">arrow_back</md-icon>
+                            <md-tooltip md-direction="left">Photo prédécente</md-tooltip>
+                        </md-button>
+                        <md-button class="md-icon-button md-primary" ng-click="showNextImg()">
+                            <md-icon class="material-icons">arrow_forward</md-icon>
+                            <md-tooltip md-direction="right">Photo suivante</md-tooltip>
+                        </md-button>
+                    </div>
+                </div>
+                <md-button class="md-raised md-primary" ng-disabled="selected_product.image_names['SS'].length == 0" ng-click="removeImageFromProduct(currentImgIndex)">Supprimer l'image</md-button>
+
             </md-card-content>
             <md-card-actions layout="row" layout-align="start center">
                 <md-button class="md-raised md-primary" ng-disabled="editProductForm.$invalid" ng-click="editProduct(new_product)">Modifier produit</md-button>

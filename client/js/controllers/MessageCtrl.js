@@ -1,13 +1,14 @@
 angular.module('BarterApp').controller('MessageCtrl', ['$scope', '$mdDialog', '$mdToast', '$mdMedia', 'MessageService', 'LocalStorageService', function($scope, $mdDialog, $mdToast, $mdMedia, MessageService, LocalStorageService) {
     $scope.data_loaded = false
     const currentUser = LocalStorageService.getObject('user')
-    
+
     /*
      * This function is called the notifications page init.
      */
     $scope.init = function() {
         if (currentUser) {
-            getAllMessagesOfUser(currentUser.email)
+            scanUnreadMessagesOfUser()
+            scanReadMessagesOfUser()
         }
     }
 
@@ -23,7 +24,47 @@ angular.module('BarterApp').controller('MessageCtrl', ['$scope', '$mdDialog', '$
             }
             else {
                 console.log(data)
-                getAllMessagesOfUser(currentUser.email)
+                scanUnreadMessagesOfUser()
+                $scope.$apply()
+            }
+        })
+    }
+    
+    $scope.scanUnreadMessagesOfUser = function() {
+        scanUnreadMessagesOfUser()
+    }
+    
+    /*
+     * Returns all the unread messages of the user.
+     */
+    function scanUnreadMessagesOfUser() {
+        MessageService.scanUnreadMessagesOfUser(currentUser.email, (err, unreadMessages) => {
+            if (err) {
+                console.log(err)
+            }
+            else {
+                $scope.unread_messages = unreadMessages
+                $scope.data_loaded = true
+                $scope.$apply()
+            }
+        })
+    }
+    
+    $scope.scanReadMessagesOfUser = function() {
+        scanReadMessagesOfUser()
+    }
+    
+    /*
+     * Returns all the read messages of the user.
+     */
+    function scanReadMessagesOfUser() {
+        MessageService.scanReadMessagesOfUser(currentUser.email, (err, readMessages) => {
+            if (err) {
+                console.log(err)
+            }
+            else {
+                $scope.read_messages = readMessages
+                $scope.data_loaded = true
                 $scope.$apply()
             }
         })
@@ -57,43 +98,38 @@ angular.module('BarterApp').controller('MessageCtrl', ['$scope', '$mdDialog', '$
         LocalStorageService.set('currentMessage', JSON.stringify(message))
 
         $mdDialog.show({
-                controller: ReplyMessageCtrl,
-                templateUrl: 'templates/ReplyMessage.html',
-                parent: angular.element(document.body),
-                targetEvent: event,
-                clickOutsideToClose: true,
-                fullscreen: true
-            })
-            .then(function(answer) {
-                getAllMessagesOfUser(currentUser.email)
-            }, function() {
-                getAllMessagesOfUser(currentUser.email)
-            })
-    }
-
-    /*
-     * Opens up a new window that allows the user to send a new message to another user.
-     *
-     * param="ev" The event that the user did.
-     * param="user_email_of_product" The email of the user that has the product.
-     */
-    $scope.sendNewMessage = function (ev, user_email_of_product) {
-        LocalStorageService.set('user_email_of_product', user_email_of_product);
-        console.log(LocalStorageService.get('user_email_of_product'))
-        $mdDialog.show({
-            controller: SendNewMessageCtrl,
-            templateUrl: 'templates/NewNotification.html',
+            controller: ReplyMessageCtrl,
+            templateUrl: 'templates/ReplyMessage.html',
             parent: angular.element(document.body),
-            targetEvent: ev,
+            targetEvent: event,
             clickOutsideToClose: true,
             fullscreen: true
         })
         .then(function(answer) {
-            getAllMessagesOfUser(currentUser.email)
+            scanUnreadMessagesOfUser()
         }, function() {
-            getAllMessagesOfUser(currentUser.email)
+            scanUnreadMessagesOfUser()
         })
     }
+    
+    /*
+     * Deletes all the read messages of a receiver from the database.
+     *
+     * param="user_email" The email of the user to delete the messages from.
+     */
+    $scope.deleteReadMessagesByReceiver = function() {
+        MessageService.deleteReadMessagesByReceiver(currentUser.email, (err, data) => {
+            if (err) {
+                console.log(err)
+            }
+            else {
+                scanReadMessagesOfUser()
+                $scope.$apply()
+            }
+        })
+    }
+    
+    
 
     /*
      * The controller that has the behavior of replying to existing messages.
@@ -157,51 +193,6 @@ angular.module('BarterApp').controller('MessageCtrl', ['$scope', '$mdDialog', '$
                 }
                 else {
                     getAllMessagesOfUser(currentUser.email)
-                    $scope.$apply()
-                }
-            })
-        }
-    }
-
-    /*
-     * The controller that has the behavior of creating new notifications.
-     *
-     * param="$scope" Angularjs' $scope.
-     * param="$mdDialog" Angular Material's $mdDialog.
-     */
-    function SendNewMessageCtrl($scope, $mdDialog) {
-        const user = JSON.parse(LocalStorageService.get('user'))
-
-        /*
-         * This function hides the $mdDialog window without any actions.
-         */
-        $scope.hide = function() {
-            $mdDialog.hide()
-        }
-
-        /*
-         * This function cancels the $mdDialog window with all its proceses.
-         */
-        $scope.cancel = function() {
-            $mdDialog.cancel()
-        }
-
-        /*
-         * Creates a new notification in the database.
-         */
-        $scope.createNewMessage = function() {
-            const newNotification = {
-                notification_message: $scope.newMessage,
-                user_email: user.email,
-                user_name: user.name,
-                user_picture: user.picture.data.url,
-                receiver_email: LocalStorageService.get('user_email_of_product')
-            }
-            MessageService.notifyUser(newNotification, (err, newNotification) => {
-                if (err) {
-                    console.log(err)
-                }
-                else {
                     $scope.$apply()
                 }
             })

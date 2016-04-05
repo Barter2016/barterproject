@@ -1,22 +1,28 @@
-angular.module('BarterApp').factory('ImageService', [function() {
-    
+angular.module('BarterApp').factory('ImageService', ['FileService', function(FileService) {
+
     const imageService = {
-        
-        encodeToBase64: (file, callback) => {
-            // If the file is not null.
-            if(file) {
-                try {
-                    console.log('in imageService')
-                    const fileReader = new FileReader()
-                    file.onloaded = callback(null, readerEvent)
-                    fileReader.readAsBinaryString(file)
-                }
-                catch(err) {
-                    callback(err, null)
-                }
+
+        compress: (image, callback) => {
+            try {
+                const canvasTemp = document.createElement('canvas')
+                canvasTemp.width = image.naturalWidth
+                canvasTemp.height = image.naturalHeight
+                const contextTemp = canvasTemp.getContext("2d")
+                    .drawImage(image, 0, 0)
+                    
+                const compressedImageURL = canvasTemp.toDataURL("image/jpeg", 0.5)
+                FileService.getBase64FromDataURI(compressedImageURL, (err, base64String) => {
+                    FileService.base64ToBlob(base64String, (err, "image/jpeg", (err, blob) => {
+                        blob.name = image.name
+                        callback(null, blob)
+                    }))
+                })
+            }
+            catch (err) {
+                callback(err, null)
             }
         }
     }
-    
+
     return imageService
 }])

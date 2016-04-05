@@ -11,30 +11,33 @@
             
             <!-- My catalog tab -->
             <md-tab label="Mon catalogue">
-                <md-card flex>
-                    <md-card-title class="card-title">
-                        <md-card-title-text>
-                            <span class="md-headline">Mes annonces</span>
-                        </md-card-title-text>
+                <md-card flexs>
+                    <md-card-title class="border-bottom">
+                        <md-subheader class="md-primary md-no-sticky">Mes annonces</md-subheader>
                     </md-card-title>
-                    <md-card-content>
-                        <div ng-cloak layout-gt-sm="row" layout="column">
-                            <div flex-gt-sm="50" flex>
-                                <md-list-item class="md-3-line" ng-repeat="product in products">
-                                    <md-divider></md-divider>
-                                        <img ng-src="{{ product.image_names['SS'][0] }}" style="width:125px;height:125px;margin-right:10px;margin:5px">
-                                        <div class="md-list-item-text" layout="column">
-                                            <h3>Nom: {{ product.product_name.S }}</h3>
-                                            <p>Catégorie: {{ product.category_name.S}}</p>
-                                            <p>Description: {{ product.product_description.S }}</p>
-                                        </div>
-                                        <md-list-item>
-                                            <md-button class="md-raised md-primary" ng-click="viewProduct(product.product_id.S)">Afficher</md-button>
-                                            <md-button class="md-raised md-primary" ng-click="editProduct(product.product_id.S)">Modifier</md-button>
-                                        </md-list-item>
-                                </md-list-item>
-                            </div>
-                        </div>
+                    <md-card-content class="no-padding">
+                        <md-list layout="column" class="offers-list">
+                            <md-list-item class="md-2-line" ng-repeat="product in products" ng-click="viewProduct(product.product_id.S)">
+                                <div class="list-image" flex="15" layout="column" layout-align="center center">
+                                    <img ng-src="{{ product.image_names['SS'][0] }}" />
+                                </div>
+                                <div class="md-list-item-text" flex="65" layout="column">
+                                    <h3>{{ product.product_name.S }}</h3>
+                                    <p>{{ product.product_description.S }}</p>
+                                </div>
+                                <div flex="20" layout="column" layout-align="center end" class="item-buttons">
+                                    <md-button class="md-icon-button md-primary" ng-click="editProduct(product.product_id.S)">
+                                        <md-icon class="material-icons">mode_edit</md-icon>
+                                        <md-tooltip md-direction="left">Modifier</md-tooltip>
+                                    </md-button>
+                                    <md-button class="md-icon-button md-primary" ng-click="deleteProduct(product.product_id.S)">
+                                        <md-icon class="material-icons">delete</md-icon>
+                                        <md-tooltip md-direction="left">Supprimer</md-tooltip>
+                                    </md-button>
+                                </div>
+                                <md-divider></md-divider>
+                            </md-list-item>                         
+                        </md-list>
                     </md-card-content>
                 </md-card>
             </md-tab>
@@ -42,13 +45,8 @@
             <!-- Add a product tab -->
             <md-tab label="Ajouter une annonce">
                 <md-card flex>
-                    <md-card-title class="card-title">
-                        <md-card-title-text>
-                            <span class="md-headline">Ajout d'une annonce</span>
-                        </md-card-title-text>
-                    </md-card-title>
                     <md-card-content>
-                        <form ng-submit="submit()" class="md-inline-form" name="addProductForm" ng-cloak>
+                        <form ng-submit="submit()" class="md-inline-form" enctype="multipart/form-data" name="addProductForm" ng-cloak>
                             <div layout="row">
                                 <md-input-container class="md-block" flex-gt-sm>
                                     <label>Nom du produit</label>
@@ -78,8 +76,11 @@
                                     </div>
                                 </md-input-container>
                                 <md-input-container class="md-block" flex>
-                                    <input id="imageFile" type="file">
+                                    <input ng-model="imagesToUpload" onchange="angular.element(this).scope().fileChanged()" id="imageFile" name="file[]" type="file" multiple />
                                 </md-input-container>
+                            </div>
+                            <div layout="row">
+                                <canvas id="canvasImagePreview"></canvas>
                             </div>
                         </form>
                     </md-card-content>
@@ -93,14 +94,3 @@
         </md-tabs>
     </div>
 </div>
-
-<!--
-<md-list-item class="md-3-line" ng-repeat="product in products">
-    <md-divider></md-divider>
-    <div class="md-list-item-text" layout="column">
-        <h3>Nom: {{ product.product_name.S }}</h3>
-        <h4>Tags: {{ product.product_tags.S }}</h4>
-        <p>Description: {{ product.product_description.S }}</p>
-    </div>
-</md-list-item>
--->

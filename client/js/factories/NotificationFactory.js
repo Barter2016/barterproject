@@ -55,7 +55,7 @@ angular.module('BarterApp').factory('NotificationService', ['AuthService', funct
         // Input : The new notification and a callback
         //*******************************************************
         notifyUser: (new_notification, callback) => {
-            AWS.config.credentials.get(function(err) {
+            AWS.config.credentials.get((err) => {
                 if (err) {
                     if (err.message.indexOf("Invalid login token") > -1) {
                         AuthService.signOut();
@@ -78,7 +78,7 @@ angular.module('BarterApp').factory('NotificationService', ['AuthService', funct
                             "notification_message": new_notification.notification_message
                         })
                     };
-                    lambda.invoke(lambda_params, function(error, response) {
+                    lambda.invoke(lambda_params, (error, response) => {
                         if (error) {
                             callback(error, null)
                         }
@@ -100,7 +100,7 @@ angular.module('BarterApp').factory('NotificationService', ['AuthService', funct
          * Input : The updated notification, A callback
          */
         updateNotification: (updated_notification, callback) => {
-            AWS.config.credentials.get(function(err) {
+            AWS.config.credentials.get((err) => {
                 if (err) {
                     if (err.message.indexOf("Invalid login token") > -1) {
                         AuthService.signOut();
@@ -120,7 +120,7 @@ angular.module('BarterApp').factory('NotificationService', ['AuthService', funct
                             updated_notification: updated_notification
                         })
                     };
-                    lambda.invoke(lambda_params, function(error, response) {
+                    lambda.invoke(lambda_params, (error, response) => {
                         if (error) {
                             callback(error, null)
                         }
@@ -142,7 +142,7 @@ angular.module('BarterApp').factory('NotificationService', ['AuthService', funct
          * Input : The id of the notification, A callback
          */
         updateNotificationAsRead: (_notification_id, callback) => {
-            AWS.config.credentials.get(function(err) {
+            AWS.config.credentials.get((err) => {
                 if (err) {
                     if (err.message.indexOf("Invalid login token") > -1) {
                         AuthService.signOut();
@@ -162,7 +162,7 @@ angular.module('BarterApp').factory('NotificationService', ['AuthService', funct
                             notification_id: _notification_id
                         })
                     };
-                    lambda.invoke(lambda_params, function(error, response) {
+                    lambda.invoke(lambda_params, (error, response) => {
                         if (error) {
                             callback(error, null)
                         }

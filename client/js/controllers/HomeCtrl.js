@@ -5,6 +5,7 @@ angular.module('BarterApp').controller('HomeCtrl', ['$scope',
 'LocalStorageService',
 'ProductHistoryService',
 'MessageService',
+'$mdDialog',
 'AuthService',
 'ImageService',
 'OfferService',
@@ -15,10 +16,11 @@ CategoryService,
 LocalStorageService, 
 ProductHistoryService, 
 MessageService, 
+$mdDialog,
 AuthFactory,
 ImageService,
-OfferService) {
-
+OfferService,
+GoogleMapService) {
         $scope.is_auth = false
         $scope.categories = [] // Save the last scanned categories in an array.
         var productsInCache = [] // Save the last scanned products in an array.
@@ -27,12 +29,7 @@ OfferService) {
         $scope.selectedCategory
         $scope.go = UtilService.go
         $scope.data_loaded = false
-        
-        OfferService.addOffer(null, null, null, (err, tt) => {
-            console.log("test")
-            console.log(err, tt)
-        })
-        
+
         $scope.categoryChanged = () => {
             try {
                 const selectedCategoryName = $scope.selectedCategory.category_name.S
@@ -98,15 +95,16 @@ OfferService) {
                 }
             })
         }
+        
 
-        $scope.doOffer = function(selectedProduct) {
+        $scope.doOffer = (selectedProduct) => {
             if(selectedProduct
             && selectedProduct.product_id) {
                 UtilService.go('/Offer/' + selectedProduct.product_id.S)
             }
         }
         
-        $scope.sendNewMessageDialog = function(event, product_user_email) {
+        $scope.sendNewMessageDialog = (event, product_user_email) => {
             MessageService.sendNewMessage(event, product_user_email)
         }
 

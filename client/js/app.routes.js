@@ -2,6 +2,11 @@ angular.module('BarterApp').config(function($routeProvider) {
     
     $routeProvider
     
+    .when('/', {
+        templateUrl: 'templates/Home.html',
+        controller: 'HomeCtrl'
+    })
+    
     .when('/SignUp', {
         templateUrl: 'templates/SignUp.html',
         controller: 'SignUpCtrl'
@@ -32,7 +37,7 @@ angular.module('BarterApp').config(function($routeProvider) {
         controller: 'EditProductCtrl'
     })
     
-    .when('/Offer/:id', {
+    .when('/Offer', {
         templateUrl: 'templates/Offer.html',
         controller: 'OfferCtrl'
     })

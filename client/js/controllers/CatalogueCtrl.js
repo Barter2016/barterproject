@@ -5,12 +5,15 @@ angular.module('BarterApp').controller('CatalogueCtrl', ['$scope',
 'AuthService',
 'BucketService',
 'UtilService',
-function($scope, ProductService, CategoryService, LocalStorageService, AuthService, BucketService, UtilService) {
+'$window',
+function($scope, ProductService, CategoryService, LocalStorageService, AuthService, BucketService, UtilService, $window) {
     const user = LocalStorageService.getObject('user')
     $scope.data_loaded = false
     $scope.products
     $scope.categories
+    $scope.imagesToUpload = {}
     
+    //obtient les produits de l'utilisateur pour les ajouter dans le scope de la page
     ProductService.scanProductsByUser(user.email, (err, products) => {
         if (err) {
             console.log(err)
@@ -23,6 +26,7 @@ function($scope, ProductService, CategoryService, LocalStorageService, AuthServi
         }
     })
 
+    //obtient toutes les catégories pour les ajouter dans le scope de la page
     CategoryService.scanAllCategories((err, categories) => {
         if (err) {
             console.log(err)
@@ -35,6 +39,33 @@ function($scope, ProductService, CategoryService, LocalStorageService, AuthServi
         }
     })
     
+    $scope.fileChanged = () => {
+        // document.getElement return an HTMLCollection, therefore you must convert it to an array.
+        const filesHTMLCollection = document.getElementById('imageFile').files
+        
+        // HTMLColllection to array.
+        const filesArray = [].slice.call(filesHTMLCollection)
+        
+        const reader = new FileReader()
+        
+        reader.onload = () => {
+            console.log("on load")
+            const image = new Image()
+            const canvas = document.getElementById("canvasImagePreview")
+            const canvasContext = canvas.getContext("2d")
+            
+            image.onload = () => {
+                // TODO call the image service.    
+            }
+            
+            image.src = reader.result
+            console.log(reader)
+        }
+        
+        reader.readAsDataURL(filesArray[0])
+    }
+        
+    //Fonction qui ajoute un nouveau produit dans la base de données
     $scope.addProduct = (new_product) => {
         
         if(AuthService.checkIfAuth()) {
@@ -46,28 +77,31 @@ function($scope, ProductService, CategoryService, LocalStorageService, AuthServi
             
             console.log(new_product)
         
-            ProductService.addProduct(new_product, (err, productId) => {
+            ProductService.addProduct(new_product, (err, productid) => {
                 if (err) {
                     console.log(err)
                 }
                 else {
-                    console.log(productId)
-                    alertify.success("Le produit " + new_product.product_name + " a été créé avec succès")
+                    console.log(productid)
+                    alertify.success("roduit " + new_product.product_name + " a été créé avec succès")
     
-                    const file = document.getElementById('imageFile').files[0]
+                    // document.getElement return an HTMLCollection, therefore you must convert it to an array.
+                    const filesHTMLCollection = document.getElementById('imageFile').files
                     
-                    BucketService.uploadFile(file, (err, data) => {
+                    // HTMLColllection to array.
+                    const filesArray = [].slice.call(filesHTMLCollection)
+                    
+                    BucketService.uploadFile(filesArray, (err, data) => {
                         if (err) {
                             console.log(err)
                         }
                         else {
-                            ProductService.addImageToProduct(productId, data.Location, (err, data) => {
+                            ProductService.addImageToProduct(productid, data.Location, (err, data) => {
                                 if (err) {
                                     console.log(err)
                                 }
                             })
                         }
-                        
                     })
                 }
             })

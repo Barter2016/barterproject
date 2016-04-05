@@ -1,17 +1,63 @@
+/* APP THEME */
+
+.grey-background {
+    background-color: #F6F6F6;
+}
+
+.primary {
+    background-color: #009688; /* Teal */
+}
+
+.primary-dark {
+    background-color: #00796B; /* Dark teal */
+}
+
+.primary-light {
+    background-color: #B2DFDB; /* Light teal */
+}
+
+.accent {
+    background-color: #E040FB; /* Purple */
+}
+
+.text-icons {
+    color: #FFFFFF; /* White */
+}
+
+.primary-text {
+    color: #212121; /* Black */
+}
+
+.secondary-text {
+    color: #727272; /* Dark grey */
+}
+
+.divider {
+    color: #B6B6B6; /* Light grey */
+}
+
+/* END APP THEME */
+
 md-toolbar {
     box-shadow: 0 2px 5px 0 rgba(0,0,0,.26);
+}
+
+body {
+    max-height: 100%;
+    max-width: 100%;
+    overflow: hidden;
 }
 
 .full-height {
     height: 100%;
 }
 
-.grey-background {
-    background-color: #F6F6F6;
+.border-bottom {
+    border-bottom: 2px solid #F6F6F6;
 }
 
-.md-toolbar-tools-bottom {
-    font-size: small;
+.no-padding {
+    padding: 0;
 }
 
 .message-paragraphe {
@@ -22,15 +68,10 @@ md-toolbar {
     width: 272px;
     max-width: 272px;
     min-width: 272px;
-    background-color: #F6F6F6;
 }
 
 .left-sidenav-header {
-    background-color: #3F51B5;
-}
-
-.left-sidenav-content {
-    background-color: #F6F6F6;
+    font-size: small;
 }
 
 .left-sidenav-content md-list {
@@ -60,18 +101,68 @@ md-toolbar {
     padding-bottom: 5px;
 }
 
+.photos-navigation {
+    border: 1px solid black;
+    border-radius: 5px;
+    display: table;
+    table-layout: fixed;
+    padding: 0;
+    min-width: 250px;
+    max-width: 250px;
+    width: 250px;
+    min-height: 250px;
+    max-height: 250px;
+    height: 250px;
+}
+
+.photos-navigation li {
+    display: table-cell;
+    text-align: center;
+    vertical-align: middle;
+}
+
+.photos-navigation li img {
+    max-width: 250px;
+    max-height: 250px;
+    display: block;
+    line-height: 1;
+    margin: auto;
+}
+
+#catalog-view md-list-item:hover, #home-view md-list-item:hover {
+    background-color: rgba(168,186,195, 0.5);
+}
+
+.list-image {
+    width: 125px;
+    max-width: 125px;
+    max-height: 125px;
+}
+
+.item-buttons {
+    height: 100%;
+}
+
 .mdi {
     margin-top: 5px;
     font-size: 24px !important;
 }
 
-.div-button {
-   padding-top: 10px;
+.section-whiteframe {
+    margin: 8px;
 }
 
-.card-title {
-    border-bottom: 1px solid #DDD;
-    background-color: #F6F6F6;
+.md-card-image {
+    max-width: 250px;
+    max-height: 250px;
+}
+
+.product-details-description {
+    padding-left: 32px;
+    height: 320px;
+    max-height: 320px;
+    min-height: 320px;
+    overflow: auto;
 }
 
 #home-view md-card-content {
@@ -90,6 +181,20 @@ md-toolbar {
     margin-bottom: 0;
 }
 
+.offers-list md-list-item, .offers-list .md-list-item-inner {
+    height: 125px;
+    max-height: 125px;
+    min-height: 125px;
+}
+
+.offers-list .md-list-item-text {
+    padding-left: 16px;
+}
+
+.offers-list img, .product img {
+    max-width: 125px;
+    max-height: 125px;
+}
 
 .loading {
     height: 92vh;
@@ -125,6 +230,25 @@ md-toolbar {
     padding: 0;
 }
 
+.messages-list {
+    padding: 0;
+}
+
+.messages-list md-list-item, .messages-list .md-list-item-inner {
+    height: 100px;
+    max-height: 100px;
+    min-height: 100px;
+}
+
+.messages-list .md-list-item-text {
+    padding-left: 16px;
+}
+
+.messages-list .md-avatar {
+    max-width: 125px;
+    max-height: 125px;
+}
+
 /* White background for profile picture */
 .user-avatar {
     background-color: white;
@@ -138,13 +262,16 @@ md-toolbar {
 
 /* CAROUSEL for product images*/
 
+/* 
 #slides_control > div{
   height: 200px;
 }
-img{
+
+img {
   margin:auto;
   width: 400px;
 }
+
 #slides_control {
   position:absolute;
   width: 400px;
@@ -152,3 +279,4 @@ img{
   top:20px;
  margin-left:-200px;
 }
+*/

@@ -14,6 +14,7 @@
   <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.0/angular-animate.min.js"></script>
   <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.0/angular-aria.min.js"></script>
   <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.0/angular-messages.min.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.0/angular-sanitize.min.js"></script>
   
   <!-- Angular Material -->
   <script src="https://ajax.googleapis.com/ajax/libs/angular_material/1.0.5/angular-material.min.js"></script>
@@ -34,37 +35,6 @@
   
   <!-- CSS -->
   <link rel="stylesheet" href="css/styles.css">
-
-  <!-- Main JS Files -->
-  <script src="js/app.module.js"></script>
-  <script src="js/app.routes.js"></script>
-  <script src="js/app.themes.js"></script>
-  
-  <!-- Services -->
-  <script src="js/services/LocalStorageService.js"></script>
-  <script src="js/services/SessionService.js"></script>
-  <script src="js/services/UtilService.js"></script>
-  
-  <!-- Factories -->
-  <script src="js/factories/CategoryFactory.js"></script>
-  <script src="js/factories/ProductFactory.js"></script>
-  <script src="js/factories/BucketFactory.js"></script>
-  <script src="js/factories/AuthFactory.js"></script>
-  <script src="js/factories/MessageFactory.js"></script>
-  <script src="js/factories/ProductHistoryFactory.js"></script>
-  <script src="js/factories/ImageFactory.js"></script>
-  <script src="js/factories/UserFactory.js"></script>
-  <script src="js/factories/OfferFactory.js"></script>
-  
-  <!-- Controllers -->
-  <script src="js/controllers/HomeCtrl.js"></script>
-  <script src="js/controllers/CatalogueCtrl.js"></script>
-  <script src="js/controllers/MessageCtrl.js"></script>
-  <script src="js/controllers/MenuCtrl.js"></script>
-  <script src="js/controllers/ProductCtrl.js"></script>
-  <script src="js/controllers/EditProductCtrl.js"></script>
-  <script src="js/controllers/OfferCtrl.js"></script>
-  <script src="js/controllers/SignUpCtrl.js"></script>
   
   <!-- AWS Cognito Credentials Hardcoded -->
   <script>
@@ -73,6 +43,9 @@
       IdentityPoolId: 'us-east-1:0eb351fe-a9b6-4f00-ab1f-393802d750a5'
     });
   </script>
+  
+  <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB9nth27dUJAzcSgDx7lgoH2543Ti8p3rg&callback=angular.noop"
+  type="text/javascript"></script>
   
 </head>
 
@@ -97,69 +70,66 @@
      }(document, 'script', 'facebook-jssdk'));
   </script>
   
-  <div ng-controller="MenuCtrl" layout="row" style="height: 100vh;">
+  <div ng-controller="MenuCtrl" layout="row" class="grey-background" style="height: 100vh;">
     
     <!-- Sidenav -->
-    <div class="grey-background">
-      <md-sidenav class="left-sidenav" md-is-locked-open="$mdMedia('gt-sm')" md-component-id="sidenav">
-      
-        <!-- Menu header -->
-        <md-toolbar class="md-tall left-sidenav-header md-primary">
-          <div layout="column" layout-align="center center" class="md-toolbar-tools-bottom inset" ng-class="{'full-height': !auth}">
-            <div ng-if="auth" class="user-avatar">
-              <img class="image-icon" src="{{ user.picture.data.url }}"></img>
-            </div>
-            <div ng-if="auth == null" class="user-avatar">
-              <md-icon class="material-icons" style="font-size:64px;height:64px;width:64px;">person</md-icon>
-            </div>
-              
-            <div ng-if="auth" style="font-weight: bold;">{{ user.name }}</div>
-            <div ng-if="auth" style="font-style: oblique;">{{ user.email }}</div>
-            <div ng-if="!auth" style="font-weight: bold;">Invité</div>
+    <md-sidenav class="primary left-sidenav" md-is-locked-open="$mdMedia('gt-sm')" md-component-id="sidenav" ng-cloak>
+    
+      <!-- Menu header -->
+      <md-toolbar class="md-tall left-sidenav-header primary secondary-text">
+        <div layout="column" layout-align="center center" class="md-toolbar-tools-bottom inset" ng-class="{'full-height': !auth}">
+          <div ng-if="auth" class="user-avatar">
+            <img class="image-icon" src="{{ user.picture.data.url }}"></img>
           </div>
-        </md-toolbar>
-        
-        <!-- Menu content -->
-        <md-content class="left-sidenav-content">
-          <md-list>
-            <md-button ng-if="auth" ng-click="go(item.link, item.title)" ng-class="{ first:$first }" ng-repeat="item in menu_items.auth">
-              <div layout="row">
-                {{ item.title }}
-                <span flex></span>
-                <md-icon class="material-icons">{{ item.icon }}</md-icon>
-              </div>
-            </md-button>
-            <md-button ng-if="auth" ng-click="signOut()">
-              <div layout="row">
-                Se déconnecter
-                <span flex></span>
-                <md-icon class="material-icons">power_settings_new</md-icon>
-              </div>
-            </md-button>
-            <md-button ng-if="!auth" ng-click="signInWithFacebook()">
-              <div layout="row">
-                Se connecter - Facebook
-                <span flex></span>
-                <i class="mdi mdi-facebook-box"></i>
-              </div>
-            </md-button>
-            <md-button ng-if="!auth" ng-click="signInWithGoogle()">
-              <div layout="row">
-                Se connecter - Google
-                <span flex></span>
-                <i class="mdi mdi-google-plus-box"></i>
-              </div>
-            </md-button>
-          </md-list>
-        </md-content>
-        
-      </md-sidenav>
-    </div>
+          <div ng-if="!auth" class="user-avatar">
+            <md-icon class="material-icons" style="font-size:64px;height:64px;width:64px;color:#009688;">person</md-icon>
+          </div>
+          <div ng-if="auth" style="font-weight: bold;">{{ user.name }}</div>
+          <div ng-if="auth" style="font-style: oblique;">{{ user.email }}</div>
+          <div ng-if="!auth" style="font-weight: bold;">Invité</div>
+        </div>
+      </md-toolbar>
+      
+      <!-- Menu content -->
+      <md-content class="left-sidenav-content">
+        <md-list>
+          <md-button ng-if="auth" ng-click="go(item.link, item.title)" ng-class="{ first:$first }" class="md-primary md-raised" ng-repeat="item in menu_items.auth">
+            <div layout="row">
+              {{ item.title }}
+              <span flex></span>
+              <md-icon class="material-icons">{{ item.icon }}</md-icon>
+            </div>
+          </md-button>
+          <md-button ng-if="auth" class="md-primary md-raised" ng-click="signOut()">
+            <div layout="row">
+              Se déconnecter
+              <span flex></span>
+              <md-icon class="material-icons">power_settings_new</md-icon>
+            </div>
+          </md-button>
+          <md-button ng-if="!auth" class="md-primary md-raised" ng-click="signInWithFacebook()">
+            <div layout="row">
+              Se connecter - Facebook
+              <span flex></span>
+              <i class="mdi mdi-facebook-box"></i>
+            </div>
+          </md-button>
+          <md-button ng-if="!auth" class="md-primary md-raised" ng-click="signInWithGoogle()">
+            <div layout="row">
+              Se connecter - Google
+              <span flex></span>
+              <i class="mdi mdi-google-plus-box"></i>
+            </div>
+          </md-button>
+        </md-list>
+      </md-content>
+      
+    </md-sidenav>
     
     <div layout="column" flex>
       
       <!-- Toolbar -->
-      <md-toolbar class="main-toolbar md-primary">
+      <md-toolbar class="md-primary" ng-cloak>
         <div class="md-toolbar-tools">
             
             <md-button class="md-icon-button" hide-gt-md ng-click="toggleMenu()">
@@ -177,7 +147,7 @@
       <!-- Content -->
       <md-content>
         
-        <div ng-view></div>
+        <div ng-view class="grey-background"></div>
         
       </md-content>
       
@@ -185,5 +155,37 @@
 
   </div>
   
+  <!-- Main JS Files -->
+  <script src="js/app.module.js"></script>
+  <script src="js/app.routes.js"></script>
+  <script src="js/app.themes.js"></script>
+  
+  <!-- Services -->
+  <script src="js/services/LocalStorageService.js"></script>
+  <script src="js/services/SessionService.js"></script>
+  <script src="js/services/UtilService.js"></script>
+  
+  <!-- Factories -->
+  <script src="js/factories/CategoryFactory.js"></script>
+  <script src="js/factories/ProductFactory.js"></script>
+  <script src="js/factories/BucketFactory.js"></script>
+  <script src="js/factories/AuthFactory.js"></script>
+  <script src="js/factories/MessageFactory.js"></script>
+  <script src="js/factories/ProductHistoryFactory.js"></script>
+  <script src="js/factories/FileFactory.js"></script>
+  <script src="js/factories/ImageFactory.js"></script>
+  <script src="js/factories/UserFactory.js"></script>
+  <script src="js/factories/OfferFactory.js"></script>
+  <script src="js/factories/GoogleMapFactory.js"></script>
+  
+  <!-- Controllers -->
+  <script src="js/controllers/HomeCtrl.js"></script>
+  <script src="js/controllers/CatalogueCtrl.js"></script>
+  <script src="js/controllers/MessageCtrl.js"></script>
+  <script src="js/controllers/MenuCtrl.js"></script>
+  <script src="js/controllers/ProductCtrl.js"></script>
+  <script src="js/controllers/EditProductCtrl.js"></script>
+  <script src="js/controllers/OfferCtrl.js"></script>
+  <script src="js/controllers/SignUpCtrl.js"></script>
 </body>
 </html>

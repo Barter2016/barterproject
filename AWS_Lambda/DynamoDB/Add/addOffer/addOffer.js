@@ -20,7 +20,7 @@ exports.addOffer = function(event, context) {
     const dynamoDB = new AWS.DynamoDB({ region : 'us-west-2' })
     
     const now = new Date()
-    const offerId = event.sender + now.getTime()
+    const offerId = md5(event.sender + now.getTime())
 	
     const params = {
         "TableName": "offers",
@@ -30,7 +30,7 @@ exports.addOffer = function(event, context) {
                 "SS": event.productsOffered
             },
             "sender": { "S": event.sender },
-            "targeted_product": { "S": event.targetedProduct },
+            "targeted_product": { "S": event.targetedProduct.product_id.S },
             "date_created": { "S": now.toString() },
             "offer_read": { "BOOL": false }
         }
@@ -40,9 +40,7 @@ exports.addOffer = function(event, context) {
         if(err) {
             context.fail(err)
         }
-        else {
-            context.succeed(data)
-        }
+        context.succeed(data)
     })
     
 }
