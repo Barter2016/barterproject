@@ -9,7 +9,7 @@ angular.module('BarterApp').factory('OfferService', function() {
          * param {targetedProduct} is the product the user want.
          * param {callback} callback the function after this method has finish.
          */ 
-        addOffer: (sender, offer, targetedProduct, callback) => {
+        addOffer: (sender, receiver, offer, targetedProduct, callback) => {
             if(!sender) {
                 callback(new Error("sender is undefined"), null)
                 return
@@ -29,7 +29,10 @@ angular.module('BarterApp').factory('OfferService', function() {
             const lambda = new AWS.Lambda({region: 'us-west-2'})
     
             const payload = {
-                "sender": sender,
+                "sender": sender.email,
+                "sender_name": sender.name,
+                "sender_picture": sender.picture,
+                "receiver": receiver,
                 "targetedProduct": targetedProduct,
                 "productsOffered": offer
             }
@@ -93,6 +96,45 @@ angular.module('BarterApp').factory('OfferService', function() {
                             
                             // This lambda only return one result.
                             callback(null, payload.Items[0])
+                        }
+                    }
+                });
+            }
+        },
+        
+        /**
+         * Find all the offers for a receiver.
+         * 
+         * param {receiver} is the email of the receiver to get the offers from.
+         * param {callback} the function to call after the execution of the method.
+         */ 
+        scanOffersByReceiver: (receiver, callback) => {
+            if(!receiver) {
+                callback(new Error("receiver can not be null."))
+            }
+            else {
+                const lambda = new AWS.Lambda({region: 'us-west-2'})
+    
+                const payload = {
+                    "receiver": receiver
+                }
+                        
+                const lambda_params = {
+                    FunctionName: 'scanOffersByReceiver',
+                    Payload: JSON.stringify(payload)
+                }
+                
+                lambda.invoke(lambda_params, (error, response) => {
+                    if (error) {
+                        callback(error, null)
+                    }  
+                    else {
+                        const payload = JSON.parse(response.Payload)
+                        if (payload.errorMessage) {
+                            callback(payload.errorMessage, null)
+                        }
+                        else { 
+                            callback(null, payload.Items)
                         }
                     }
                 });

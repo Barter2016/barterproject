@@ -7,12 +7,13 @@ angular.module('BarterApp').factory('FileService', [function() {
             if(dataURI) {
                 try {
                     if(dataURI.indexOf(';base64') > -1) {
+                        console.log("in file service")
                         const indexOfData = dataURI.indexOf(',')
                         const base64String = dataURI.substring(indexOfData+1)
                         callback(null, base64String)
                     }
                     else {
-                        callback(new Error("The provided URI is not a binary file."))
+                        callback(new Error("The provided URI is not a binary file."), null)
                     }
                 }
                 catch(err) {
@@ -31,16 +32,22 @@ angular.module('BarterApp').factory('FileService', [function() {
          * params {blobType} represents the type of file to create.
          * params {callback} callback with a signature of: (err, blob)
          */ 
-        base64ToBlob: (base64String, blobType ,callback) => {
-            const byteCharacters = atob(base64String)
-            const byteNumbers = new Array(byteCharacters.length)
-            
-            for(var i = 0; i < byteCharacters.length; i++) {
-                byteNumbers[i] = byteCharacters.charCodeAt(i)
+        base64ToBlob: (base64String, blobType, callback) => {
+            try {
+                const byteCharacters = atob(base64String)
+                const byteNumbers = new Array(byteCharacters.length)
+                
+                for(var i = 0; i < byteCharacters.length; i++) {
+                    byteNumbers[i] = byteCharacters.charCodeAt(i)
+                }
+                
+                const byteArray = new Uint8Array(byteNumbers)
+                const blob = new Blob([byteArray], { type: blobType })
+                callback(null, blob)
             }
-            
-            const byteArray = new Uint8Array(byteNumbers)
-            const blob = new Blob([byteArray], { type: blobType })
+            catch(err) {
+                callback(err, null)
+            }
         }
         
     }

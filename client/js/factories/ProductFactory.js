@@ -153,7 +153,7 @@ angular.module('BarterApp').factory('ProductService', ['AuthService', function(A
                             "product_description": product.product_description,
                             "product_tags": product.product_tags,
                             "category_id": product.category_id,
-                            "image_names": product.image_names,
+                            "image_urls": product.image_urls,
                     }
                     
                     const lambda_params = {
@@ -197,9 +197,9 @@ angular.module('BarterApp').factory('ProductService', ['AuthService', function(A
                 } 
                 else {
                     const lambda = new AWS.Lambda({region: 'us-west-2'})
-    
+                    console.log("pouet " + product)
                     const payload = {
-                            "product_id": product.product_id
+                            "product_id": product.product_id.S
                     }
                     
                     const lambda_params = {
@@ -225,11 +225,11 @@ angular.module('BarterApp').factory('ProductService', ['AuthService', function(A
             })
         },
         
-        addImageToProduct : (productId, imageURL, callback) => {
+        addImageToProduct : (productId, imageURLs, callback) => {
             if(!productId){
                 callback(new Error('Product ID can not be null'), null)
             }
-            else if(!imageURL) {
+            else if(!imageURLs) {
                 callback(new Error('Image URL can not be null'), null)
             }
             else {
@@ -247,7 +247,7 @@ angular.module('BarterApp').factory('ProductService', ['AuthService', function(A
         
                         const payload = {
                             "product_id": productId,
-                            "image_url": imageURL
+                            "image_urls": imageURLs
                         }
                         
                         const lambda_params = {
@@ -339,6 +339,51 @@ angular.module('BarterApp').factory('ProductService', ['AuthService', function(A
                         FunctionName: 'queryProduct',
                         Payload: JSON.stringify({
                             product_id: id
+                        })
+                    };
+    
+                    lambda.invoke(lambda_params, (error, response) => {
+                        if (error) {
+                            callback(error, null)
+                        }
+                        else {
+                            const payload = JSON.parse(response.Payload)
+                            if (payload.errorMessage) {
+                                callback(payload.errorMessage, null)
+                            }
+                            else {
+                                callback(null, payload.Items[0])
+                            }
+                        }
+                    })
+                }
+            })
+        },
+        
+        queryProducts: (products_array, callback) => {
+            
+            if(!products_array) {
+                callback(new Error('Undefined array of product ids.', null))
+            }
+            
+            AWS.config.credentials.get((err) => {
+                if (err) {
+                    if (err.message.indexOf("Invalid login token") > -1) {
+                        AuthService.signOut();
+                    }
+                    else {
+                        callback(err, null)
+                    }
+                }
+                else {
+                    const lambda = new AWS.Lambda({
+                        region: 'us-west-2'
+                    });
+    
+                    const lambda_params = {
+                        FunctionName: 'queryProducts',
+                        Payload: JSON.stringify({
+                            products_array: products_array
                         })
                     };
     

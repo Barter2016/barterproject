@@ -29,6 +29,7 @@ GoogleMapService) {
         $scope.selectedCategory
         $scope.go = UtilService.go
         $scope.data_loaded = false
+        $scope.refreshProducts = refreshProducts;
 
         $scope.categoryChanged = () => {
             try {
@@ -53,11 +54,17 @@ GoogleMapService) {
         }
 
         function refreshProducts() {
+            $scope.data_loaded = false;
             ProductService.scanAllProducts((err, products) => {
                 if (err) {
                     console.log(err)
                 }
                 else {
+                    products.forEach((product) => {
+                        const d = product.product_date.S  
+                        const date = new Date(d)
+                        product.product_date = date
+                    })
                     productsInCache = products
                     $scope.productsToDisplay = products
                     $scope.data_loaded = $scope.productsToDisplay.length > 0 && $scope.categories.length > 0

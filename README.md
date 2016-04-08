@@ -10,8 +10,13 @@ alertify js
 
 #NOTIFICATIONS (pk)
 
-masquer les messages lus
-clear all read messages (flag delete)
+supprimer les messages lus
+Ajouter une tab Nouvelles offres + popup pour la lecture et l'afficage des images.
+IAM : FullAccess policy pour SCAN & DELETE?
+
+#OFFRE
+
+Ajouter un champ accepter/refuser pour augmenter la rapiditer des echanges.
 
 #USERS
 

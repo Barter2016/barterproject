@@ -11,31 +11,47 @@
 
             <md-tabs md-dynamic-height md-border-bottom md-stretch-tabs="always">
                 <section>
+                    <!-- New offers tab -->
+                    <md-tab label="Nouvelles offres" ng-click="scanOffersByReceiver()" flex>
+
+                        <md-subheader class="md-primary md-no-sticky">Liste des nouvelles offres</md-subheader>
+                        <md-list class="messages-list" layout="column">
+                            <md-list-item class="md-2-line" ng-repeat="offer in offers" ng-click="viewOffer($event, offer)">
+                                <div layout="column" layout-align="center center">
+                                    <img ng-src="{{offer.sender_picture.S}}" class="md-avatar">
+                                </div>
+                                <div class="md-list-item-text" layout="column" flex>
+                                    <h3>Offre de {{ offer.sender_name.S }}</h3>
+                                    <h4> Implémenter un message d'offre</h4> 
+                                </div>
+                                <div layout="column">
+                                    <img ng-src="{{offer.sender_picture.S}}">
+                                </div>
+                                <md-divider></md-divider>
+                            </md-list-item>
+                        </md-list>
+                    </md-tab>
+                </section>
+                <section>
                     <!-- New messages tab -->
                     <md-tab label="Nouveaux messages" ng-click="scanUnreadMessagesOfUser()" flex>
 
                         <md-subheader class="md-primary md-no-sticky">Liste des nouveaux messages</md-subheader>
                         <md-list class="messages-list" layout="column">
-                            <md-list-item class="md-3-line" ng-repeat="item in unread_messages" ng-click="null">
+                            <md-list-item class="md-3-line" ng-repeat="item in unread_messages" ng-click="replyMessage($event, item)">
                                 <div layout="column" layout-align="center center">
                                     <img ng-src="{{item.message_sender_picture.S}}" class="md-avatar">
                                 </div>
                                 <div class="md-list-item-text" layout="column" flex>
                                     <h3>{{ item.message_sender_name.S }}</h3>
                                     <h4>{{ item.message_sender_email.S }}</h4>
-                                    <p style="white-space: pre-wrap;">{{ item.message_text.S | limitTo : 75}}</p>
+                                    <p style="white-space: pre-wrap;">{{ item.message_text.S | limitTo : 25}}</p>
                                 </div>
                                 <div layout="column">
                                     <md-button class="md-primary md-icon-button" ng-click="updateMessageAsRead(item.message_id.S)">
                                         <md-icon class="material-icons">close</icon>
                                             <md-tooltip md-direction="left" md-autohide="true">
                                                 Ignorer le message
-                                            </md-tooltip>
-                                    </md-button>
-                                    <md-button class="md-primary md-icon-button" ng-click="replyMessage($event, item)">
-                                        <md-icon class="material-icons">message</icon>
-                                            <md-tooltip md-direction="left" md-autohide="true">
-                                                Répondre au message
                                             </md-tooltip>
                                     </md-button>
                                 </div>
@@ -49,7 +65,7 @@
                     <md-tab label="Messages lus" ng-click="scanReadMessagesOfUser()" flex>
                         <md-subheader class="md-primary md-no-sticky">Liste des messages lus
                             <md-button class="md-warn md-icon-button" ng-click="deleteReadMessagesByReceiver()">
-                                <md-icon class="material-icons">close</icon>
+                                <md-icon class="material-icons">delete</icon>
                                     <md-tooltip md-direction="right" md-autohide="true">
                                         Supprimer les messages lus
                                     </md-tooltip>

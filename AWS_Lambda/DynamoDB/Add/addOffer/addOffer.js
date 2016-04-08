@@ -12,6 +12,18 @@ exports.addOffer = function(event, context) {
         context.fail("The sender can not be undefined.")
     }
     
+    if(!event.sender_name) {
+        context.fail("The sender name can not be undefined.")
+    }
+    
+    if(!event.sender_picture) {
+        context.fail("The sender picture can not be undefined.")
+    }
+    
+    if(!event.receiver) {
+        context.fail("The receiver can not be undefined.")
+    }
+    
     if(!event.targetedProduct) {
         context.fail("The targeted product can not be undefined.")
     }
@@ -30,6 +42,9 @@ exports.addOffer = function(event, context) {
                 "SS": event.productsOffered
             },
             "sender": { "S": event.sender },
+            "sender_name": { "S": event.sender_name },
+            "sender_picture": { "S": event.sender_picture },
+            "receiver": { "S" : event.receiver },
             "targeted_product": { "S": event.targetedProduct.product_id.S },
             "date_created": { "S": now.toString() },
             "offer_read": { "BOOL": false }

@@ -16,27 +16,28 @@
                         <md-subheader class="md-primary md-no-sticky">Mes annonces</md-subheader>
                     </md-card-title>
                     <md-card-content class="no-padding">
-                        <md-list layout="column" class="offers-list">
-                            <md-list-item class="md-2-line" ng-repeat="product in products" ng-click="viewProduct(product.product_id.S)">
-                                <div class="list-image" flex="15" layout="column" layout-align="center center">
-                                    <img ng-src="{{ product.image_names['SS'][0] }}" />
-                                </div>
-                                <div class="md-list-item-text" flex="65" layout="column">
-                                    <h3>{{ product.product_name.S }}</h3>
-                                    <p>{{ product.product_description.S }}</p>
-                                </div>
-                                <div flex="20" layout="column" layout-align="center end" class="item-buttons">
-                                    <md-button class="md-icon-button md-primary" ng-click="editProduct(product.product_id.S)">
+                        <md-list class="offers-list">
+                            <div ng-repeat="product in products | orderBy: 'product_date':true " layout="row" layout-align="center center" class="hover border-bottom">
+                                <md-list-item class="md-2-line" flex  ng-click="viewProduct(product.product_id.S)">
+                                    <div class="list-image" layout="column" layout-align="center center">
+                                        <img ng-src="{{ product.image_urls['SS'][0] }}" />
+                                    </div>
+                                    <div class="md-list-item-text" layout="column">
+                                        <h3>{{ product.product_name.S }}</h3>
+                                        <p>{{ product.product_description.S }}</p>
+                                    </div>
+                                </md-list-item>                         
+                                <div layout="column" layout-align="center center" class="item-buttons">
+                                    <md-button flex class="md-icon-button md-primary" ng-click="editProduct(product.product_id.S)">
                                         <md-icon class="material-icons">mode_edit</md-icon>
                                         <md-tooltip md-direction="left">Modifier</md-tooltip>
                                     </md-button>
-                                    <md-button class="md-icon-button md-primary" ng-click="deleteProduct(product.product_id.S)">
+                                    <md-button flex class="md-icon-button md-primary" ng-click="deleteProduct($event,product)">
                                         <md-icon class="material-icons">delete</md-icon>
                                         <md-tooltip md-direction="left">Supprimer</md-tooltip>
                                     </md-button>
                                 </div>
-                                <md-divider></md-divider>
-                            </md-list-item>                         
+                            </div>
                         </md-list>
                     </md-card-content>
                 </md-card>
@@ -69,7 +70,7 @@
                                 <md-input-container class="md-block" flex>
                                     <label>Categories</label>
                                     <md-select ng-model="new_product.category_id" name "productCategory" required>
-                                        <md-option ng-repeat="category in categories" value={{category.category_id.S}}>{{category.category_name.S}}</md-option>
+                                        <md-option ng-repeat="category in categories | orderBy: 'category_name.S'" value={{category.category_id.S}}>{{category.category_name.S}}</md-option>
                                     </md-select>
                                     <div ng-messages="addProductForm.productCategory.$error">
                                         <div ng-message="required">Veuillez sélectionner la catégorie de votre nouveau produit.</div>
@@ -79,13 +80,38 @@
                                     <input ng-model="imagesToUpload" onchange="angular.element(this).scope().fileChanged()" id="imageFile" name="file[]" type="file" multiple />
                                 </md-input-container>
                             </div>
-                            <div layout="row">
-                                <canvas id="canvasImagePreview"></canvas>
+                            <div layout="row" layout-align="center center">
+                                
+                                <!-- Loading -->
+                                <md-progress-circular ng-show="imagesAreLoading" md-mode="indeterminate" class="md-primary" md-diameter="80"></md-progress-circular>
+                                
+                                <div flex="30" layout="column" layout-align="center center" ng-show="imagesToPreview.length > 0 && !imagesAreLoading">
+                                    <ul class="photos-navigation">
+                                        <li ng-repeat="img in imagesToPreview" flex ng-hide="!isCurrentImgIndex($index)">
+                                            <img ng-src="{{ img.image.src }}" class="md-card-image" />
+                                        </li>
+                                    </ul>
+                                     <div ng-show="imagesToPreview.length > 1">
+                                        {{ currentImgIndex + 1 }} / {{ imagesToPreview.length }}
+                                    </div>
+                                    <div class="photos-scroll" flex layout="row" ng-show="imagesToPreview.length > 1">
+                                        <md-button class="md-icon-button md-primary" ng-click="showPreviousImg()">
+                                            <md-icon class="material-icons">arrow_back</md-icon>
+                                            <md-tooltip md-direction="left">Photo prédécente</md-tooltip>
+                                        </md-button>
+                                        <md-button class="md-icon-button md-primary" ng-click="showNextImg()">
+                                            <md-icon class="material-icons">arrow_forward</md-icon>
+                                            <md-tooltip md-direction="right">Photo suivante</md-tooltip>
+                                        </md-button>
+                                    </div>
+                                </div>
+                                
                             </div>
                         </form>
                     </md-card-content>
-                     <md-card-actions layout="row" layout-align="start center">
-                        <md-button class="md-raised md-primary" ng-disabled="addProductForm.$invalid" ng-click="addProduct(new_product)">Créer produit</md-button>
+                    <md-divider></md-divider>
+                    <md-card-actions layout="row" layout-align="start center">
+                        <md-button class="md-raised md-primary" ng-disabled="addProductForm.$invalid" ng-click="addProduct(new_product)">Ajouter mon annonce</md-button>
                         <span flex></span>
                     </md-card-actions>
                 </md-card>

@@ -52,7 +52,7 @@ exports.addProduct = function (event, context) {
                         "category_id" : { "S" : event.category_id },
                         "product_description" : { "S" : event.product_description },
                         //"image_names": { "SS" : [] }
-                        "product_date": { "S" : date.toLocaleDateString() }
+                        "product_date": { "S" : date.toString() }
                     }
                 }
                 

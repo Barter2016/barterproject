@@ -9,7 +9,6 @@ const async = require("async");
  * @param callback The callback of the function.
  */
 function queryMessagesByReceiver (receiver_email, callback) {
-    console.log('test')
     const params = {
         TableName: 'messages',
         FilterExpression : 'message_receiver_email = :receiver_email AND message_read = :read_messages',
@@ -55,7 +54,6 @@ function deleteSingleReadMessageByReceiver(message_id, callback) {
  * This function removes all the read message of a user from the database.
  */
 exports.deleteReadMessagesByReceiver = function(event, context){
-    console.log('test')
     const messages  = {
         "succeed" : "succeed",
         "failed" : "fail"
@@ -65,25 +63,25 @@ exports.deleteReadMessagesByReceiver = function(event, context){
         context.fail(messages.failed);
     }
     
-    queryMessagesByReceiver(event.message_receiver_email, (err, readMessagesList) => {
+    queryMessagesByReceiver(event.message_receiver_email, function (err, readMessagesList) {
         if (err) {
             context.fail(messages.failed);
-        } else {
-            async.each(readMessagesList.Items, (readMessage, callback) => {
-                deleteSingleReadMessageByReceiver(readMessage.message_id.S, (err, data) => {
-                    if (err) {
-                        callback(err, null)
-                    } else {
-                        callback(null, data)
-                    }
-                })
-            }, (err, data) => {
+        }
+        readMessagesList = JSON.parse(readMessagesList);
+        async.each(readMessagesList.Items, function (readMessage, callback) {
+            deleteSingleReadMessageByReceiver(readMessage.message_id.S, function (err, data) {
                 if (err) {
-                    context.fail(messages.failed)
+                    callback(err, null)
                 } else {
-                    context.succeed(messages.succeed)
+                    callback(null, data)
                 }
             })
-        }
+        }, function (err, data) {
+            if (err) {
+                context.fail(messages.failed)
+            } else {
+                context.succeed(messages.succeed)
+            }
+        })
     })
 }

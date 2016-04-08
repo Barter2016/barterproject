@@ -119,6 +119,8 @@ body {
     display: table-cell;
     text-align: center;
     vertical-align: middle;
+    width: 250px;
+    height: 250px;
 }
 
 .photos-navigation li img {
@@ -129,8 +131,8 @@ body {
     margin: auto;
 }
 
-#catalog-view md-list-item:hover, #home-view md-list-item:hover {
-    background-color: rgba(168,186,195, 0.5);
+#catalog-view md-list-item:hover, #home-view md-list-item:hover, .hover:hover {
+    background-color: rgba(168,186,195, 1);
 }
 
 .list-image {
@@ -146,6 +148,29 @@ body {
 .mdi {
     margin-top: 5px;
     font-size: 24px !important;
+}
+
+.thumbnail-container {
+    border: 1px solid #F6F6F6;
+    padding: 5px;
+    max-width: 111px;
+    max-height: 131px;
+    width: 111px;
+    height: 131px;
+    text-align: center;
+}
+
+.img-thumbnail-container {
+    max-width: 101px;
+    max-height: 101px;
+    width: 101px;
+    height: 101px;
+    padding: 2px;
+}
+
+.img-thumbnail {
+    max-width: 97px;
+    max-height: 97px;
 }
 
 .section-whiteframe {
@@ -214,7 +239,7 @@ body {
 }
 
 .responde-card-title {
-    background-color: #607d8b;
+    background-color: #009688;
     color: #ffffff;
 }
 
@@ -232,6 +257,19 @@ body {
 
 .messages-list {
     padding: 0;
+}
+
+.offer-message-dialog {
+    padding: 0;
+}
+
+.card-title-text {
+    text-align: center;
+}
+
+.view-offer-content {
+    padding: 50px;
+    text-align: center;
 }
 
 .messages-list md-list-item, .messages-list .md-list-item-inner {

@@ -9,17 +9,22 @@ function($scope, $routeParams, $mdDialog, LocalStorageService, ProductService, M
     const currentUser = LocalStorageService.getObject('user')
     const product_id = $routeParams.id
     $scope.edit = $routeParams.edit
-    $scope.data_loaded = false;
-    $scope.currentImgIndex = 0;
+    $scope.data_loaded = false
+    $scope.currentImgIndex = 0
     $scope.productToOffer = []
     $scope.userProducts = []
+    $scope.ownProduct = false
     
     ProductService.queryProduct(product_id, (err, product) => {
         if (err) {
             console.log(err)
         }
         else {
-            $scope.selected_product = product[0]
+            const d = product.product_date.S  
+            const date = new Date(d)
+            $scope.ownProduct = product.user_email.S == currentUser.email
+            product.product_date = date
+            $scope.selected_product = product
             $scope.data_loaded = $scope.selected_product
             $scope.$apply()
         }
@@ -31,6 +36,7 @@ function($scope, $routeParams, $mdDialog, LocalStorageService, ProductService, M
         }
         else {
             $scope.userProducts = products
+            console.log(products)
             $scope.$apply()
         }
     })
@@ -42,13 +48,13 @@ function($scope, $routeParams, $mdDialog, LocalStorageService, ProductService, M
     $scope.isCurrentImgIndex = (index) => {
         return $scope.currentImgIndex === index;
     };
-
+    //function to show next image in the preview box
     $scope.showNextImg = () => {
-        $scope.currentImgIndex = ($scope.currentImgIndex > 0) ? --$scope.currentImgIndex : $scope.selected_product.image_names['SS'].length - 1;
+        $scope.currentImgIndex = ($scope.currentImgIndex < $scope.selected_product.image_urls['SS'].length - 1) ? ++$scope.currentImgIndex : 0;
     };
-
+    //function to show previous image in the preview box
     $scope.showPreviousImg = () => {
-        $scope.currentImgIndex = ($scope.currentImgIndex < $scope.selected_product.image_names['SS'].length - 1) ? ++$scope.currentImgIndex : 0;
+        $scope.currentImgIndex = ($scope.currentImgIndex > 0) ? --$scope.currentImgIndex : $scope.selected_product.image_urls['SS'].length - 1;
     };
 
     /*
@@ -84,7 +90,7 @@ function($scope, $routeParams, $mdDialog, LocalStorageService, ProductService, M
         }
     }
 
-    $scope.showConfirm = function(ev) {
+    $scope.showConfirm = function(ev, product) {
         // Be sure the user has selected at least one product.
         if($scope.productToOffer.length > 0) {
             
@@ -112,7 +118,12 @@ function($scope, $routeParams, $mdDialog, LocalStorageService, ProductService, M
             .then(() => {
                 const offer = []
                 $scope.productToOffer.forEach((product) => offer.push(product.product_id.S))
-                OfferService.addOffer(currentUser.email, offer, $scope.selected_product, (err, data) => {
+                var senderObj = {
+                    email: currentUser.email,
+                    name: currentUser.name,
+                    picture: currentUser.picture.data.url
+                };
+                OfferService.addOffer(senderObj, product.user_email.S, offer, $scope.selected_product, (err, data) => {
                     if(err) {
                         console.log(err)
                     }

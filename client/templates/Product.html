@@ -5,7 +5,8 @@
     </div>
     
     <!-- Page content -->
-    <div layout="row" layout-align="center center" flex ng-show="data_loaded">
+    <div layout="column" flex ng-show="data_loaded">
+        
         <md-card flex>
             <md-card-title>
                 <md-card-title-text>
@@ -17,20 +18,20 @@
             <md-card-content layout="row" layout-align="center center">
                 <div flex="26" class="md-media-md card-media" layout="column">
                     <ul class="photos-navigation">
-                        <li ng-repeat="img in selected_product.image_names['SS']" flex ng-hide="!isCurrentImgIndex($index)">
+                        <li ng-repeat="img in selected_product.image_urls['SS']" flex ng-hide="!isCurrentImgIndex($index)">
                             <img ng-src="{{ img }}" class="md-card-image" />
                         </li>
                     </ul>
                     <div class="photos-scroll" flex layout="column" layout-align="center center">
-                        <div>
-                            {{ currentImgIndex + 1 }} / {{ selected_product.image_names['SS'].length }}
+                        <div ng-show="selected_product.image_urls['SS'].length > 1">
+                            {{ currentImgIndex + 1 }} / {{ selected_product.image_urls['SS'].length }}
                         </div>
-                        <div class="photos-scroll" flex layout="row" layout-align="center center">
-                            <md-button class="md-icon-button md-primary" ng-click="showNextImg()">
+                        <div class="photos-scroll" flex layout="row" layout-align="center center" ng-show="selected_product.image_urls['SS'].length > 1">
+                            <md-button class="md-icon-button md-primary" ng-click="showPreviousImg()">
                                 <md-icon class="material-icons">arrow_back</md-icon>
                                 <md-tooltip md-direction="left">Photo prédécente</md-tooltip>
                             </md-button>
-                            <md-button class="md-icon-button md-primary" ng-click="showPreviousImg()">
+                            <md-button class="md-icon-button md-primary" ng-click="showNextImg()">
                                 <md-icon class="material-icons">arrow_forward</md-icon>
                                 <md-tooltip md-direction="right">Photo suivante</md-tooltip>
                             </md-button>
@@ -41,26 +42,39 @@
                     {{ selected_product.product_description.S }}
                 </div>
             </md-card-content>
-            <md-list-item class="md-3-line" ng-repeat="product in userProducts">
-                <md-divider></md-divider>
-                <div class="md-list-item-text" layout="column">
-                    <h3>Nom: {{ product.product_name.S }}</h3>
-                    <md-checkbox class="md-primary" ng-click="onProductChecked(product)"></md-checkbox>
-                </div>
-            </md-list-item>
             <md-divider></md-divider>
             <md-card-actions layout="row" layout-align="start center">
-                Affiché le {{ selected_product.product_date.S }}
+                Affiché le {{ selected_product.product_date | date: "dd/MM/yyyy 'à' h:mma"}}
                 <span flex></span>
-                <md-button class="md-primary md-raised" ng-disabled="productToOffer.length == 0" ng-click="showConfirm($event)">
-                    <md-icon class="material-icons">local_offer</md-icon>
-                    Faire une offre
-                </md-button>
-                <md-button class="md-primary md-raised" ng-click="newMessage($event, selected_product)">
+                <md-button class="md-primary md-raised" ng-click="newMessage($event, selected_product)" ng-show="!ownProduct">
                     <md-icon class="material-icons">message</md-icon>
                     Envoyer un message
                 </md-button>
             </md-card-actions>
         </md-card>
+        
+        <md-card flex ng-show="!ownProduct">
+            <md-card-title class="border-bottom">
+                <md-subheader class="md-primary md-no-sticky">Faire une offre à cette annonce</md-subheader>
+            </md-card-title>
+            <md-card-content layout="row" class="no-padding border-bottom">
+                <div layout="column" layout-align="center center" ng-repeat="product in userProducts">
+                    <div class="thumbnail-container">
+                        <div class="img-thumbnail-container" layout="column" layout-align="center center">
+                            <img ng-src="{{ product.image_urls['SS'][0] }}" class="img-thumbnail" />
+                        </div>
+                        <md-checkbox class="md-primary" ng-click="onProductChecked(product)"></md-checkbox>
+                    </div> 
+                </div>
+            </md-card-content>
+            <md-card-actions layout="row" layout-align="start center">
+                <span flex></span>
+                <md-button class="md-primary md-raised" ng-disabled="productToOffer.length == 0" ng-click="showConfirm($event, selected_product)">
+                    <md-icon class="material-icons">local_offer</md-icon>
+                    Faire une offre
+                </md-button>
+            </md-card-actions>
+        </md-card>
+        
     </div>
 </div>
