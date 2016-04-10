@@ -16,7 +16,7 @@
                             </md-container>
                             <h4>Votre réponse :</h4>
                             <md-input-container class="md-block">
-                                <input required="" md-maxlength="300" type="textarea" placeholder="Le contenu de votre message" name="messageText" ng-model="messageText">
+                                <textarea required="" md-maxlength="300" type="textarea" placeholder="Le contenu de votre message" name="messageText" ng-model="messageText"></textarea>
                                 <div ng-messages="messageForm.messageText.$error">
                                     <div ng-message="required">Ce champs est obligatoire.</div>
                                 </div>

@@ -173,6 +173,11 @@ body {
     max-height: 97px;
 }
 
+.thumbnail-container md-checkbox {
+    margin: 0;
+    width: 20px;
+}
+
 .section-whiteframe {
     margin: 8px;
 }

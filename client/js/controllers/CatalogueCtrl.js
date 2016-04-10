@@ -150,7 +150,10 @@ angular.module('BarterApp').controller('CatalogueCtrl', ['$scope',
                                 })
                                 
                             }, (err) => console.log(err))
-                            .finally($scope.data_loaded = true)
+                            .finally(() => { 
+                                $scope.data_loaded = true 
+                                clearAddProductForm()
+                            })
                     }
                     
                 })
@@ -191,7 +194,8 @@ angular.module('BarterApp').controller('CatalogueCtrl', ['$scope',
                   .targetEvent(ev)
                   .ok('Confirmer')
                   .cancel('Annuler');
-            $mdDialog.show(confirm).then(function() {
+                  
+            $mdDialog.show(confirm).then(() => {
                 ProductService.deleteProduct(product, (err, productId) => {
                     if (err) {
                         console.log(err)
@@ -202,11 +206,15 @@ angular.module('BarterApp').controller('CatalogueCtrl', ['$scope',
                         $scope.$apply();
                     }
                 })
-            }, function() {
+            }, () => {
               $scope.status = 'Suppression annulé';
             });
             
         };
+        
+        function clearAddProductForm() {
+            $scope.new_product = {}   
+        }
 
     }
 ]);

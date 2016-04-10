@@ -142,6 +142,45 @@ angular.module('BarterApp').factory('OfferService', function() {
         },
         
         /**
+         * Find all the offers for a sender.
+         * 
+         * param {sender} is the email of the sender to get the offers from.
+         * param {callback} the function to call after the execution of the method.
+         */ 
+        scanOffersBySender: (sender, callback) => {
+            if(!sender) {
+                callback(new Error("sender can not be null."))
+            }
+            else {
+                const lambda = new AWS.Lambda({region: 'us-west-2'})
+    
+                const payload = {
+                    "sender": sender
+                }
+                        
+                const lambda_params = {
+                    FunctionName: 'scanOffersBySender',
+                    Payload: JSON.stringify(payload)
+                }
+                
+                lambda.invoke(lambda_params, (error, response) => {
+                    if (error) {
+                        callback(error, null)
+                    }  
+                    else {
+                        const payload = JSON.parse(response.Payload)
+                        if (payload.errorMessage) {
+                            callback(payload.errorMessage, null)
+                        }
+                        else { 
+                            callback(null, payload.Items)
+                        }
+                    }
+                });
+            }
+        },
+        
+        /**
          * Query an offer by ID.
          * 
          * param {offerID} the ID of the offer to query.

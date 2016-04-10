@@ -5,6 +5,8 @@ angular.module('BarterApp').controller('MenuCtrl', ['$scope', 'UtilService', 'Lo
             {"title": "Les annonces", "icon": "assignment", "link": "/Home"}, 
             {"title": "Mon catalogue", "icon": "import_contacts", "link": "/Catalogue"},
             {"title": "Mes notifications", "icon": "notifications", "link": "/Notifications"},
+            {"title": "Mes offres", "icon": "local_offer", "link": "/Offers"},
+            {"title": "Mes messages", "icon": "messages", "link": "/Messages"}
         ]
     }
     

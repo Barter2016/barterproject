@@ -10,9 +10,12 @@ alertify js
 
 #NOTIFICATIONS (pk)
 
-supprimer les messages lus
 Ajouter une tab Nouvelles offres + popup pour la lecture et l'afficage des images.
 IAM : FullAccess policy pour SCAN & DELETE?
+Offre envoyé : status (read / unread)
+Mettre le nombre de notification entre parenthèse (offre dont l'état a passé de rien à refusé ou accepté)
+Offre : confirm / refusé / read, unread
+Séparer messages et offres
 
 #OFFRE
 

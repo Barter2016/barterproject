@@ -1,12 +1,12 @@
 <md-dialog flex>
     <md-dialog-content>
         <div ng-cloak="" ng-init="init()" layout-md-lg="row">
-            
+
             <!-- Loading -->
             <div class="loading grey-background" layout="column" layout-align="center center" ng-show="!data_loaded">
                 <md-progress-circular md-mode="indeterminate" class="md-primary" md-diameter="80"></md-progress-circular>
             </div>
-            
+
             <md-card ng-show="data_loaded" class="offer-message-dialog">
                 <md-card-title class="responde-card-title">
                     <md-card-title-text class="card-title-text">
@@ -21,19 +21,32 @@
                                     <p>Voici l'offre que vous a fait {{ offer.sender_name.S }}</p>
                                     <br />
                                     <md-list class="messages-list" layout="column">
-                                        <md-list-item class="md-2-line" ng-repeat="product in products_offered | orderBy: 'product_date'">
+                                        <md-list-item class="md-2-line">
                                             <div class="list-image" flex="15" layout="column" layout-align="center center">
-                                                <img ng-src="{{ product.image_urls['SS'][0] }}" />
+                                                <img ng-src="{{ products_offered[currentProductIndex].image_urls.SS[0] }}" />
                                             </div>
                                             <div class="md-list-item-text" flex="65" layout="column">
-                                                <h3>{{ product.product_name.S }}</h3>
-                                                <p>{{ product.product_description.S }}</p>
+                                                <h3>{{ products_offered[currentProductIndex].product_name.S }}</h3>
+                                                <p>{{ products_offered[currentProductIndex].product_description.S }}</p>
                                             </div>
                                         </md-list-item>
                                     </md-list>
-                                    <div layout="row" layout-align="center center">
-                                        <md-icon class="material-icons">swap_vert</icon>
+                                    <br /><br />
+                                    <md-button class="md-icon-button md-primary" ng-click="showPreviousProduct()">
+                                        <md-icon class="material-icons">arrow_back</md-icon>
+                                        <md-tooltip md-direction="left"></md-tooltip>
+                                    </md-button>
+                                    <md-button class="md-icon-button md-primary" ng-click="showNextProduct()">
+                                        <md-icon class="material-icons">arrow_forward</md-icon>
+                                        <md-tooltip md-direction="right"></md-tooltip>
+                                    </md-button>
+                                    <br />
+                                    <div layout="column">
+                                        <div layout="row" layout-align="center center">
+                                            <md-icon class="material-icons">swap_vert</icon>
+                                        </div>
                                     </div>
+                                    <br />
                                     <md-list class="messages-list" layout="column">
                                         <md-list-item class="md-2-line">
                                             <div class="list-image" flex="15" layout="column" layout-align="center center">

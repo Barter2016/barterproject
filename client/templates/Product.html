@@ -57,15 +57,19 @@
             <md-card-title class="border-bottom">
                 <md-subheader class="md-primary md-no-sticky">Faire une offre à cette annonce</md-subheader>
             </md-card-title>
-            <md-card-content layout="row" class="no-padding border-bottom">
-                <div layout="column" layout-align="center center" ng-repeat="product in userProducts">
-                    <div class="thumbnail-container">
+            <md-card-content class="no-padding">
+                
+                <md-list layout="column" layout-md-="row" class="no-padding">
+                    <md-list-item ng-repeat="product in userProducts">
                         <div class="img-thumbnail-container" layout="column" layout-align="center center">
                             <img ng-src="{{ product.image_urls['SS'][0] }}" class="img-thumbnail" />
                         </div>
+                        <span flex></span>
                         <md-checkbox class="md-primary" ng-click="onProductChecked(product)"></md-checkbox>
-                    </div> 
-                </div>
+                        <md-divider></md-divider>
+                    </md-list-item>
+                </md-list>
+                
             </md-card-content>
             <md-card-actions layout="row" layout-align="start center">
                 <span flex></span>

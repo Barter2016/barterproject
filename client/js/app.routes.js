@@ -37,9 +37,14 @@ angular.module('BarterApp').config(function($routeProvider) {
         controller: 'EditProductCtrl'
     })
     
-    .when('/Offer', {
-        templateUrl: 'templates/Offer.html',
-        controller: 'OfferCtrl'
+    .when('/Offers', {
+        templateUrl: 'templates/Offers.html',
+        controller: 'OffersCtrl'
+    })
+    
+    .when('/Messages', {
+        templateUrl: 'templates/Messages.html',
+        controller: 'MessageCtrl'
     })
     
     .when('/PageNotFound', {

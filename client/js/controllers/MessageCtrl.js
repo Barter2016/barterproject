@@ -8,6 +8,7 @@ angular.module('BarterApp').controller('MessageCtrl', ['$scope',
 'LocalStorageService', 
 function($scope, $mdDialog, $mdToast, $mdMedia, MessageService, OfferService, ProductService, LocalStorageService) {
     $scope.data_loaded = false
+    $scope.sent_messages_loaded = false
     const currentUser = LocalStorageService.getObject('user')
 
     /*
@@ -59,6 +60,26 @@ function($scope, $mdDialog, $mdToast, $mdMedia, MessageService, OfferService, Pr
         })
     }
     
+    $scope.scanMessagesBySender = function() {
+        scanMessagesBySender()
+    }
+    
+    /*
+     * Returns all the messages sent by the user.
+     */
+    function scanMessagesBySender() {
+        MessageService.scanMessagesBySender(currentUser.email, (err, sentMessages) => {
+            if (err) {
+                console.log(err)
+            }
+            else {
+                $scope.sent_messages = sentMessages
+                $scope.sent_messages_loaded = true
+                $scope.$apply()
+            }
+        })
+    }
+    
     /*
      * Sets the function that returns all the read messages of the user
      * in the scope of the controller. 
@@ -67,10 +88,16 @@ function($scope, $mdDialog, $mdToast, $mdMedia, MessageService, OfferService, Pr
         scanReadMessagesOfUser()
     }
     
+    /*
+     * This sets in the scope the function that returns all the offers of a given user.
+     */
     $scope.scanOffersByReceiver = function() {
         scanOffersByReceiver()
     }
     
+    /*
+     * This function scans and returns all the offers received by a given user.
+     */
     function scanOffersByReceiver () {
         OfferService.scanOffersByReceiver(currentUser.email, (err, offers) => {
             if (err) {
@@ -284,6 +311,7 @@ function($scope, $mdDialog, $mdToast, $mdMedia, MessageService, OfferService, Pr
                     else {
                         productsArray.push(product)
                         if (i == arrayOfProductId.length) {
+                            console.log(productsArray)
                             $scope.products_offered = productsArray
                             $scope.data_loaded = true
                         }
@@ -312,21 +340,38 @@ function($scope, $mdDialog, $mdToast, $mdMedia, MessageService, OfferService, Pr
         /*
          * This function hides the $mdDialog window without any actions.
          */
-        $scope.hide = function() {
+        $scope.hide = () => {
             $mdDialog.hide()
         }
 
         /*
          * This function cancels the $mdDialog window with all its proceses.
          */
-        $scope.cancel = function() {
+        $scope.cancel = () => {
             $mdDialog.cancel()
         }
+
+        $scope.setCurrentProductIndex = (index) => {
+            $scope.currentProductIndex = index;
+        };
+    
+        $scope.isCurrentProductIndex = (index) => {
+            return $scope.currentProductIndex === index;
+        };
+        
+        //function to show next product in the preview box
+        $scope.showNextProduct = () => {
+            $scope.currentProductIndex = ($scope.currentProductIndex < $scope.products_offered.length - 1) ? ++$scope.currentProductIndex : 0;
+        };
+        //function to show previous product in the preview box
+        $scope.showPreviousImg = () => {
+            $scope.currentProductIndex = ($scope.currentProductIndex > 0) ? --$scope.currentProductIndex : $scope.products_offered.length - 1;
+        };
 
         /*
          * Creates a new notification in the database.
          */
-        $scope.sendNewMessage = function() {
+        $scope.sendNewMessage = () => {
             const messageObj = {
                 message_text: $scope.messageText,
                 message_sender_email: currentUser.email,

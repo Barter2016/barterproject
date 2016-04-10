@@ -51,6 +51,52 @@ angular.module('BarterApp').factory('MessageService', ['AuthService', function(A
         },
         
         /**
+         * This function gets all the messages from the database by user emails.
+         * Input : The email of the user to get the messages, A callback
+         * Output : All the messages of a user
+         */
+        scanMessagesBySender: (message_sender_email, callback) => {
+
+            AWS.config.credentials.get((err) => {
+                if (err) {
+                    if (err.message.indexOf("Invalid login token") > -1) {
+                        AuthService.signOut();
+                    }
+                    else {
+                        callback(err, null)
+                    }
+                }
+                else {
+                    const lambda = new AWS.Lambda({
+                        region: 'us-west-2'
+                    })
+                    
+                    const lambda_params = {
+                        FunctionName: 'scanMessagesBySender',
+                        Payload: JSON.stringify({
+                            "message_sender_email": message_sender_email
+                        })
+                    }
+                    
+                    lambda.invoke(lambda_params, (error, response) => {
+                        if (error) {
+                            callback(error, null)
+                        }
+                        else {
+                            const payload = JSON.parse(response.Payload)
+                            if (payload.errorMessage) {
+                                callback(payload.errorMessage, null)
+                            }
+                            else {
+                                callback(null, payload.Items)
+                            }
+                        }
+                    })
+                }
+            })
+        },
+        
+        /**
          * This function gets all the unread messages from the database by user emails.
          * Input : The email of the user to get the unread messages, A callback
          * Output : All the unread messages of a user

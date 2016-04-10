@@ -16,7 +16,7 @@
 
                         <md-subheader class="md-primary md-no-sticky">Liste des nouvelles offres</md-subheader>
                         <md-list class="messages-list" layout="column">
-                            <md-list-item class="md-2-line" ng-repeat="offer in offers" ng-click="viewOffer($event, offer)">
+                            <md-list-item class="md-2-line" ng-repeat="offer in offers | orderBy: 'date_created':true" ng-click="viewOffer($event, offer)">
                                 <div layout="column" layout-align="center center">
                                     <img ng-src="{{offer.sender_picture.S}}" class="md-avatar">
                                 </div>

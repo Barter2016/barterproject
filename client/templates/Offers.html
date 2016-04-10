@@ -1,0 +1,59 @@
+<div ng-init="init()" ng-cloak>
+
+    <!-- Loading -->
+    <div class="loading grey-background" layout="column" layout-align="center center" ng-show="!data_loaded">
+        <md-progress-circular md-mode="indeterminate" class="md-primary" md-diameter="80"></md-progress-circular>
+    </div>
+
+    <!-- Page content -->
+    <div layout="column" flex ng-show="data_loaded">
+        <div class="md-whiteframe-z2 section-whiteframe">
+
+            <md-tabs md-dynamic-height md-border-bottom md-stretch-tabs="always">
+                <section>
+                    <!-- Received offers tab -->
+                    <md-tab label="Offres reçues" flex>
+                        <md-subheader class="md-primary md-no-sticky">Liste des offres reçues</md-subheader>
+                        <md-list class="messages-list" layout="column">
+                            <md-list-item class="md-2-line" ng-repeat="offer in offers_received | orderBy: 'date_created':true">
+                                <div layout="column" layout-align="center center">
+                                    <img ng-src="{{offer.sender_picture.S}}" class="md-avatar">
+                                </div>
+                                <div class="md-list-item-text" layout="column" flex>
+                                    <h3>Offre de {{ offer.sender_name.S }}</h3>
+                                    <h4>reçue le {{ offer.date_created.S | date:'dd/MM/yyyy à HH:mm:ss'}}</h4> 
+                                </div>
+                                <md-divider></md-divider>
+                            </md-list-item>
+                        </md-list>
+                    </md-tab>
+                    </md-tab>
+                </section>
+                <section>
+                    <!-- Sent offers tab -->
+                    <md-tab label="Offres envoyées" ng-click="scanOffersBySender()" ng-show="offers_sent_loaded" flex>
+                        <md-subheader class="md-primary md-no-sticky">Liste des offres envoyées</md-subheader>
+                        <!-- If the sent offers are not yet loaded -->
+                        <div class="loading grey-background" layout="column" layout-align="center center" ng-show="!offers_sent_loaded">
+                            <md-progress-circular md-mode="indeterminate" class="md-primary" md-diameter="80"></md-progress-circular>
+                        </div>
+                        <!-- If the sent offers are loaded -->
+                        <md-list class="messages-list" layout="column" ng-show="offers_sent_loaded">
+                            <md-list-item class="md-2-line" ng-repeat="offer in offers_sent | orderBy: 'date_created':true">
+                                <div layout="column" layout-align="center center">
+                                    <img ng-src="{{offer.sender_picture.S}}" class="md-avatar">
+                                </div>
+                                <div class="md-list-item-text" layout="column" flex>
+                                    <h3>Offre faite à {{ offer.receiver.S }}</h3>
+                                    <h4>envoyée le {{ offer.date_created.S | date:'dd/MM/yyyy à HH:mm:ss'}}</h4> 
+                                </div>
+                                <md-divider></md-divider>
+                            </md-list-item>
+                        </md-list>
+                    </md-tab>
+                    </md-tab>
+                </section>
+            </md-tabs>
+        </div>
+    </div>
+</div>

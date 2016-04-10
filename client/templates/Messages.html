@@ -1,0 +1,84 @@
+<div ng-init="init()" ng-cloak>
+
+    <!-- Loading -->
+    <div class="loading grey-background" layout="column" layout-align="center center" ng-show="!data_loaded">
+        <md-progress-circular md-mode="indeterminate" class="md-primary" md-diameter="80"></md-progress-circular>
+    </div>
+
+    <!-- Page content -->
+    <div layout="column" flex ng-show="data_loaded">
+        <div class="md-whiteframe-z2 section-whiteframe">
+
+            <md-tabs md-dynamic-height md-border-bottom md-stretch-tabs="always">
+                <section>
+                    <!-- Received messages tab -->
+                    <md-tab label="Nouveaux message" ng-click="scanUnreadMessagesOfUser()" flex>
+                        <md-subheader class="md-primary md-no-sticky">Liste des nouveaux messages reçus</md-subheader>
+                        <md-list class="messages-list" layout="column">
+                            <md-list-item class="md-2-line" ng-repeat="message in unread_messages | orderBy: 'date_created':true" ng-click="replyMessage($event, message)">
+                                <div layout="column" layout-align="center center">
+                                    <img ng-src="{{message.message_sender_picture.S}}" class="md-avatar">
+                                </div>
+                                <div class="md-list-item-text" layout="column" flex>
+                                    <h3>Message de {{ message.message_sender_name.S }}</h3>
+                                    <h4>reçu le {{ message.message_date.S | date:'dd/MM/yyyy à HH:mm:ss'}}</h4> 
+                                </div>
+                                <md-divider></md-divider>
+                            </md-list-item>
+                        </md-list>
+                    </md-tab>
+                    </md-tab>
+                </section>
+                <section>
+                    <!-- Read messages tab -->
+                    <md-tab label="Message lus" flex>
+                        <md-subheader class="md-primary md-no-sticky">Liste des messages lus</md-subheader>
+                        
+                        <!-- If the read messages are not yet loaded -->
+                        <div class="loading grey-background" layout="column" layout-align="center center" ng-show="!offers_sent_loaded">
+                            <md-progress-circular md-mode="indeterminate" class="md-primary" md-diameter="80"></md-progress-circular>
+                        </div>
+                        
+                        <md-list class="messages-list" layout="column">
+                            <md-list-item class="md-2-line" ng-repeat="offer in offers_received | orderBy: 'date_created':true">
+                                <div layout="column" layout-align="center center">
+                                    <img ng-src="{{offer.sender_picture.S}}" class="md-avatar">
+                                </div>
+                                <div class="md-list-item-text" layout="column" flex>
+                                    <h3>Offre de {{ offer.sender_name.S }}</h3>
+                                    <h4>reçue le {{ offer.date_created.S | date:'dd/MM/yyyy à HH:mm:ss'}}</h4> 
+                                </div>
+                                <md-divider></md-divider>
+                            </md-list-item>
+                        </md-list>
+                    </md-tab>
+                    </md-tab>
+                </section>
+                <section>
+                    <!-- Sent offers tab -->
+                    <md-tab label="Messages envoyés" ng-click="scanMessagesBySender()" flex>
+                        <md-subheader class="md-primary md-no-sticky">Liste des messages envoyées</md-subheader>
+                        <!-- If the sent messages are not yet loaded -->
+                        <div class="loading grey-background" layout="column" layout-align="center center" ng-show="!sent_messages_loaded">
+                            <md-progress-circular md-mode="indeterminate" class="md-primary" md-diameter="80"></md-progress-circular>
+                        </div>
+                        <!-- If the sent sent messages are loaded -->
+                        <md-list class="messages-list" layout="column" ng-show="sent_messages_loaded">
+                            <md-list-item class="md-2-line" ng-repeat="messages in sent_messages | orderBy: 'message_date':true">
+                                <div layout="column" layout-align="center center">
+                                    <img ng-src="{{messages.message_sender_picture.S}}" class="md-avatar">
+                                </div>
+                                <div class="md-list-item-text" layout="column" flex>
+                                    <h3>Message envoyé à {{ messages.message_receiver_email.S }}</h3>
+                                    <h4>envoyé le {{ messages.message_date.S | date:'dd/MM/yyyy à HH:mm:ss'}}</h4> 
+                                </div>
+                                <md-divider></md-divider>
+                            </md-list-item>
+                        </md-list>
+                    </md-tab>
+                    </md-tab>
+                </section>
+            </md-tabs>
+        </div>
+    </div>
+</div>

@@ -14,7 +14,7 @@ function($scope, $routeParams, $mdDialog, LocalStorageService, ProductService, M
     $scope.productToOffer = []
     $scope.userProducts = []
     $scope.ownProduct = false
-    
+
     ProductService.queryProduct(product_id, (err, product) => {
         if (err) {
             console.log(err)
@@ -35,8 +35,8 @@ function($scope, $routeParams, $mdDialog, LocalStorageService, ProductService, M
             console.log(err)
         }
         else {
+            
             $scope.userProducts = products
-            console.log(products)
             $scope.$apply()
         }
     })

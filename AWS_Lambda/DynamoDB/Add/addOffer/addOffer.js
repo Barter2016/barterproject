@@ -31,8 +31,8 @@ exports.addOffer = function(event, context) {
     // Set the database connection here.
     const dynamoDB = new AWS.DynamoDB({ region : 'us-west-2' })
     
-    const now = new Date()
-    const offerId = md5(event.sender + now.getTime())
+    const now = new Date().getTime()
+    const offerId = md5(event.sender + now)
 	
     const params = {
         "TableName": "offers",

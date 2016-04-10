@@ -66,7 +66,7 @@ angular.module('BarterApp').factory('ProductService', ['AuthService', function(A
                 if(category) {
                     // Filter by the selected category
                     searchResult = searchResult.filter((product) => { 
-                        return product.category_name.S == category.category_name.S 
+                        return product.category_id.S == category.category_id.S 
                     })
                 }
                 
