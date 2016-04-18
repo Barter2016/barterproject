@@ -1,4 +1,4 @@
-angular.module('BarterApp').controller('EditProductCtrl', ['$scope','$routeParams','ProductService','CategoryService','AuthService','LocalStorageService','BucketService','ImageService','$route',function($scope, $routeParams, ProductService,CategoryService,AuthService,LocalStorageService,BucketService,ImageService,$route) {
+angular.module('BarterApp').controller('EditProductCtrl', ['$scope','$routeParams','ProductService','CategoryService','AuthService','LocalStorageService','BucketService','ImageService','$route','UtilService',function($scope, $routeParams, ProductService,CategoryService,AuthService,LocalStorageService,BucketService,ImageService,$route,UtilService) {
     
     const product_id = $routeParams.id
     const user = LocalStorageService.getObject('user')
@@ -6,6 +6,7 @@ angular.module('BarterApp').controller('EditProductCtrl', ['$scope','$routeParam
     $scope.existingImages = [];
     $scope.imagesToDelete = [];
     $scope.new_images = [];
+    queryProduct();
     //get categories for select list
     CategoryService.scanAllCategories((err, categories) => {
         if (err) {
@@ -19,25 +20,29 @@ angular.module('BarterApp').controller('EditProductCtrl', ['$scope','$routeParam
         }
     })
     //get selected product info
-    ProductService.queryProduct(product_id,(err, product) => {
-        if (err) {
-            console.log(err)
-        }
-        else {
-            $scope.new_product = product;
-            $scope.new_product.product_name = product.product_name.S
-            $scope.new_product.product_description = product.product_description.S
-            $scope.new_product.category_id = product.category_id.S
-            //create images object to show current product images
-            $scope.new_product.image_urls.SS.forEach(img =>{
-                createImageFromDatabase(img)
-            })
-            //display current product images
-            $scope.imagesToPreview = $scope.existingImages
-            $scope.data_loaded = $scope.categories && $scope.new_product && $scope.imagesToPreview
-            $scope.$apply()
-        }
-    })
+    function queryProduct(){
+        ProductService.queryProduct(product_id,(err, product) => {
+            if (err) {
+                console.log(err)
+            }
+            else {
+                $scope.new_product = product;
+                $scope.new_product.product_name = product.product_name.S
+                $scope.new_product.product_description = product.product_description.S
+                $scope.new_product.category_id = product.category_id.S
+                console.log($scope.new_product.image_urls.SS)
+                //create images object to show current product images
+                for(var i = 0;i<$scope.new_product.image_urls.SS.length;i++){
+                    createImageFromDatabase($scope.new_product.image_urls.SS[i])
+                }
+                
+                //display current product images
+                $scope.imagesToPreview = $scope.existingImages
+                $scope.data_loaded = $scope.categories && $scope.new_product && $scope.imagesToPreview
+                $scope.$apply()
+            }
+        })
+    }
     
     
     //function to actually edit the product
@@ -50,40 +55,47 @@ angular.module('BarterApp').controller('EditProductCtrl', ['$scope','$routeParam
             new_product.user_email = user.email
             new_product.image_urls = $scope.new_product.image_urls.SS
             console.log(new_product)
-        
-            ProductService.updateProduct(new_product, (err, productId) => {
-                if (err) {
-                    console.log(err)
-                }
-                else {
-                    console.log("No error from add product")
-                    const promise = ImageService.compressImages($scope.new_images)
-                    
-                    promise
-                        .then((blobCollection) => {
-                            BucketService.uploadFile(blobCollection, (err, data) => {
-                                if (err) {
-                                    console.log(err)
-                                }
-                                else {
-                                    ProductService.addImageToProduct(new_product.product_id, [data.Location], (err, data) => {
+            if(new_product.image_urls.length < 1){
+                alertify.error("Veuillez ajouter une deuxième image et sauvegarder avant de procéder")
+                $route.reload();
+            }else{
+                ProductService.updateProduct(new_product, (err, productId) => {
+                    if (err) {
+                        console.log(err)
+                    }
+                    else {
+                        console.log("No error from edit product")
+                        if($scope.new_images.length > 0){
+                            const promise = ImageService.compressImages($scope.new_images)
+                            
+                            promise
+                                .then((blobCollection) => {
+                                    BucketService.uploadFile(blobCollection, (err, data) => {
                                         if (err) {
                                             console.log(err)
                                         }
                                         else {
-                                            
+                                            ProductService.addImageToProduct(new_product.product_id, [data.Location], (err, data) => {
+                                                if (err) {
+                                                    console.log(err)
+                                                }
+                                                else {
+                                                    $scope.viewProduct(new_product.product_id)
+                                                }
+                                            })
                                         }
                                     })
-                                }
-                            })
-                            
-                        }, (err) => console.log(err))
-                        .finally(() => {
-                            $scope.data_loaded = true
-                            $route.reload();
-                        })
-                }
-            })
+                                    
+                                }, (err) => console.log(err))
+                                .finally(() => {
+                                    $scope.data_loaded = true
+                                    $route.reload();
+                                })
+                        }
+                         $scope.viewProduct(new_product.product_id)
+                    }
+                })
+            }
         }
     }
     //sets current index
@@ -107,6 +119,9 @@ angular.module('BarterApp').controller('EditProductCtrl', ['$scope','$routeParam
     //function that removes an image from the image_urls array
     //once the user clicks on "modify product", the product will not be associated with those images anymore
     $scope.removeImageFromProduct = () => {
+        console.log($scope.new_product.image_urls.SS[0])
+        console.log($scope.new_product.image_urls.SS[1])
+        console.log($scope.currentImgIndex)
         if($scope.imagesToPreview[$scope.currentImgIndex].type == "existing")
             $scope.new_product.image_urls.SS.splice($scope.currentImgIndex, 1)
             
@@ -116,10 +131,8 @@ angular.module('BarterApp').controller('EditProductCtrl', ['$scope','$routeParam
         //corrects the index to display last ok image
         if($scope.currentImgIndex != 0)
             $scope.currentImgIndex--;
-        console.log($scope.new_product);
-    }
-    $scope.test = () => {
-        console.log($scope.imagesToPreview)
+        console.log($scope.new_product.image_urls.SS[0])
+        console.log($scope.new_product.image_urls.SS[1])
     }
     $scope.undoRemoveImageFromProduct = () => {
         if($scope.imagesToDelete[$scope.imagesToDelete.length-1].type == "existing")
@@ -204,7 +217,12 @@ angular.module('BarterApp').controller('EditProductCtrl', ['$scope','$routeParam
                 type: "existing"
             }
             $scope.existingImages.push(imageWithName)
+            //console.log($scope.existingImages)
+            $scope.$apply()
         }
     }
-    
+    $scope.viewProduct = (product) => {
+        UtilService.go('/Product/' + product)
+    }
+
 }]);

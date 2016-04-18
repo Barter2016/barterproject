@@ -101,7 +101,7 @@ angular.module('BarterApp').factory('MessageService', ['AuthService', function(A
          * Input : The email of the user to get the unread messages, A callback
          * Output : All the unread messages of a user
          */
-        scanUnreadMessagesOfUser: (message_receiver_email, callback) => {
+        scanUnreadMessagesOfUser: (userEmail, callback) => {
 
             AWS.config.credentials.get((err) => {
                 if (err) {
@@ -119,7 +119,7 @@ angular.module('BarterApp').factory('MessageService', ['AuthService', function(A
                     const lambda_params = {
                         FunctionName: 'scanUnreadMessagesByReceiver',
                         Payload: JSON.stringify({
-                            "message_receiver_email": message_receiver_email
+                            "message_receiver_email": userEmail
                         })
                     };
                     lambda.invoke(lambda_params, (error, response) => {
@@ -140,12 +140,13 @@ angular.module('BarterApp').factory('MessageService', ['AuthService', function(A
             })
         },
         
+        
         /**
          * This function gets all the read messages from the database by user emails.
          * Input : The email of the user to get the read messages, A callback
          * Output : All the read messages of a user
          */
-        scanReadMessagesOfUser: (message_receiver_email, callback) => {
+        scanReadMessagesOfUser: (userEmail, callback) => {
 
             AWS.config.credentials.get((err) => {
                 if (err) {
@@ -164,7 +165,7 @@ angular.module('BarterApp').factory('MessageService', ['AuthService', function(A
                     const lambda_params = {
                         FunctionName: 'scanReadMessagesByReceiver',
                         Payload: JSON.stringify({
-                            "message_receiver_email": message_receiver_email
+                            "message_receiver_email": userEmail
                         })
                     }
                     

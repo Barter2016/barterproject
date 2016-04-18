@@ -46,6 +46,10 @@ angular.module('BarterApp').config(function($routeProvider) {
         templateUrl: 'templates/Messages.html',
         controller: 'MessageCtrl'
     })
+    .when('/Aide_en_ligne', {
+        templateUrl: 'templates/Help.html',
+        controller: 'HelpCtrl'
+    })
     
     .when('/PageNotFound', {
         templateUrl: 'templates/404.html'

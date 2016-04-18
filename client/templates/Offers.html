@@ -7,15 +7,17 @@
 
     <!-- Page content -->
     <div layout="column" flex ng-show="data_loaded">
-        <div class="md-whiteframe-z2 section-whiteframe">
-
-            <md-tabs md-dynamic-height md-border-bottom md-stretch-tabs="always">
-                <section>
-                    <!-- Received offers tab -->
-                    <md-tab label="Offres reçues" flex>
-                        <md-subheader class="md-primary md-no-sticky">Liste des offres reçues</md-subheader>
+        <md-tabs md-dynamic-height md-border-bottom md-stretch-tabs="always">
+            
+            <!-- Received offers tab -->
+            <md-tab label="Offres reçues" flex>
+                <md-card flex>
+                    <md-card-title class="border-bottom">
+                        <md-subheader class="md-primary md-no-sticky">Mes offres reçues</md-subheader>
+                    </md-card-title>
+                    <md-card-content class="no-padding">
                         <md-list class="messages-list" layout="column">
-                            <md-list-item class="md-2-line" ng-repeat="offer in offers_received | orderBy: 'date_created':true">
+                            <md-list-item class="md-2-line" ng-repeat="offer in offers_received | orderBy: 'date_created'" ng-click="viewOffer($event, offer)">
                                 <div layout="column" layout-align="center center">
                                     <img ng-src="{{offer.sender_picture.S}}" class="md-avatar">
                                 </div>
@@ -23,37 +25,60 @@
                                     <h3>Offre de {{ offer.sender_name.S }}</h3>
                                     <h4>reçue le {{ offer.date_created.S | date:'dd/MM/yyyy à HH:mm:ss'}}</h4> 
                                 </div>
+                                <div layout="column" ng-show="offer.offer_status.S" class="received-offer-status" layout-align="center center">
+                                    <p class="accepted-status" ng-show="offer.offer_status.S == 'Acceptée'">{{ offer.offer_status.S }}</p>
+                                    <p class="declined-status" ng-show="offer.offer_status.S == 'Refusée'">{{ offer.offer_status.S }}</p>
+                                </div>
                                 <md-divider></md-divider>
                             </md-list-item>
+                            <md-list-item class="md-2-line" ng-show="offers_received.length == 0">
+                                <div class="md-list-item-text" layout="column" flex>
+                                    <h3>Vous n'avez aucune nouvelle offre.</h3>
+                                </div>
+                            </md-list-item>
                         </md-list>
-                    </md-tab>
-                    </md-tab>
-                </section>
-                <section>
-                    <!-- Sent offers tab -->
-                    <md-tab label="Offres envoyées" ng-click="scanOffersBySender()" ng-show="offers_sent_loaded" flex>
-                        <md-subheader class="md-primary md-no-sticky">Liste des offres envoyées</md-subheader>
+                    </md-card-content>
+                </md-card>
+            </md-tab>
+            
+            <!-- Sent offers tab -->
+            <md-tab label="Offres envoyées" ng-click="scanOffersBySender()" ng-show="offers_sent_loaded" flex>
+                <md-card flex>
+                     <md-card-title class="border-bottom">
+                        <md-subheader class="md-primary md-no-sticky">Mes offres envoyées</md-subheader>
+                    </md-card-title>
+                    <md-card-content class="no-padding">
                         <!-- If the sent offers are not yet loaded -->
                         <div class="loading grey-background" layout="column" layout-align="center center" ng-show="!offers_sent_loaded">
                             <md-progress-circular md-mode="indeterminate" class="md-primary" md-diameter="80"></md-progress-circular>
                         </div>
                         <!-- If the sent offers are loaded -->
                         <md-list class="messages-list" layout="column" ng-show="offers_sent_loaded">
-                            <md-list-item class="md-2-line" ng-repeat="offer in offers_sent | orderBy: 'date_created':true">
-                                <div layout="column" layout-align="center center">
+                            <md-list-item class="md-2-line" ng-repeat="offer in offers_sent | orderBy: 'date_created'">
+                                <div layout="column" class="avatar-img" layout-align="center center">
                                     <img ng-src="{{offer.sender_picture.S}}" class="md-avatar">
                                 </div>
                                 <div class="md-list-item-text" layout="column" flex>
                                     <h3>Offre faite à {{ offer.receiver.S }}</h3>
-                                    <h4>envoyée le {{ offer.date_created.S | date:'dd/MM/yyyy à HH:mm:ss'}}</h4> 
+                                    <h4>envoyée le {{ offer.date_created.S | date:'dd/MM/yyyy à HH:mm:ss'}}</h4>
+                                    <p ng-show="!offer.offer_read.BOOL">Distribuée</p> 
+                                    <p ng-show="offer.offer_read.BOOL">Vue le {{ offer.offer_read_date.S | date:'dd/MM/yyyy à HH:mm:ss' }}</p> 
+                                </div>
+                                <div layout="column" ng-show="offer.offer_status.S" class="offer-status" layout-align="center center">
+                                    <p class="accepted-status" ng-show="offer.offer_status.S == 'Acceptée'">{{ offer.offer_status.S }}</p>
+                                    <p class="declined-status" ng-show="offer.offer_status.S == 'Refusée'">{{ offer.offer_status.S }}</p>
                                 </div>
                                 <md-divider></md-divider>
                             </md-list-item>
+                            <md-list-item class="md-2-line" ng-show="offers_sent.length == 0">
+                                <div class="md-list-item-text" layout="column" flex>
+                                    <h3>Vous n'avez fait aucune offre.</h3>
+                                </div>
+                            </md-list-item>
                         </md-list>
-                    </md-tab>
-                    </md-tab>
-                </section>
-            </md-tabs>
-        </div>
+                    </md-card-content>
+                </md-card>
+            </md-tab>
+        </md-tabs>
     </div>
 </div>

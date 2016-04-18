@@ -66,12 +66,11 @@ angular.module('BarterApp').factory('AuthService', ['SessionService',
         signUp: (new_user, callback) => {
             
             UserService.addUser(new_user, function(err, response) {
-                
                 if (err) {
                     callback(err)
                 }
+                
                 else {
-                    
                     const credentials  = {
                         IdentityPoolId: 'us-east-1:0eb351fe-a9b6-4f00-ab1f-393802d750a5',
                         Logins: {

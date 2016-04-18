@@ -7,15 +7,16 @@
 
     <!-- Page content -->
     <div layout="column" flex ng-show="data_loaded">
-        <div class="md-whiteframe-z2 section-whiteframe">
-
-            <md-tabs md-dynamic-height md-border-bottom md-stretch-tabs="always">
-                <section>
-                    <!-- Received messages tab -->
-                    <md-tab label="Nouveaux message" ng-click="scanUnreadMessagesOfUser()" flex>
-                        <md-subheader class="md-primary md-no-sticky">Liste des nouveaux messages reçus</md-subheader>
+        <md-tabs md-dynamic-height md-border-bottom md-stretch-tabs="always">
+            <!-- Received messages tab -->
+            <md-tab label="Nouveaux message" ng-click="scanUnreadMessagesOfUser()" flex>
+                <md-card flex>
+                    <md-card-title class="border-bottom">
+                        <md-subheader class="md-primary md-no-sticky">Mes messages</md-subheader>
+                    </md-card-title>
+                    <md-card-content class="no-padding">
                         <md-list class="messages-list" layout="column">
-                            <md-list-item class="md-2-line" ng-repeat="message in unread_messages | orderBy: 'date_created':true" ng-click="replyMessage($event, message)">
+                            <md-list-item class="md-2-line" ng-click="replyMessage(message, $event)" ng-repeat="message in unread_messages | orderBy: 'message_date.S':true">
                                 <div layout="column" layout-align="center center">
                                     <img ng-src="{{message.message_sender_picture.S}}" class="md-avatar">
                                 </div>
@@ -23,49 +24,87 @@
                                     <h3>Message de {{ message.message_sender_name.S }}</h3>
                                     <h4>reçu le {{ message.message_date.S | date:'dd/MM/yyyy à HH:mm:ss'}}</h4> 
                                 </div>
+                                <div layout="column">
+                                    <md-button class="md-primary md-icon-button" ng-click="updateMessageAsRead(message.message_id.S); $event.stopPropagation()">
+                                        <md-icon class="material-icons">close</icon>
+                                            <md-tooltip md-direction="left" md-autohide="true">
+                                                Ignorer le message
+                                            </md-tooltip>
+                                    </md-button>
+                                </div>
                                 <md-divider></md-divider>
                             </md-list-item>
+                            <md-list-item class="md-2-line" ng-show="unread_messages.length == 0">
+                                <div class="md-list-item-text" layout="column" flex>
+                                    <h3>Vous n'avez aucun nouveau message.</h3>
+                                </div>
+                            </md-list-item>
                         </md-list>
-                    </md-tab>
-                    </md-tab>
-                </section>
-                <section>
-                    <!-- Read messages tab -->
-                    <md-tab label="Message lus" flex>
-                        <md-subheader class="md-primary md-no-sticky">Liste des messages lus</md-subheader>
-                        
+                    </md-card-content>
+                </md-card>
+            </md-tab>                
+            <!-- Read messages tab -->
+            <md-tab label="Message lus" ng-click="scanReadMessagesOfUser()" flex>
+                <md-card flex>
+                    <md-card-title class="border-bottom">
+                        <md-subheader class="md-primary md-no-sticky" flex>
+                            <div layout="row">
+                                <div layout="column" flex="95">
+                                    <p>Liste des messages lus</p>
+                                </div>
+                                <div layout="column" flex="5" layout-align="end center">
+                                <md-button class="md-primary md-icon-button" ng-click="deleteReadMessagesByReceiver()">
+                                    <md-icon class="material-icons">delete</icon>
+                                    <md-tooltip md-direction="left" md-autohide="true">
+                                        Supprimer tous les messages lus
+                                    </md-tooltip>
+                                </md-button>
+                                </div>
+                            </div>
+                        </md-subheader>
+                    </md-card-title>
+                    <md-card-content class="no-padding">
                         <!-- If the read messages are not yet loaded -->
-                        <div class="loading grey-background" layout="column" layout-align="center center" ng-show="!offers_sent_loaded">
+                        <div class="loading grey-background" layout="column" layout-align="center center" ng-show="!read_messages_loaded">
                             <md-progress-circular md-mode="indeterminate" class="md-primary" md-diameter="80"></md-progress-circular>
                         </div>
-                        
-                        <md-list class="messages-list" layout="column">
-                            <md-list-item class="md-2-line" ng-repeat="offer in offers_received | orderBy: 'date_created':true">
-                                <div layout="column" layout-align="center center">
-                                    <img ng-src="{{offer.sender_picture.S}}" class="md-avatar">
-                                </div>
-                                <div class="md-list-item-text" layout="column" flex>
-                                    <h3>Offre de {{ offer.sender_name.S }}</h3>
-                                    <h4>reçue le {{ offer.date_created.S | date:'dd/MM/yyyy à HH:mm:ss'}}</h4> 
-                                </div>
+                        <!-- If the read messages are loaded -->
+                        <md-list class="messages-list" ng-show="read_messages_loaded" layout="column">
+                            <md-list-item class="md-3-line" ng-repeat="item in read_messages | orderBy: 'message_date'" ng-click="replyMessage($event, item)">
                                 <md-divider></md-divider>
+                                <div layout="column" layout-align="center center">
+                                    <img ng-src="{{item.message_sender_picture.S}}" class="md-avatar">
+                                </div>
+                                <div class="md-list-item-text" layout="column">
+                                    <h3>{{ item.message_sender_name.S }}</h3>
+                                    <h4>{{ item.message_sender_email.S }}</h4>
+                                    <p>reçu le {{ item.message_date.S | date:'dd/MM/yyyy à HH:mm:ss'}}</p>
+                                </div>
+                            </md-list-item>
+                            <md-list-item class="md-2-line" ng-show="read_messages.length == 0">
+                                <div class="md-list-item-text" layout="column" flex>
+                                    <h3>Vous n'avez aucun message lu.</h3>
+                                </div>
                             </md-list-item>
                         </md-list>
-                    </md-tab>
-                    </md-tab>
-                </section>
-                <section>
-                    <!-- Sent offers tab -->
-                    <md-tab label="Messages envoyés" ng-click="scanMessagesBySender()" flex>
-                        <md-subheader class="md-primary md-no-sticky">Liste des messages envoyées</md-subheader>
+                    </md-card-content>
+                </md-card>
+            </md-tab>
+            <!-- Sent offers tab -->
+            <md-tab label="Messages envoyés" ng-click="scanMessagesBySender()" flex>
+                <md-card flex>
+                    <md-card-title class="border-bottom">
+                        <md-subheader class="md-primary md-no-sticky">Mes messages envoyés</md-subheader>
+                    </md-card-title>
+                    <md-card-content class="no-padding">
                         <!-- If the sent messages are not yet loaded -->
                         <div class="loading grey-background" layout="column" layout-align="center center" ng-show="!sent_messages_loaded">
                             <md-progress-circular md-mode="indeterminate" class="md-primary" md-diameter="80"></md-progress-circular>
                         </div>
                         <!-- If the sent sent messages are loaded -->
                         <md-list class="messages-list" layout="column" ng-show="sent_messages_loaded">
-                            <md-list-item class="md-2-line" ng-repeat="messages in sent_messages | orderBy: 'message_date':true">
-                                <div layout="column" layout-align="center center">
+                            <md-list-item class="md-2-line" ng-repeat="messages in sent_messages | orderBy: 'message_date'">
+                                <div layout="column" style="padding-top:15px;padding-left:10px;" layout-align="center center">
                                     <img ng-src="{{messages.message_sender_picture.S}}" class="md-avatar">
                                 </div>
                                 <div class="md-list-item-text" layout="column" flex>
@@ -74,11 +113,15 @@
                                 </div>
                                 <md-divider></md-divider>
                             </md-list-item>
+                            <md-list-item class="md-2-line" ng-show="sent_messages.length == 0">
+                                <div class="md-list-item-text" layout="column" flex>
+                                    <h3>Vous n'avez envoyé aucun message.</h3>
+                                </div>
+                            </md-list-item>
                         </md-list>
-                    </md-tab>
-                    </md-tab>
-                </section>
-            </md-tabs>
-        </div>
+                    </md-card-content>
+                </md-card>
+            </md-tab>
+        </md-tabs>
     </div>
 </div>

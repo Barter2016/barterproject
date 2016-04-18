@@ -15,70 +15,83 @@
                 </md-card-title>
                 <md-content>
                     <md-card-content>
-                        <div layout="row">
-                            <div flex="50">
-                                <div class="view-offer-content">
-                                    <p>Voici l'offre que vous a fait {{ offer.sender_name.S }}</p>
-                                    <br />
-                                    <md-list class="messages-list" layout="column">
-                                        <md-list-item class="md-2-line">
-                                            <div class="list-image" flex="15" layout="column" layout-align="center center">
-                                                <img ng-src="{{ products_offered[currentProductIndex].image_urls.SS[0] }}" />
+                        <div layout="row" flex>
+                            <div layout="column" class="products-offered" flex="40">
+                                <div layout="column">
+                                    <div layout="row">
+                                        <md-list class="messages-list" layout="column" layout-align="center start" flex>
+                                            <md-list-item class="md-2-line">
+                                                <ul class="offer-photos-navigation">
+                                                    <li flex>
+                                                        <img ng-src="{{ products_offered[currentProductIndex].image_urls.SS[0] }}" class="md-card-image" />
+                                                    </li>
+                                                </ul>
+                                                <div class="md-list-item-text" flex="65" layout="column">
+                                                    <h3>{{ products_offered[currentProductIndex].product_name.S }}</h3>
+                                                </div>
+                                            </md-list-item>
+                                        </md-list>
+                                    </div>
+                                    <div layout="row" ng-show="products_offered.length > 1">
+                                        <div layout="column" layout-align="start center">
+                                            <div layout="row" class="switch-products-offered" flex>
+                                                <md-button class="md-icon-button md-primary" ng-click="showPreviousProduct()">
+                                                    <md-icon class="material-icons">arrow_back</md-icon>
+                                                </md-button>
+                                                <div ng-show="products_offered[currentProductIndex].image_urls.SS.length > 1">
+                                                    {{ currentProductIndex + 1 }} / {{ products_offered.length }}
+                                                </div>
+                                                <md-button class="md-icon-button md-primary" ng-click="showNextProduct()">
+                                                    <md-icon class="material-icons">arrow_forward</md-icon>
+                                                </md-button>
                                             </div>
-                                            <div class="md-list-item-text" flex="65" layout="column">
-                                                <h3>{{ products_offered[currentProductIndex].product_name.S }}</h3>
-                                                <p>{{ products_offered[currentProductIndex].product_description.S }}</p>
-                                            </div>
-                                        </md-list-item>
-                                    </md-list>
-                                    <br /><br />
-                                    <md-button class="md-icon-button md-primary" ng-click="showPreviousProduct()">
-                                        <md-icon class="material-icons">arrow_back</md-icon>
-                                        <md-tooltip md-direction="left"></md-tooltip>
-                                    </md-button>
-                                    <md-button class="md-icon-button md-primary" ng-click="showNextProduct()">
-                                        <md-icon class="material-icons">arrow_forward</md-icon>
-                                        <md-tooltip md-direction="right"></md-tooltip>
-                                    </md-button>
-                                    <br />
-                                    <div layout="column">
-                                        <div layout="row" layout-align="center center">
-                                            <md-icon class="material-icons">swap_vert</icon>
                                         </div>
                                     </div>
-                                    <br />
-                                    <md-list class="messages-list" layout="column">
-                                        <md-list-item class="md-2-line">
-                                            <div class="list-image" flex="15" layout="column" layout-align="center center">
-                                                <img ng-src="{{ targeted_product.image_urls['SS'][0] }}" />
-                                            </div>
-                                            <div class="md-list-item-text" flex="65" layout="column">
-                                                <h3>{{ targeted_product.product_name.S }}</h3>
-                                                <p>{{ targeted_product.product_description.S }}</p>
-                                            </div>
-                                        </md-list-item>
-                                    </md-list>
                                 </div>
                             </div>
-                            <md-divider vertical></md-divider>
-                            <div flex="50">
-                                <div class="view-offer-content">
+                            <div layout="column" flex="20">
+                                <md-icon class="material-icons">swap_horiz</icon>
+                            </div>
+                            <div layout="column" flex="40">
+                                <md-list class="messages-list" layout="column">
+                                    <md-list-item class="md-2-line">
+                                        <ul class="offer-photos-navigation">
+                                            <li flex>
+                                                <img ng-src="{{ targeted_product.image_urls['SS'][0] }}" class="md-card-image" />
+                                            </li>
+                                        </ul>
+                                        <div class="md-list-item-text" flex="65" layout="column">
+                                            <h3>{{ targeted_product.product_name.S }}</h3>
+                                        </div>
+                                    </md-list-item>
+                                </md-list>
+                            </div>
+                        </div>
+                        <div layout="row" flex>
+                            <div layout="row" layout-align="center center" flex>
+                                <div layout="row" layout-align="center">
                                     <form name="messageForm">
-                                        <p>Acceptez-vous cette offre? Envoyer un message à {{ offer.sender_name.S }}!</p>
-                                        <br />
-                                        <md-input-container class="md-block">
-                                            <textarea required="" md-maxlength="300" placeholder="Le contenu de votre message" name="messageText" ng-model="messageText"></textarea>
-                                            <div ng-messages="messageForm.messageText.$error">
-                                                <div ng-message="required">Ce champs est obligatoire.</div>
+                                        <div layout-align="center center" ng-show="!offer.offer_status.S">
+                                            <div layout="row" layout-align="center center">
+                                                <p>Acceptez-vous cette offre?</p>
                                             </div>
-                                        </md-input-container>
-                                        <md-button layout-align="center right" class="md-raised" ng-disabled="messageForm.$invalid" ng-click="sendNewMessage()">Envoyer</md-button>
+                                            <div layout="row" layout-align="center center">
+                                                <md-button class="md-button md-primary" ng-click="confirmStatus($event, 'accepted')">
+                                                    Accepter
+                                                </md-button>
+                                                <md-button class="md-button md-warn" ng-click="confirmStatus($event, 'declined')">
+                                                    Refuser
+                                                </md-button>
+                                            </div>
+                                        </div>
+                                        <div layout-align="center center" ng-show="offer.offer_status.S">
+                                            <div layout="row" layout-align="center center">
+                                                <h4>Vous avez déjà répondu à cette offre.</h4>
+                                            </div>
+                                        </div>
                                     </form>
                                 </div>
                             </div>
-                        </div>
-                        <div class="messages-buttons" layout="row">
-                            <md-button layout-align="center right" class="md-raised" ng-click="cancel()">Annuler</md-button>
                         </div>
                     </md-card-content>
                 </md-content>

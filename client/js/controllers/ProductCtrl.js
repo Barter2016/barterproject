@@ -5,7 +5,8 @@ angular.module('BarterApp').controller('ProductCtrl', ['$scope',
 'ProductService', 
 'MessageService', 
 'OfferService',
-function($scope, $routeParams, $mdDialog, LocalStorageService, ProductService, MessageService, OfferService) {
+'$route',
+function($scope, $routeParams, $mdDialog, LocalStorageService, ProductService, MessageService, OfferService, $route) {
     const currentUser = LocalStorageService.getObject('user')
     const product_id = $routeParams.id
     $scope.edit = $routeParams.edit
@@ -14,6 +15,7 @@ function($scope, $routeParams, $mdDialog, LocalStorageService, ProductService, M
     $scope.productToOffer = []
     $scope.userProducts = []
     $scope.ownProduct = false
+    $scope.alreadySentOffer = false
 
     ProductService.queryProduct(product_id, (err, product) => {
         if (err) {
@@ -128,7 +130,7 @@ function($scope, $routeParams, $mdDialog, LocalStorageService, ProductService, M
                         console.log(err)
                     }
                     else {
-                        console.log(data)
+                        $route.reload();
                     }
                 })
             })
@@ -174,10 +176,11 @@ function($scope, $routeParams, $mdDialog, LocalStorageService, ProductService, M
 
             MessageService.addMessage(messageObj, (err, newMessage) => {
                 if (err) {
-                    console.log(err)
+                    alertify.error("Une erreur est survenu lors de l'envoi de votre message. Veuillez réessayer.")
+                    $mdDialog.cancel()
                 }
                 else {
-                    console.log(newMessage);
+                    alertify.success("Votre message a bien été envoyé.")
                     $mdDialog.hide()
                 }
             })

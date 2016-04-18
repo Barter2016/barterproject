@@ -36,11 +36,16 @@ angular.module('BarterApp').factory('UserService', ['UtilService', 'SessionServi
                             city: user.city,
                             country: user.country,
                             province: user.province,
-                            postalcode: user.postalcode
+                            postalcode: user.postalcode,
+                            lat: user.lat,
+                            lng: user.lng
                         })
                     };
     
                     lambda.invoke(lambda_params, (error, response) => {
+                        console.log("error in invoke: " + error) 
+                        console.log("response in invoke: " + JSON.stringify(response))
+                        
                         if (error) {
                             callback(error, null)
                         }

@@ -9,7 +9,7 @@ angular.module('BarterApp').factory('ProductService', ['AuthService', function(A
          * Input : A callback
          * Output : All the products
          */
-        scanAllProducts : (callback) => {
+        scanAllProducts : (callback, limit) => {
             
             AWS.config.credentials.get(function(err) {
                 if (err) {
@@ -24,9 +24,14 @@ angular.module('BarterApp').factory('ProductService', ['AuthService', function(A
                     const lambda = new AWS.Lambda({
                         region: 'us-west-2'
                     })
-    
-                    const lambda_params = {
+                    
+                   
+                    var lambda_params = {
                         FunctionName: 'scanAllProducts'
+                    }
+                    
+                    if(limit) {
+                        lambda_params["Payload"] = JSON.stringify({ limit: limit })
                     }
     
                     lambda.invoke(lambda_params, (error, response) => {
@@ -53,14 +58,19 @@ angular.module('BarterApp').factory('ProductService', ['AuthService', function(A
          * Search in the last scan if a the product name exists in our list. If the category is
          * not null it will check the category too.
          */ 
-        searchProductByName : (productName, category, callback) => {
+        searchProduct : (productName, category, callback) => {
             var searchResult = []
             try {
-                searchResult = productService.productsInCache.filter((product) => {
-                    // If the product_name contains the searching name, then return true
-                    return product.product_name.S.toLowerCase()
-                    .indexOf(productName.toLowerCase()) > -1
-                })
+                if(productName){
+                    searchResult = productService.productsInCache.filter((product) => {
+                        // If the product_name contains the searching name, then return true
+                        return product.product_name.S.toLowerCase()
+                        .indexOf(productName.toLowerCase()) > -1
+                    })
+                }
+                else {
+                    searchResult = productService.productsInCache
+                }
                 
                 // If the user has selected a category.
                 if(category) {
@@ -257,6 +267,7 @@ angular.module('BarterApp').factory('ProductService', ['AuthService', function(A
                         
                         lambda.invoke(lambda_params, (error, response) => {
                             if (error) {
+                                console.log(error)
                                 callback(error, null)
                             }  
                             else {

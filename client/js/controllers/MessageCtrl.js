@@ -9,6 +9,7 @@ angular.module('BarterApp').controller('MessageCtrl', ['$scope',
 function($scope, $mdDialog, $mdToast, $mdMedia, MessageService, OfferService, ProductService, LocalStorageService) {
     $scope.data_loaded = false
     $scope.sent_messages_loaded = false
+    $scope.read_messages_loaded = false
     const currentUser = LocalStorageService.getObject('user')
 
     /*
@@ -16,8 +17,6 @@ function($scope, $mdDialog, $mdToast, $mdMedia, MessageService, OfferService, Pr
      */
     $scope.init = function() {
         if (currentUser) {
-            scanOffersByReceiver()
-            scanReadMessagesOfUser()
             scanUnreadMessagesOfUser()
         }
     }
@@ -28,12 +27,21 @@ function($scope, $mdDialog, $mdToast, $mdMedia, MessageService, OfferService, Pr
      * param="message_id" The id of the message to update.
      */
     $scope.updateMessageAsRead = function(message_id) {
+        updateMessageAsRead(message_id)
+    }
+    
+    /*
+     * Update a notification of the user as read.
+     *
+     * param="_notification_id" The id of the notification to update.
+     */
+    function updateMessageAsRead (message_id) {
         MessageService.updateMessageAsRead(message_id, (err, data) => {
             if (err) {
                 console.log(err)
             }
             else {
-                console.log(data)
+                alertify.success("Message ignoré.")
                 scanUnreadMessagesOfUser()
                 $scope.$apply()
             }
@@ -89,29 +97,6 @@ function($scope, $mdDialog, $mdToast, $mdMedia, MessageService, OfferService, Pr
     }
     
     /*
-     * This sets in the scope the function that returns all the offers of a given user.
-     */
-    $scope.scanOffersByReceiver = function() {
-        scanOffersByReceiver()
-    }
-    
-    /*
-     * This function scans and returns all the offers received by a given user.
-     */
-    function scanOffersByReceiver () {
-        OfferService.scanOffersByReceiver(currentUser.email, (err, offers) => {
-            if (err) {
-                console.log(err)
-            }
-            else {
-                $scope.offers = offers
-                $scope.data_loaded = true
-                $scope.$apply()
-            }
-        })
-    }
-    
-    /*
      * Returns all the read messages of the user.
      */
     function scanReadMessagesOfUser() {
@@ -121,7 +106,7 @@ function($scope, $mdDialog, $mdToast, $mdMedia, MessageService, OfferService, Pr
             }
             else {
                 $scope.read_messages = readMessages
-                $scope.data_loaded = true
+                $scope.read_messages_loaded = true
                 $scope.$apply()
             }
         })
@@ -151,9 +136,9 @@ function($scope, $mdDialog, $mdToast, $mdMedia, MessageService, OfferService, Pr
      * param="ev" The event that the user did.
      * param="notification" The notification in JSON format the will be replied.
      */
-    $scope.replyMessage = function(event, message) {
+    $scope.replyMessage = function(message, event) {
         LocalStorageService.set('currentMessage', JSON.stringify(message))
-
+        
         $mdDialog.show({
             controller: ReplyMessageCtrl,
             templateUrl: 'templates/ReplyMessage.html',
@@ -181,6 +166,7 @@ function($scope, $mdDialog, $mdToast, $mdMedia, MessageService, OfferService, Pr
             }
             else {
                 scanReadMessagesOfUser()
+                alertify.error("Tous vos messages lus furent supprimés.")
                 $scope.$apply()
             }
         })
@@ -197,6 +183,7 @@ function($scope, $mdDialog, $mdToast, $mdMedia, MessageService, OfferService, Pr
         var currentMessage = LocalStorageService.get('currentMessage')
         currentMessage = JSON.parse(currentMessage)
         $scope.message = currentMessage.message_text.S
+        $scope.messageRead = currentMessage.message_read.BOOL
         $scope.message_sender_name = currentMessage.message_sender_name.S
 
         /*
@@ -235,158 +222,17 @@ function($scope, $mdDialog, $mdToast, $mdMedia, MessageService, OfferService, Pr
                 }
             })
         }
-
-        /*
-         * Update a notification of the user as read.
-         *
-         * param="_notification_id" The id of the notification to update.
-         */
+        
         function updateMessageAsRead (message_id) {
-            MessageService.updateMessageAsRead(message_id, (err, data) => {
-                if (err) {
-                    console.log(err)
-                }
-                else {
-                    getAllMessagesOfUser(currentUser.email)
-                    $scope.$apply()
-                }
-            })
-        }
-    }
-    
-    /*
-     * Opens up a new window that allows the user to reply to an existing message in the list.
-     *
-     * param="ev" The event that the user did.
-     * param="notification" The notification in JSON format the will be replied.
-     */
-    $scope.viewOffer = function(event, offer) {
-        LocalStorageService.set('currentOffer', JSON.stringify(offer))
-
-        $mdDialog.show({
-            controller: ReplyOfferCtrl,
-            templateUrl: 'templates/ViewOffer.html',
-            parent: angular.element(document.body),
-            targetEvent: event,
-            clickOutsideToClose: true,
-            fullscreen: true
-        })
-        .then(function(answer) {
-            scanOffersByReceiver()
-        }, function() {
-            scanOffersByReceiver()
+        MessageService.updateMessageAsRead(message_id, (err, data) => {
+            if (err) {
+                console.log(err)
+            }
+            else {
+                getAllMessagesOfUser(currentUser.email)
+                $scope.$apply()
+            }
         })
     }
-    
-    /*
-     * The controller that has the behavior of replying to existing offer.
-     *
-     * param="$scope" Angularjs' $scope.
-     * param="$mdDialog" Angular Material's $mdDialog.
-     * param="LocalStorageService" The service that allows to store data in the local storage of the browser.
-     */
-    function ReplyOfferCtrl ($scope, $mdDialog, LocalStorageService, ProductService) {
-        var currentOffer = JSON.parse(LocalStorageService.get('currentOffer'))
-        $scope.offer = currentOffer
-        $scope.data_loaded = false;
-        
-        $scope.init = function () {
-            getProductsOffered(currentOffer.products_offered.SS)
-            getTargetedProduct(currentOffer.targeted_product.S)
-        }
-        
-        /*
-        * This functions queries all the product by ids from products offered and set the data as loaded.
-        *
-        * @params arrayOfProductId The array containing the id of the products in the offer.
-        */
-        function getProductsOffered (arrayOfProductId) {
-            const productsArray = []
-            for (var i = 0; i < arrayOfProductId.length; i++) {
-                console.log(arrayOfProductId[i])
-                ProductService.queryProduct(arrayOfProductId[i], (err, product) => {
-                    if (err) {
-                        console.log(err)
-                    }
-                    else {
-                        productsArray.push(product)
-                        if (i == arrayOfProductId.length) {
-                            console.log(productsArray)
-                            $scope.products_offered = productsArray
-                            $scope.data_loaded = true
-                        }
-                    }
-                })
-            }
-        }
-        
-        /*
-        * This functions queries the targeted product in the offer.
-        *
-        * @params productId The id of the product.
-        */
-        function getTargetedProduct (productId) {
-            console.log(productId)
-            ProductService.queryProduct(productId, (err, product) => {
-                if (err) {
-                    console.log(err)
-                }
-                else {
-                    $scope.targeted_product = product
-                }
-            })
-        }
-        
-        /*
-         * This function hides the $mdDialog window without any actions.
-         */
-        $scope.hide = () => {
-            $mdDialog.hide()
-        }
-
-        /*
-         * This function cancels the $mdDialog window with all its proceses.
-         */
-        $scope.cancel = () => {
-            $mdDialog.cancel()
-        }
-
-        $scope.setCurrentProductIndex = (index) => {
-            $scope.currentProductIndex = index;
-        };
-    
-        $scope.isCurrentProductIndex = (index) => {
-            return $scope.currentProductIndex === index;
-        };
-        
-        //function to show next product in the preview box
-        $scope.showNextProduct = () => {
-            $scope.currentProductIndex = ($scope.currentProductIndex < $scope.products_offered.length - 1) ? ++$scope.currentProductIndex : 0;
-        };
-        //function to show previous product in the preview box
-        $scope.showPreviousImg = () => {
-            $scope.currentProductIndex = ($scope.currentProductIndex > 0) ? --$scope.currentProductIndex : $scope.products_offered.length - 1;
-        };
-
-        /*
-         * Creates a new notification in the database.
-         */
-        $scope.sendNewMessage = () => {
-            const messageObj = {
-                message_text: $scope.messageText,
-                message_sender_email: currentUser.email,
-                message_sender_name: currentUser.name,
-                message_sender_picture: currentUser.picture.data.url,
-                message_receiver_email: currentOffer.sender.S
-            }
-            MessageService.addMessage(messageObj, (err, newMessage) => {
-                if (err) {
-                    console.log(err)
-                }
-                else {
-                    $mdDialog.hide()
-                }
-            })
-        }
     }
 }])

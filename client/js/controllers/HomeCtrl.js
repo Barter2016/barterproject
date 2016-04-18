@@ -1,26 +1,26 @@
 angular.module('BarterApp').controller('HomeCtrl', ['$scope',
-'UtilService',
-'ProductService',
-'CategoryService',
-'LocalStorageService',
-'ProductHistoryService',
-'MessageService',
-'$mdDialog',
-'AuthService',
-'ImageService',
-'OfferService',
-function($scope, 
-UtilService, 
-ProductService, 
-CategoryService, 
-LocalStorageService, 
-ProductHistoryService, 
-MessageService, 
-$mdDialog,
-AuthFactory,
-ImageService,
-OfferService,
-GoogleMapService) {
+    'UtilService',
+    'ProductService',
+    'CategoryService',
+    'LocalStorageService',
+    'ProductHistoryService',
+    'MessageService',
+    '$mdDialog',
+    'AuthService',
+    'ImageService',
+    'OfferService',
+    function($scope,
+        UtilService,
+        ProductService,
+        CategoryService,
+        LocalStorageService,
+        ProductHistoryService,
+        MessageService,
+        $mdDialog,
+        AuthFactory,
+        ImageService,
+        OfferService,
+        GoogleMapService) {
         $scope.is_auth = false
         $scope.categories = [] // Save the last scanned categories in an array.
         var productsInCache = [] // Save the last scanned products in an array.
@@ -30,7 +30,10 @@ GoogleMapService) {
         $scope.go = UtilService.go
         $scope.data_loaded = false
         $scope.refreshProducts = refreshProducts;
-
+        
+        // We start by showing 10 products.
+        var numberOfShownProduct = 10;
+        
         $scope.categoryChanged = () => {
             try {
                 const selectedCategoryName = $scope.selectedCategory.category_name.S
@@ -53,7 +56,7 @@ GoogleMapService) {
             })
         }
 
-        function refreshProducts() {
+        function refreshProducts(numberOfProducts) {
             $scope.data_loaded = false;
             ProductService.scanAllProducts((err, products) => {
                 if (err) {
@@ -61,7 +64,7 @@ GoogleMapService) {
                 }
                 else {
                     products.forEach((product) => {
-                        const d = product.product_date.S  
+                        const d = product.product_date.S
                         const date = new Date(d)
                         product.product_date = date
                     })
@@ -70,7 +73,7 @@ GoogleMapService) {
                     $scope.data_loaded = $scope.productsToDisplay.length > 0 && $scope.categories.length > 0
                     $scope.$apply()
                 }
-            })
+            }, numberOfProducts)
         }
 
         $scope.goBackInHistory = () => {
@@ -86,7 +89,7 @@ GoogleMapService) {
         }
 
         $scope.searchProduct = () => {
-            ProductService.searchProductByName($scope.productNameToFind, $scope.selectedCategory, (err, products) => {
+            ProductService.searchProduct($scope.productNameToFind, $scope.selectedCategory, (err, products) => {
                 if (err) {
                     console.log(err)
                     $scope.productsToDisplay = ProductService.productsInCache
@@ -102,29 +105,33 @@ GoogleMapService) {
                 }
             })
         }
-        
+
 
         $scope.doOffer = (selectedProduct) => {
-            if(selectedProduct
-            && selectedProduct.product_id) {
+            if (selectedProduct && selectedProduct.product_id) {
                 UtilService.go('/Offer/' + selectedProduct.product_id.S)
             }
         }
-        
+
         $scope.sendNewMessageDialog = (event, product_user_email) => {
             MessageService.sendNewMessage(event, product_user_email)
         }
 
         if (productsInCache.length == 0 && AuthFactory.checkIfAuth()) {
-            refreshProducts()
+            refreshProducts(numberOfShownProduct)
         }
 
         if ($scope.categories.length == 0 && AuthFactory.checkIfAuth()) {
             refreshCategories()
         }
-        
+
         $scope.viewProduct = (product) => {
             window.location.href = '/#/Product/' + product;
+        }
+        
+        $scope.loadMoreProduct = () => {
+            numberOfShownProduct += 10
+            refreshProducts(numberOfShownProduct)
         }
     }
 ]);

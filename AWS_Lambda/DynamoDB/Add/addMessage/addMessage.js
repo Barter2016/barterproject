@@ -23,7 +23,7 @@ exports.addMessage = function (event, context) {
         const date = new Date();
         const message_id = event.message_sender_email + date.getTime();
         const hashedMessageId = md5(message_id);
-        const message_date = date.toString();
+        const message_date = date.getTime();
         const params = {
             "TableName": "messages",
             "Item" : {
@@ -33,7 +33,7 @@ exports.addMessage = function (event, context) {
                 "message_sender_picture" : { "S" : event.message_sender_picture },
                 "message_receiver_email" : { "S" : event.message_receiver_email },
                 "message_text" : { "S" : event.message_text },
-                "message_date" : { "S" : message_date },
+                "message_date" : { "S" : message_date.toString() },
                 "message_read" : { "BOOL" : false }
             }
         };

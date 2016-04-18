@@ -12,7 +12,6 @@
             <md-card-content>
                 <form ng-submit="submit()" class="md-inline-form" name="editProductForm" ng-cloak>
                     <div layout="row">
-                        
                         <md-input-container class="md-block" flex-gt-sm>
                             <label>Nom du produit</label>
                             <input ng-model="new_product.product_name" name="productName" value="pouet" required>
@@ -72,7 +71,6 @@
                 </div>
                 <md-button class="md-raised md-primary" ng-disabled="selected_product.image_urls['SS'].length == 0" ng-click="removeImageFromProduct()">Supprimer l'image</md-button>
                 <md-button class="md-raised md-primary" ng-disabled="imagesToDelete.length == 0" ng-click="undoRemoveImageFromProduct()">Undo supprimer l'image</md-button>
-                <md-button class="md-raised md-primary" ng-click="test()">test</md-button>
             </md-card-content>
             <md-card-actions layout="row" layout-align="start center">
                 <md-button class="md-raised md-primary" ng-disabled="editProductForm.$invalid" ng-click="editProduct(new_product)">Modifier produit</md-button>

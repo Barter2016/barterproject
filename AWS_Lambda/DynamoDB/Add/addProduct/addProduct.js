@@ -15,55 +15,35 @@ exports.addProduct = function (event, context) {
             succeed : "succeed",
             failed : "failed"
     };
-    console.log(JSON.stringify(event));
+	
     if (!event.product_name 
         || !event.user_email
         || !event.product_tags 
         || !event.category_id 
         || !event.product_description) {
         context.fail(message.failed);
-    } else {
-										
-        const queryCategoryParams = {			
-            TableName: 'categories',
-            KeyConditionExpression: "category_id = :category_id",
-            ExpressionAttributeValues: {
-                ":category_id":  { "S" :event.category_id }
-            }
-        }
-        
-        dynamoDB.query(queryCategoryParams, function(err, category) {	
-            if(err) {
-                context.fail(err)
-            }  
-            else {
-				
-                const date = new Date()	
-                const productId = event.user_email + date.getTime()
-                const hashedProductId = md5(productId)
-                
-                const params = {
-                    "TableName": "products",
-                    "Item" : {
-                        "product_id" : { "S" : hashedProductId },
-                        "user_email" : { "S" : event.user_email },
-                        "product_name" : { "S" : event.product_name },
-                        "product_tags" : { "S" : event.product_tags },
-                        "category_id" : { "S" : event.category_id },
-                        "product_description" : { "S" : event.product_description },
-                        //"image_names": { "SS" : [] }
-                        "product_date": { "S" : date.toString() }
-                    }
-                }
-                
-                dynamoDB.putItem(params, function (err, data) {
-                    if (err) {
-                        context.fail(err)
-                    } else {
-                        context.succeed(hashedProductId)
-                    }
-                })
-            }
-        })
     }
+
+    const date = new Date()	
+    const productId = event.user_email + date.getTime()
+    const hashedProductId = md5(productId)
+    const params = {
+        "TableName": "products",
+        "Item" : {
+            "product_id" : { "S" : hashedProductId },
+            "user_email" : { "S" : event.user_email },
+            "product_name" : { "S" : event.product_name },
+            "product_tags" : { "S" : event.product_tags },
+            "category_id" : { "S" : event.category_id },
+            "product_description" : { "S" : event.product_description },
+            "product_date": { "S" : date.toString() }
+        }
+    }
+    
+    dynamoDB.putItem(params, function (err, data) {
+        if (err) 
+            context.fail(err)
+            
+        context.succeed(hashedProductId)
+    })
 };

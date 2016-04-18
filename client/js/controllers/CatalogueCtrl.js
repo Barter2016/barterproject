@@ -7,7 +7,7 @@ angular.module('BarterApp').controller('CatalogueCtrl', ['$scope',
     'UtilService',
     'ImageService',
     '$mdDialog',
-    function($scope, ProductService, CategoryService, LocalStorageService, AuthService, BucketService, UtilService, ImageService,$mdDialog) {
+    function($scope, ProductService, CategoryService, LocalStorageService, AuthService, BucketService, UtilService, ImageService, $mdDialog) {
         const user = LocalStorageService.getObject('user')
         $scope.data_loaded = false
         $scope.products
@@ -17,10 +17,10 @@ angular.module('BarterApp').controller('CatalogueCtrl', ['$scope',
         $scope.currentImgIndex = 0;
         $scope.imagesAreLoading = false;
 
-        getProductsByUser()
+        refreshUserProduct()
         getCategories()
 
-        function getProductsByUser() {
+        function refreshUserProduct() {
             //obtient les produits de l'utilisateur pour les ajouter dans le scope de la page
             ProductService.scanProductsByUser(user.email, (err, products) => {
                 if (err) {
@@ -28,7 +28,7 @@ angular.module('BarterApp').controller('CatalogueCtrl', ['$scope',
                 }
                 else {
                     products.forEach((product) => {
-                        const d = product.product_date.S  
+                        const d = product.product_date.S
                         const date = new Date(d)
                         product.product_date = date
                     })
@@ -86,6 +86,12 @@ angular.module('BarterApp').controller('CatalogueCtrl', ['$scope',
             }
         }
 
+        /**
+         * Load an image to the server
+         * 
+         * params {imageBlob} is the image file to load from the input.
+         * params {callback} is the the function that will be call after the method has finish to run.
+         */
         function loadImages(imageBlob, callback) {
             try {
                 const reader = new FileReader()
@@ -111,10 +117,10 @@ angular.module('BarterApp').controller('CatalogueCtrl', ['$scope',
                 callback(err, null)
             }
         }
-        
+
         $scope.addProduct = (new_product) => {
             $scope.data_loaded = false
-            console.log("in add product")
+
             if (AuthService.checkIfAuth()) {
                 //hardcoder les tags pour l'instants
                 new_product.product_tags = "product";
@@ -122,53 +128,49 @@ angular.module('BarterApp').controller('CatalogueCtrl', ['$scope',
                 new_product.user_email = user.email;
 
                 ProductService.addProduct(new_product, (err, productid) => {
-                    console.log("in ProductService.addProduct")
                     if (err) {
-                        console.log("break1" +err)
+                        console.log(err)
                     }
                     else {
-                        console.log("No error from add product")
-                        const promise = ImageService.compressImages($scope.imagesToPreview)
-                        
-                        promise
-                            .then((blobCollection) => {
-                                console.log("test")
-                                BucketService.uploadFile(blobCollection, (err, data) => {
-                                    if (err) {
-                                        console.log(err)
-                                    }
-                                    else {
-                                        ProductService.addImageToProduct(productid, [data.Location], (err, data) => {
-                                            if (err) {
-                                                console.log(err)
-                                            }
-                                            else {
-                                                getProductsByUser()
-                                            }
-                                        })
-                                    }
+                        if ($scope.imagesToPreview.length > 0) {
+                            const promise = ImageService.compressImages($scope.imagesToPreview)
+                            promise
+                                .then((blobCollection) => {
+                                    BucketService.uploadFile(blobCollection, (err, data) => {
+                                        if (err) {
+                                            alertify.error("Une erreur est subvenue lors de l'envoi d'image.")
+                                        }
+                                        else {
+                                            ProductService.addImageToProduct(productid, [data.Location], (err, data) => {
+                                                if (err) {
+                                                    alertify.error("Une erreur est subvenue lors de l'association de l'image au produit.")
+                                                }
+                                                else {
+                                                    UtilService.go('/Product/' + productid, true)
+                                                }
+                                            })
+                                        }
+                                    })
+                                }, (err) => { 
+                                    $scope.data_loaded = true
+                                    alertify.error("Une erreur est subvenue lors de l'envoi d'image.") 
                                 })
-                                
-                            }, (err) => console.log(err))
-                            .finally(() => { 
-                                $scope.data_loaded = true 
-                                clearAddProductForm()
-                            })
+                        }
+                        else {
+                            UtilService.go('/Product/' + productid, true)
+                        }
                     }
-                    
+
                 })
             }
         }
-
-        $scope.viewProduct = (product) => {
-            //window.location.href = '/#/Product/' + product;
-            UtilService.go('/Product/' + product)
+        $scope.viewProduct = (productid) => {
+            UtilService.go('/Product/' + productid)
         }
-
-        $scope.editProduct = (product) => {
-            UtilService.go('/EditProduct/' + product)
+        $scope.editProduct = (productid) => {
+            UtilService.go('/EditProduct/' + productid)
         }
-
+        
         $scope.setCurrentImgIndex = (index) => {
             $scope.currentImgIndex = index;
         };
@@ -185,16 +187,16 @@ angular.module('BarterApp').controller('CatalogueCtrl', ['$scope',
             $scope.currentImgIndex = ($scope.currentImgIndex > 0) ? --$scope.currentImgIndex : $scope.imagesToPreview.length - 1;
         };
 
-        $scope.deleteProduct = (ev,product) => {
+        $scope.deleteProduct = (ev, product) => {
             // Appending dialog to document.body to cover sidenav in docs app
             var confirm = $mdDialog.confirm()
-                  .title('Voulez vous vraiment supprimer le produit ' + product.product_name.S + '?')
-                  .textContent('La suppression du produit est non réversible')
-                  .ariaLabel('Suppression')
-                  .targetEvent(ev)
-                  .ok('Confirmer')
-                  .cancel('Annuler');
-                  
+                .title('Voulez vous vraiment supprimer le produit ' + product.product_name.S + '?')
+                .textContent('La suppression du produit est non réversible')
+                .ariaLabel('Suppression')
+                .targetEvent(ev)
+                .ok('Confirmer')
+                .cancel('Annuler');
+
             $mdDialog.show(confirm).then(() => {
                 ProductService.deleteProduct(product, (err, productId) => {
                     if (err) {
@@ -202,19 +204,20 @@ angular.module('BarterApp').controller('CatalogueCtrl', ['$scope',
                     }
                     else {
                         alertify.success("Le produit " + product.product_name.S + " a été supprimé avec succès")
-                        getProductsByUser();
+                        refreshUserProduct();
                         $scope.$apply();
                     }
                 })
             }, () => {
-              $scope.status = 'Suppression annulé';
+                $scope.status = 'Suppression annulé';
             });
-            
+
         };
-        
+
         function clearAddProductForm() {
-            $scope.new_product = {}   
+            $scope.new_product = {}
         }
+        
 
     }
 ]);
