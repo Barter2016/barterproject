@@ -1,0 +1,150 @@
+<div ng-cloak id="help-view">
+    <div layout="column" flex>
+        <md-card flex>
+            <md-card-title class="card-title">
+                <md-card-title-text>
+                    <span class="md-headline">Aide</span>
+                </md-card-title-text>
+            </md-card-title>
+            <md-card-content>
+                
+                <md-divider></md-divider>
+                
+                <h2>Page d'accueil</h2>
+                <p>La page d'accueil est la page ou il est possible de chercher pour des offres qui pourraient vous intéreser.</p>
+                <p>Il est possible de voir cette page même lorsque vous n'êtes pas connecté. Elle contient plusieurs éléments qui sont décris ci-dessous.</p>
+                <img ng-src="https://s3-us-west-2.amazonaws.com/barter-project-bucket/home.png" class="help-images"/>
+                <p>1: Ce champ permet de trouver une annonce en la cherchant par son nom</p>
+                <p>2: Cette liste déroulante permet de sélectionner la catégorie désirée pour faciliter la recherche</p>
+                <p>3: Ce bouton permet de filtrer les annonces, une fois que les deux champs précédents furent spécifiés</p>
+                <p>4: En cliquant à cet endroit, vous accéderez à la page présentant le produit et permettant de proposer une offre</p>
+                <p>5: Ce bouton permet d'afficher plus d'annonces dans la page</p>
+                
+                <br/>
+                <md-divider></md-divider>
+                <br/>
+                
+                <h2>Page produit</h2>
+                <p>Cette page permet de visualiser un produit, qu'il soit à vous ou à un autre utilisateur.</p>
+                <p>Elle permet de faire une offre à l'utilisateur possèdant ce produit, en proposant un de vos propres produits</p>
+                <img ng-src="https://s3-us-west-2.amazonaws.com/barter-project-bucket/sendOffer.png" class="help-images"/>
+                <p>1: Le nom, la description ainsi que l'image du produit</p>
+                <p>2: Bouton qui permet d'envoyer un message à l'utilisateur ayant affiché cette annonce</p>
+                <p>3: Liste des produts qui vous sont disponibles, afin de faire une offre</p>
+                <p>4: En cochant cette case, vous allez proposer ce produit</p>
+                <p>5: Bouton pour finaliser l'offre</p>
+                
+                <br/>
+                <md-divider></md-divider>
+                <br/>
+                
+                <h2>Confirmation de l'offre</h2>
+                <p>Cette fenêtre s'ouvre lorsque vous avez cliqué sur le bouton "faire une offre".</p>
+                <p>Elle résume l'offre que vous aller faire et vous permet de la confirmer.</p>
+                <img ng-src="https://s3-us-west-2.amazonaws.com/barter-project-bucket/confirmOffer.png" class="help-images"/>
+                <p>1: Bouton qui permet d'annuler l'offre</p>
+                <p>2: Bouton qui permet de confimer l'offre</p>
+                <p>3: Résumé de votre offre sous la forme d'une liste de nom de produits</p>
+                
+                <br/>
+                <md-divider></md-divider>
+                <br/>
+                
+                <h2>Page catalogue</h2>
+                <p>Cette page contient la liste de toutes vos annonces.</p>
+                <p>C'est à partir de cette page que vous pouvez supprimer ou modifier vos offres.</p>
+                <img ng-src="https://s3-us-west-2.amazonaws.com/barter-project-bucket/Catalogue.png" class="help-images"/>
+                <p>1: Ce bouton permet d'afficher la partie d'ajout de produit du catalogue</p>
+                <p>2: En cliquant ici, vous accèderez à la fiche de visualisation du produit</p>
+                <p>3: Permet d'accéder à la page de modification du produit</p>
+                <p>4: Permet de supprimer un produit</p>
+                
+                <br/>
+                <md-divider></md-divider>
+                <br/>
+                
+                <h2>Page d'ajout de produit</h2>
+                <p>Cette page vous permettera d'ajouter des produits à offrir dans votre catalogue</p>
+                <img ng-src="https://s3-us-west-2.amazonaws.com/barter-project-bucket/addProduct.png" class="help-images"/>
+                <p>1: Permet d'accéder à liste de vos produits</p>
+                <p>2: Entrée pour le nom du nouveau produit</p>
+                <p>3: Entrée pour la description du nouveau produit</p>
+                <p>4: Choix de la catégorie dans une liste déroulante contenant les catégories existantes</p>
+                <p>5: Bouton qui permet de selectionner des fichier pour permettre l'ajout d'images au nouveau produit</p>
+                <p>6: Prévisualisation des images ajoutées au produit</p>
+                <p>7: Bouton pour finaliser la création d'un nouveau produit</p>
+                
+                <br/>
+                <md-divider></md-divider>
+                <br/>
+                
+                <h2>Visualisation d'un de vos produits</h2>
+                <p>Cette page est la même que lorsque vous afficher les détails d'un produit offert par un autre utilisateur, mais sans les options d'offres.</p>
+                <img ng-src="https://s3-us-west-2.amazonaws.com/barter-project-bucket/ProductOwned.png" class="help-images"/>
+                
+                <br/>
+                <md-divider></md-divider>
+                <br/>
+                
+                <h2>Modification d'un de vos produit</h2>
+                <p>Cette page vous permettera de modifier un de vos produits</p>
+                <p>Les champs sont les mêmes que lors d'ajout d'un nouveau produit, à l'exception de la modification des images.</p>
+                <img ng-src="https://s3-us-west-2.amazonaws.com/barter-project-bucket/addImagesEdit.png" class="help-images"/>
+                <p>1:Tout comme pour l'ajout d'un produit, ce bouton permet de sélectionner d'autres images a ajouter au produit.</p>
+                <p>2: Permet de supprimer une image qui est présente dans le produit actuellement</p>
+                <p>3: Fleches qui permettent de se déplacer à travers la liste d'images actuellement disponibles pour le produit</p>
+                <p>4: Bouton qui permet de restaurer une image ayant été supprimée</p>
+                
+                <br/>
+                <md-divider></md-divider>
+                <br>
+                
+                <h2>Les offres</h2>
+                <p>La page des offres est là où se retrouve les offres reçues et envoyées d'un utilisateur.</p> 
+                <p>Il peut les consulter et ainsi accepter ou refuser les offres qu'il reçoit.</p>
+                <img ng-src="https://s3-us-west-2.amazonaws.com/barter-project-bucket/pageOffres.png" class="help-images"/>
+                <p>1: Tab qui permet de consulter les offres reçues.</p>
+                <p>2: Tab qui permet de consulter les offres envoyées à d'autres utilisateurs.</p>
+                <p>3: Informations sur l'offre. En cliquant sur cette dernière, une fenêtre de dialogue s'ouvrira afin de pouvoir la consulter.</p>
+                <br /><md-divider></md-divider><br />
+                <h2>Consultation d'une offre</h2>
+                <p>Cette fenêtre permet à l'utilisateur de consulter une offre qui lui a été fait.</p> 
+                <p>Il peut ainsi parcourir les produits qui lui sont offerts en échange du sien, et choisir s'il accepte ou refuse l'offre.</p>
+                <img ng-src="https://s3-us-west-2.amazonaws.com/barter-project-bucket/exempleOffre.png" class="help-images"/>
+                <p>1: Le produit de l'utilisateur veut échanger contre le vôtre.</p>
+                <p>Dans ce cas si, un seul produit fut ajouté dans l'offre, mais un utilisateur peut choisir le nombre de produit à échanger désiré.</p>
+                <p>2: Le produit de votre catalogue que l'utilisateur qui vous a fait l'offre veut obtenir en échange de ses produits.</p>
+                <p>3.1: Le bouton Accepter envoit un message à l'utilisateur, l'avertissant que son offre fut acceptée.</p>
+                <p>Les deux utlisateurs pourront maintenant se contacter afin d'échanger leurs coordonnées.</p>
+                <p>3.2: Le bouton Refuser envoit un message à l'utilisateur, l'avertissant que son offre fut refusée.</p>
+                <br /><md-divider></md-divider><br />
+                <h2>Statut des offres</h2>
+                <p>Chaque action que fait un utilisateur par rapport à une offre sera actualisé.</p> 
+                <img ng-src="https://s3-us-west-2.amazonaws.com/barter-project-bucket/statusOffre.png" class="help-images"/>
+                <p>1: Une fois une offre acceptée ou refusée, sont statut est actualisé. De même que pour les offres envoyées, </p>
+                <p>lorsqu'une offre envoyée est acceptée ou refusée, son statut sera actualisé dans la liste des offres envoyées de l'utilisateur.</p>
+                <br /><md-divider></md-divider><br />
+                <h2>Les messages</h2>
+                <p>Cette page est là où se retrouve les messages d'un utilisateur.</p>
+                <p>Il peut consulter ses messages envoyées ainsi que répondre ou ignorer ses nouveaux messages.</p>
+                <br /><md-divider></md-divider><br />
+                <img ng-src="https://s3-us-west-2.amazonaws.com/barter-project-bucket/nouveauMessage.png" class="help-images"/>
+                <p>1: En cliquant sur le bouton Ignorer, le message est automatiquement catégorisé comme étant "lu".</p>
+                <p>L'utilisateur ne pourra plus y répondre mais pourra toujours le consulter dans la tab des messages lus.</p>
+                <p>2: Informations sur le nouveau message.</p>
+                <p>En le cliquant, une fenêtre de dialogue s'ouvre afin de pouvoir le consulter et y répondre.</p>
+                <br /><md-divider></md-divider><br />
+                <h2>Les messages lus</h2>
+                <p>Cette tab de la page des messages est là ou se retrouvent tous les messages lus d'un utlisateur.</p>
+                <p>L'utlisateur peut, en cliquant un message, le reconsulter, mais n'aura pas l'option de pouvoir y répondre.</p>
+                <img ng-src="https://s3-us-west-2.amazonaws.com/barter-project-bucket/messagesLus.png" class="help-images"/>
+                <p>1: En cliquant sur l'icône de la poubelle, l'utilisateur peut ainsi vider sa liste de messages lus.</p>
+                <p>Les messages lus ainsi supprimés, ils ne seront plus jamais accessible par l'utilisateur puisque cette action est irréversible.</p>
+                <p>2: Les messages lus ont toujours la possibilités d'être consultés.</p>
+                <p>En effet, l'utilisateur peut toujours avoir accès au contenu d'un message malgré le fait qu'il soit lu.</p>
+                <p>Par contre, il n'aura plus la possibilité d'y répondre.</p>
+            </md-card-content>
+        </md-card>
+    </div>
+</div>
+            
